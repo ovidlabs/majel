@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { DefaultFormComponentId } from '@vendure/common/lib/shared-types';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { UntypedFormControl } from '@angular/forms'
+import { DefaultFormComponentId } from '@majel/common/lib/shared-types'
 
-import { FormInputComponent } from '../../../common/component-registry-types';
-import { RelationCustomFieldConfig } from '../../../common/generated-types';
+import { FormInputComponent } from '../../../common/component-registry-types'
+import { RelationCustomFieldConfig } from '../../../common/generated-types'
 
 /**
  * @description
@@ -15,14 +15,14 @@ import { RelationCustomFieldConfig } from '../../../common/generated-types';
  * @docsPage default-inputs
  */
 @Component({
-    selector: 'vdr-relation-form-input',
-    templateUrl: './relation-form-input.component.html',
-    styleUrls: ['./relation-form-input.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-relation-form-input',
+	templateUrl: './relation-form-input.component.html',
+	styleUrls: ['./relation-form-input.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RelationFormInputComponent implements FormInputComponent {
-    static readonly id: DefaultFormComponentId = 'relation-form-input';
-    @Input() readonly: boolean;
-    formControl: UntypedFormControl;
-    config: RelationCustomFieldConfig;
+	static readonly id: DefaultFormComponentId = 'relation-form-input'
+	@Input() readonly: boolean
+	formControl: UntypedFormControl
+	config: RelationCustomFieldConfig
 }

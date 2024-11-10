@@ -1,8 +1,8 @@
-import { ID } from '@vendure/common/lib/shared-types';
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { Collection } from '../../entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Collection } from '../../entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -15,8 +15,12 @@ import { VendureEvent } from '../vendure-event';
  * @docsCategory events
  * @docsPage Event Types
  */
-export class CollectionModificationEvent extends VendureEvent {
-    constructor(public ctx: RequestContext, public collection: Collection, public productVariantIds: ID[]) {
-        super();
-    }
+export class CollectionModificationEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public collection: Collection,
+		public productVariantIds: ID[],
+	) {
+		super()
+	}
 }

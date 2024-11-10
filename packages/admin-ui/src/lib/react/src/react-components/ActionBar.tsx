@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react'
 
 /**
  * @description
@@ -6,7 +6,7 @@ import React, { PropsWithChildren, ReactNode } from 'react';
  *
  * @example
  * ```ts
- * import { ActionBar } from '@vendure/admin-ui/react';
+ * import { ActionBar } from '@majel/admin-ui/react';
  *
  * export function MyComponent() {
  *   return (
@@ -20,10 +20,10 @@ import React, { PropsWithChildren, ReactNode } from 'react';
  * @docsCategory react-components
  */
 export function ActionBar(props: PropsWithChildren<{ leftContent?: ReactNode }>) {
-    return (
-        <div className={'vdr-action-bar'}>
-            <div className="left-content">{props.leftContent}</div>
-            <div className="right-content">{props.children}</div>
-        </div>
-    );
+	return (
+		<div className={'vdr-action-bar'}>
+			<div className="left-content">{props.leftContent}</div>
+			<div className="right-content">{props.children}</div>
+		</div>
+	)
 }

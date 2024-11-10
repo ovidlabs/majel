@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { DefaultFormComponentConfig, DefaultFormComponentId } from '@vendure/common/lib/shared-types';
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { UntypedFormControl } from '@angular/forms'
+import { DefaultFormComponentConfig, DefaultFormComponentId } from '@majel/common/lib/shared-types'
 
-import { FormInputComponent, InputComponentConfig } from '../../../common/component-registry-types';
+import { FormInputComponent, InputComponentConfig } from '../../../common/component-registry-types'
 
 /**
  * @description
@@ -12,22 +12,22 @@ import { FormInputComponent, InputComponentConfig } from '../../../common/compon
  * @docsPage default-inputs
  */
 @Component({
-    selector: 'vdr-text-form-input',
-    templateUrl: './text-form-input.component.html',
-    styleUrls: ['./text-form-input.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-text-form-input',
+	templateUrl: './text-form-input.component.html',
+	styleUrls: ['./text-form-input.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextFormInputComponent implements FormInputComponent {
-    static readonly id: DefaultFormComponentId = 'text-form-input';
-    readonly: boolean;
-    formControl: UntypedFormControl;
-    config: DefaultFormComponentConfig<'text-form-input'>;
+	static readonly id: DefaultFormComponentId = 'text-form-input'
+	readonly: boolean
+	formControl: UntypedFormControl
+	config: DefaultFormComponentConfig<'text-form-input'>
 
-    get prefix() {
-        return this.config.ui?.prefix || this.config.prefix;
-    }
+	get prefix() {
+		return this.config.ui?.prefix || this.config.prefix
+	}
 
-    get suffix() {
-        return this.config.ui?.suffix || this.config.suffix;
-    }
+	get suffix() {
+		return this.config.ui?.suffix || this.config.suffix
+	}
 }

@@ -1,22 +1,22 @@
-import { LanguageCode } from '@vendure/common/lib/generated-types';
-import { CustomFieldsObject, ID } from '@vendure/common/lib/shared-types';
+import { LanguageCode } from '@majel/common/lib/generated-types'
+import { CustomFieldsObject, ID } from '@majel/common/lib/shared-types'
 
-import { VendureEntity } from '../../entity/base/base.entity';
-import { TranslatableRelationsKeys } from '../../service/helpers/utils/translate-entity';
+import { MajelEntity } from '../../entity/base/base.entity'
+import { TranslatableRelationsKeys } from '../../service/helpers/utils/translate-entity'
 
-import { UnwrappedArray } from './common-types';
+import { UnwrappedArray } from './common-types'
 
 /**
  * This type should be used in any interfaces where the value is to be
  * localized into different languages.
  */
-export type LocaleString = string & { _opaqueType: 'LocaleString' };
+export type LocaleString = string & { _opaqueType: 'LocaleString' }
 
 export type TranslatableKeys<T, U = Omit<T, 'translations'>> = {
-    [K in keyof U]: U[K] extends LocaleString ? K : never;
-}[keyof U];
+	[K in keyof U]: U[K] extends LocaleString ? K : never
+}[keyof U]
 
-export type NonTranslateableKeys<T> = { [K in keyof T]: T[K] extends LocaleString ? never : K }[keyof T];
+export type NonTranslateableKeys<T> = { [K in keyof T]: T[K] extends LocaleString ? never : K }[keyof T]
 
 // prettier-ignore
 /**
@@ -27,10 +27,10 @@ export type NonTranslateableKeys<T> = { [K in keyof T]: T[K] extends LocaleStrin
  * @docsPage interfaces
  */
 export interface Translatable {
-    translations: Array<Translation<VendureEntity>>;
+    translations: Array<Translation<MajelEntity>>;
 }
 
-export type TranslationCustomFields<T> = { [K in keyof T]: K extends 'customFields' ? K : never }[keyof T];
+export type TranslationCustomFields<T> = { [K in keyof T]: K extends 'customFields' ? K : never }[keyof T]
 
 // prettier-ignore
 /**
@@ -51,16 +51,16 @@ export type Translation<T> =
  * This is the type of a translation object when provided as input to a create or update operation.
  */
 export type TranslationInput<T> = { [K in TranslatableKeys<T>]?: string | null } & {
-    id?: ID | null;
-    languageCode: LanguageCode;
-};
+	id?: ID | null
+	languageCode: LanguageCode
+}
 
 /**
  * This interface defines the shape of a DTO used to create / update an entity which has one or more LocaleString
  * properties.
  */
 export interface TranslatedInput<T> {
-    translations?: Array<TranslationInput<T>> | null;
+	translations?: Array<TranslationInput<T>> | null
 }
 
 // prettier-ignore

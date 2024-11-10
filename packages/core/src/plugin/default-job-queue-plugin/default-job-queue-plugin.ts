@@ -1,14 +1,14 @@
-import { Type } from '@vendure/common/lib/shared-types';
+import { Type } from '@majel/common/lib/shared-types'
 
-import { Job } from '../../job-queue/job';
-import { BackoffStrategy } from '../../job-queue/polling-job-queue-strategy';
-import { PluginCommonModule } from '../plugin-common.module';
-import { VendurePlugin } from '../vendure-plugin';
+import { Job } from '../../job-queue/job'
+import { BackoffStrategy } from '../../job-queue/polling-job-queue-strategy'
+import { PluginCommonModule } from '../plugin-common.module'
+import { MajelPlugin } from '../majel-plugin'
 
-import { JobRecordBuffer } from './job-record-buffer.entity';
-import { JobRecord } from './job-record.entity';
-import { SqlJobBufferStorageStrategy } from './sql-job-buffer-storage-strategy';
-import { SqlJobQueueStrategy } from './sql-job-queue-strategy';
+import { JobRecordBuffer } from './job-record-buffer.entity'
+import { JobRecord } from './job-record.entity'
+import { SqlJobBufferStorageStrategy } from './sql-job-buffer-storage-strategy'
+import { SqlJobQueueStrategy } from './sql-job-queue-strategy'
 
 /**
  * @description
@@ -19,88 +19,88 @@ import { SqlJobQueueStrategy } from './sql-job-queue-strategy';
  * @docsPage DefaultJobQueuePlugin
  */
 export interface DefaultJobQueueOptions {
-    /**
-     * @description
-     * The interval in ms between polling the database for new jobs. If many job queues
-     * are active, the polling may cause undue load on the database, in which case this value
-     * should be increased to e.g. 1000.
-     *
-     * @default 200
-     */
-    pollInterval?: number | ((queueName: string) => number);
-    /**
-     * @description
-     * How many jobs from a given queue to process concurrently.
-     *
-     * @default 1
-     */
-    concurrency?: number;
-    /**
-     * @description
-     * The strategy used to decide how long to wait before retrying a failed job.
-     *
-     * @default () => 1000
-     */
-    backoffStrategy?: BackoffStrategy;
-    /**
-     * @description
-     * When a job is added to the JobQueue using `JobQueue.add()`, the calling
-     * code may specify the number of retries in case of failure. This option allows
-     * you to override that number and specify your own number of retries based on
-     * the job being added.
-     *
-     * @example
-     * ```ts
-     * setRetries: (queueName, job) => {
-     *   if (queueName === 'send-email') {
-     *     // Override the default number of retries
-     *     // for the 'send-email' job because we have
-     *     // a very unreliable email service.
-     *     return 10;
-     *   }
-     *   return job.retries;
-     * }
-     *  ```
-     * @param queueName
-     * @param job
-     */
-    setRetries?: (queueName: string, job: Job) => number;
-    /**
-     * @description
-     * If set to `true`, the database will be used to store buffered jobs. This is
-     * recommended for production.
-     *
-     * When enabled, a new `JobRecordBuffer` database entity will be defined which will
-     * require a migration when first enabling this option.
-     *
-     * @since 1.3.0
-     */
-    useDatabaseForBuffer?: boolean;
-    /**
-     * @description
-     * The timeout in ms which the queue will use when attempting a graceful shutdown.
-     * That means when the server is shut down but a job is running, the job queue will
-     * wait for the job to complete before allowing the server to shut down. If the job
-     * does not complete within this timeout window, the job will be forced to stop
-     * and the server will shut down anyway.
-     *
-     * @since 2.2.0
-     * @default 20_000
-     */
-    gracefulShutdownTimeout?: number;
+	/**
+	 * @description
+	 * The interval in ms between polling the database for new jobs. If many job queues
+	 * are active, the polling may cause undue load on the database, in which case this value
+	 * should be increased to e.g. 1000.
+	 *
+	 * @default 200
+	 */
+	pollInterval?: number | ((queueName: string) => number)
+	/**
+	 * @description
+	 * How many jobs from a given queue to process concurrently.
+	 *
+	 * @default 1
+	 */
+	concurrency?: number
+	/**
+	 * @description
+	 * The strategy used to decide how long to wait before retrying a failed job.
+	 *
+	 * @default () => 1000
+	 */
+	backoffStrategy?: BackoffStrategy
+	/**
+	 * @description
+	 * When a job is added to the JobQueue using `JobQueue.add()`, the calling
+	 * code may specify the number of retries in case of failure. This option allows
+	 * you to override that number and specify your own number of retries based on
+	 * the job being added.
+	 *
+	 * @example
+	 * ```ts
+	 * setRetries: (queueName, job) => {
+	 *   if (queueName === 'send-email') {
+	 *     // Override the default number of retries
+	 *     // for the 'send-email' job because we have
+	 *     // a very unreliable email service.
+	 *     return 10;
+	 *   }
+	 *   return job.retries;
+	 * }
+	 *  ```
+	 * @param queueName
+	 * @param job
+	 */
+	setRetries?: (queueName: string, job: Job) => number
+	/**
+	 * @description
+	 * If set to `true`, the database will be used to store buffered jobs. This is
+	 * recommended for production.
+	 *
+	 * When enabled, a new `JobRecordBuffer` database entity will be defined which will
+	 * require a migration when first enabling this option.
+	 *
+	 * @since 1.3.0
+	 */
+	useDatabaseForBuffer?: boolean
+	/**
+	 * @description
+	 * The timeout in ms which the queue will use when attempting a graceful shutdown.
+	 * That means when the server is shut down but a job is running, the job queue will
+	 * wait for the job to complete before allowing the server to shut down. If the job
+	 * does not complete within this timeout window, the job will be forced to stop
+	 * and the server will shut down anyway.
+	 *
+	 * @since 2.2.0
+	 * @default 20_000
+	 */
+	gracefulShutdownTimeout?: number
 }
 
 /**
  * @description
- * A plugin which configures Vendure to use the SQL database to persist the JobQueue jobs using the {@link SqlJobQueueStrategy}. If you add this
- * plugin to an existing Vendure installation, you'll need to run a [database migration](/guides/developer-guide/migrations), since this
+ * A plugin which configures Majel to use the SQL database to persist the JobQueue jobs using the {@link SqlJobQueueStrategy}. If you add this
+ * plugin to an existing Majel installation, you'll need to run a [database migration](/guides/developer-guide/migrations), since this
  * plugin will add a new "job_record" table to the database.
  *
  * @example
  * ```ts
- * import { DefaultJobQueuePlugin, VendureConfig } from '\@vendure/core';
+ * import { DefaultJobQueuePlugin, MajelConfig } from '\@majel/core';
  *
- * export const config: VendureConfig = {
+ * export const config: MajelConfig = {
  *   // Add an instance of the plugin to the plugins array
  *   plugins: [
  *     DefaultJobQueuePlugin,
@@ -120,7 +120,7 @@ export interface DefaultJobQueueOptions {
  *
  * @example
  * ```ts
- * export const config: VendureConfig = {
+ * export const config: MajelConfig = {
  *   plugins: [
  *     DefaultJobQueuePlugin.init({
  *       pollInterval: queueName => {
@@ -149,7 +149,7 @@ export interface DefaultJobQueueOptions {
  *
  * @example
  * ```ts
- * export const config: VendureConfig = {
+ * export const config: MajelConfig = {
  *   plugins: [
  *     DefaultJobQueuePlugin.init({
  *       pollInterval: 5000,
@@ -180,35 +180,35 @@ export interface DefaultJobQueueOptions {
  * @docsCategory JobQueue
  * @docsWeight 0
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    entities: () =>
-        DefaultJobQueuePlugin.options.useDatabaseForBuffer === true
-            ? [JobRecord, JobRecordBuffer]
-            : [JobRecord],
-    configuration: config => {
-        const { pollInterval, concurrency, backoffStrategy, setRetries, gracefulShutdownTimeout } =
-            DefaultJobQueuePlugin.options ?? {};
-        config.jobQueueOptions.jobQueueStrategy = new SqlJobQueueStrategy({
-            concurrency,
-            pollInterval,
-            backoffStrategy,
-            setRetries,
-            gracefulShutdownTimeout,
-        });
-        if (DefaultJobQueuePlugin.options.useDatabaseForBuffer === true) {
-            config.jobQueueOptions.jobBufferStorageStrategy = new SqlJobBufferStorageStrategy();
-        }
-        return config;
-    },
-    compatibility: '>0.0.0',
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	entities: () =>
+		DefaultJobQueuePlugin.options.useDatabaseForBuffer === true
+			? [JobRecord, JobRecordBuffer]
+			: [JobRecord],
+	configuration: config => {
+		const { pollInterval, concurrency, backoffStrategy, setRetries, gracefulShutdownTimeout } =
+			DefaultJobQueuePlugin.options ?? {}
+		config.jobQueueOptions.jobQueueStrategy = new SqlJobQueueStrategy({
+			concurrency,
+			pollInterval,
+			backoffStrategy,
+			setRetries,
+			gracefulShutdownTimeout,
+		})
+		if (DefaultJobQueuePlugin.options.useDatabaseForBuffer === true) {
+			config.jobQueueOptions.jobBufferStorageStrategy = new SqlJobBufferStorageStrategy()
+		}
+		return config
+	},
+	compatibility: '>0.0.0',
 })
 export class DefaultJobQueuePlugin {
-    /** @internal */
-    static options: DefaultJobQueueOptions = {};
+	/** @internal */
+	static options: DefaultJobQueueOptions = {}
 
-    static init(options: DefaultJobQueueOptions): Type<DefaultJobQueuePlugin> {
-        DefaultJobQueuePlugin.options = options;
-        return DefaultJobQueuePlugin;
-    }
+	static init(options: DefaultJobQueueOptions): Type<DefaultJobQueuePlugin> {
+		DefaultJobQueuePlugin.options = options
+		return DefaultJobQueuePlugin
+	}
 }

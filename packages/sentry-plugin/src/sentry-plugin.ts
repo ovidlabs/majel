@@ -1,25 +1,25 @@
-import { MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { PluginCommonModule, VendurePlugin } from '@vendure/core';
+import { MiddlewareConsumer, NestModule } from '@nestjs/common'
+import { PluginCommonModule, MajelPlugin } from '@majel/core'
 
-import { SentryAdminTestResolver } from './api/admin-test.resolver';
-import { testApiExtensions } from './api/api-extensions';
-import { ErrorTestService } from './api/error-test.service';
-import { SENTRY_PLUGIN_OPTIONS } from './constants';
-import { SentryApolloPlugin } from './sentry-apollo-plugin';
-import { SentryContextMiddleware } from './sentry-context.middleware';
-import { SentryErrorHandlerStrategy } from './sentry-error-handler-strategy';
-import { SentryService } from './sentry.service';
-import { SentryPluginOptions } from './types';
+import { SentryAdminTestResolver } from './api/admin-test.resolver'
+import { testApiExtensions } from './api/api-extensions'
+import { ErrorTestService } from './api/error-test.service'
+import { SENTRY_PLUGIN_OPTIONS } from './constants'
+import { SentryApolloPlugin } from './sentry-apollo-plugin'
+import { SentryContextMiddleware } from './sentry-context.middleware'
+import { SentryErrorHandlerStrategy } from './sentry-error-handler-strategy'
+import { SentryService } from './sentry.service'
+import { SentryPluginOptions } from './types'
 
 const SentryOptionsProvider = {
-    provide: SENTRY_PLUGIN_OPTIONS,
-    useFactory: () => SentryPlugin.options,
-};
+	provide: SENTRY_PLUGIN_OPTIONS,
+	useFactory: () => SentryPlugin.options,
+}
 
 /**
  * @description
  * This plugin integrates the [Sentry](https://sentry.io) error tracking & performance monitoring
- * service with your Vendure server. In addition to capturing errors, it also provides built-in
+ * service with your Majel server. In addition to capturing errors, it also provides built-in
  * support for [tracing](https://docs.sentry.io/product/sentry-basics/concepts/tracing/) as well as
  * enriching your Sentry events with additional context about the request.
  *
@@ -38,7 +38,7 @@ const SentryOptionsProvider = {
  * Install this plugin as well as the `@sentry/node` package:
  *
  * ```sh
- * npm install --save \@vendure/sentry-plugin \@sentry/node
+ * npm install --save \@majel/sentry-plugin \@sentry/node
  * ```
  *
  * ## Configuration
@@ -46,10 +46,10 @@ const SentryOptionsProvider = {
  * Before using the plugin, you must configure it with the DSN provided by Sentry:
  *
  * ```ts
- * import { VendureConfig } from '\@vendure/core';
- * import { SentryPlugin } from '\@vendure/sentry-plugin';
+ * import { MajelConfig } from '\@majel/core';
+ * import { SentryPlugin } from '\@majel/sentry-plugin';
  *
- * export const config: VendureConfig = {
+ * export const config: MajelConfig = {
  *     // ...
  *     plugins: [
  *         // ...
@@ -105,34 +105,34 @@ const SentryOptionsProvider = {
  *
  * @docsCategory core plugins/SentryPlugin
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    providers: [SentryOptionsProvider, SentryService, ErrorTestService],
-    configuration: config => {
-        config.apiOptions.apolloServerPlugins.push(
-            new SentryApolloPlugin({
-                enableTracing: !!SentryPlugin.options.enableTracing,
-            }),
-        );
-        config.systemOptions.errorHandlers.push(new SentryErrorHandlerStrategy());
-        return config;
-    },
-    adminApiExtensions: {
-        schema: () => (SentryPlugin.options.includeErrorTestMutation ? testApiExtensions : undefined),
-        resolvers: () => (SentryPlugin.options.includeErrorTestMutation ? [SentryAdminTestResolver] : []),
-    },
-    exports: [SentryService],
-    compatibility: '^2.2.0-next.2',
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	providers: [SentryOptionsProvider, SentryService, ErrorTestService],
+	configuration: config => {
+		config.apiOptions.apolloServerPlugins.push(
+			new SentryApolloPlugin({
+				enableTracing: !!SentryPlugin.options.enableTracing,
+			}),
+		)
+		config.systemOptions.errorHandlers.push(new SentryErrorHandlerStrategy())
+		return config
+	},
+	adminApiExtensions: {
+		schema: () => (SentryPlugin.options.includeErrorTestMutation ? testApiExtensions : undefined),
+		resolvers: () => (SentryPlugin.options.includeErrorTestMutation ? [SentryAdminTestResolver] : []),
+	},
+	exports: [SentryService],
+	compatibility: '^2.2.0-next.2',
 })
 export class SentryPlugin implements NestModule {
-    static options: SentryPluginOptions = {} as any;
+	static options: SentryPluginOptions = {} as any
 
-    configure(consumer: MiddlewareConsumer): any {
-        consumer.apply(SentryContextMiddleware).forRoutes('*');
-    }
+	configure(consumer: MiddlewareConsumer): any {
+		consumer.apply(SentryContextMiddleware).forRoutes('*')
+	}
 
-    static init(options: SentryPluginOptions) {
-        this.options = options;
-        return this;
-    }
+	static init(options: SentryPluginOptions) {
+		this.options = options
+		return this
+	}
 }

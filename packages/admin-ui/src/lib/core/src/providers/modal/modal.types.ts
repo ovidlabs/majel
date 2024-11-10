@@ -7,20 +7,20 @@
  * @docsPage ModalService
  */
 export interface Dialog<R = any> {
-    /**
-     * @description
-     * Function to be invoked in order to close the dialog when the action is complete.
-     * The Observable returned from the .fromComponent() method will emit the value passed
-     * to this method and then complete.
-     */
-    resolveWith: (result?: R) => void;
+	/**
+	 * @description
+	 * Function to be invoked in order to close the dialog when the action is complete.
+	 * The Observable returned from the .fromComponent() method will emit the value passed
+	 * to this method and then complete.
+	 */
+	resolveWith: (result?: R) => void
 }
 
 export interface DialogButtonConfig<T> {
-    label: string;
-    type: 'secondary' | 'primary' | 'danger';
-    translationVars?: Record<string, string | number>;
-    returnValue?: T;
+	label: string
+	type: 'secondary' | 'primary' | 'danger'
+	translationVars?: Record<string, string | number>
+	returnValue?: T
 }
 
 /**
@@ -31,11 +31,11 @@ export interface DialogButtonConfig<T> {
  * @docsPage ModalService
  */
 export interface DialogConfig<T> {
-    title: string;
-    body?: string;
-    translationVars?: { [key: string]: string | number };
-    buttons: Array<DialogButtonConfig<T>>;
-    size?: 'sm' | 'md' | 'lg' | 'xl';
+	title: string
+	body?: string
+	translationVars?: { [key: string]: string | number }
+	buttons: Array<DialogButtonConfig<T>>
+	size?: 'sm' | 'md' | 'lg' | 'xl'
 }
 
 /**
@@ -46,25 +46,25 @@ export interface DialogConfig<T> {
  * @docsPage ModalService
  */
 export interface ModalOptions<T> {
-    /**
-     * @description
-     * Sets the width of the dialog
-     */
-    size?: 'sm' | 'md' | 'lg' | 'xl';
-    /**
-     * @description
-     * Sets the vertical alignment of the dialog
-     */
-    verticalAlign?: 'top' | 'center' | 'bottom';
-    /**
-     * @description
-     * When true, the "x" icon is shown
-     * and clicking it or the mask will close the dialog
-     */
-    closable?: boolean;
-    /**
-     * @description
-     * Values to be passed directly to the component being instantiated inside the dialog.
-     */
-    locals?: Partial<T>;
+	/**
+	 * @description
+	 * Sets the width of the dialog
+	 */
+	size?: 'sm' | 'md' | 'lg' | 'xl'
+	/**
+	 * @description
+	 * Sets the vertical alignment of the dialog
+	 */
+	verticalAlign?: 'top' | 'center' | 'bottom'
+	/**
+	 * @description
+	 * When true, the "x" icon is shown
+	 * and clicking it or the mask will close the dialog
+	 */
+	closable?: boolean
+	/**
+	 * @description
+	 * Values to be passed directly to the component being instantiated inside the dialog.
+	 */
+	locals?: Partial<T>
 }

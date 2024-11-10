@@ -1,23 +1,23 @@
-import { Query, Resolver } from '@nestjs/graphql';
-import { VendurePlugin } from '@vendure/core';
+import { Query, Resolver } from '@nestjs/graphql'
+import { MajelPlugin } from '@majel/core'
 
 /**
- * https://github.com/vendure-ecommerce/vendure/issues/2906
+ * https://github.com/majel-ecommerce/majel/issues/2906
  */
-@VendurePlugin({
-    configuration: config => {
-        return {
-            ...config,
-            customFields: {
-                ...config.customFields,
-                Customer: [
-                    {
-                        name: 'testField',
-                        type: 'string',
-                    },
-                ],
-            },
-        };
-    },
+@MajelPlugin({
+	configuration: config => {
+		return {
+			...config,
+			customFields: {
+				...config.customFields,
+				Customer: [
+					{
+						name: 'testField',
+						type: 'string',
+					},
+				],
+			},
+		}
+	},
 })
 export class WithNewConfigObjectReferencePlugin {}

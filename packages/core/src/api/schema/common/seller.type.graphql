@@ -1,6 +1,6 @@
 type Seller implements Node {
-    id: ID!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    name: String!
+	id: ID!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	name: String!
 }

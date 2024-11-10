@@ -1,9 +1,9 @@
 import * as path from 'path';
-import { AdminUiExtension } from '@vendure/ui-devkit/compiler';
-import { PluginCommonModule, Type, VendurePlugin } from '@vendure/core';
+import { AdminUiExtension } from '@majel/ui-devkit/compiler';
+import { PluginCommonModule, Type, MajelPlugin } from '@majel/core';
 type PluginInitOptions = any;
 
-@VendurePlugin({
+@MajelPlugin({
     imports: [PluginCommonModule],
     compatibility: '^2.0.0',
 })

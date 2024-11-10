@@ -1,9 +1,9 @@
-import { ConfigurableOperationInput, OrderLineInput } from '@vendure/common/lib/generated-types';
+import { ConfigurableOperationInput, OrderLineInput } from '@majel/common/lib/generated-types'
 
-import { RequestContext } from '../../api';
-import { Order } from '../../entity';
-import { Fulfillment } from '../../entity/fulfillment/fulfillment.entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api'
+import { Order } from '../../entity'
+import { Fulfillment } from '../../entity/fulfillment/fulfillment.entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
 /**
  * @description
@@ -11,10 +11,10 @@ import { VendureEntityEvent } from '../vendure-entity-event';
  * @since 1.4
  */
 type CreateFulfillmentInput = {
-    orders: Order[];
-    lines: OrderLineInput[];
-    handler: ConfigurableOperationInput;
-};
+	orders: Order[]
+	lines: OrderLineInput[]
+	handler: ConfigurableOperationInput
+}
 
 /**
  * @description
@@ -24,8 +24,8 @@ type CreateFulfillmentInput = {
  * @docsPage Event Types
  * @since 1.4
  */
-export class FulfillmentEvent extends VendureEntityEvent<Fulfillment, CreateFulfillmentInput> {
-    constructor(ctx: RequestContext, entity: Fulfillment, input?: CreateFulfillmentInput) {
-        super(entity, 'created', ctx, input);
-    }
+export class FulfillmentEvent extends MajelEntityEvent<Fulfillment, CreateFulfillmentInput> {
+	constructor(ctx: RequestContext, entity: Fulfillment, input?: CreateFulfillmentInput) {
+		super(entity, 'created', ctx, input)
+	}
 }

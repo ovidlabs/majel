@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { Controller, Res, Get } from '@nestjs/common';
-import { PluginCommonModule, VendurePlugin } from '@vendure/core';
-import { Response } from 'express';
+import { Controller, Res, Get } from '@nestjs/common'
+import { PluginCommonModule, MajelPlugin } from '@majel/core'
+import { Response } from 'express'
 
-import { clientSecret } from './stripe-dev-server';
+import { clientSecret } from './stripe-dev-server'
 
 /**
  * This test controller returns the Stripe intent checkout page
@@ -11,9 +11,9 @@ import { clientSecret } from './stripe-dev-server';
  */
 @Controller()
 export class StripeTestCheckoutController {
-    @Get('checkout')
-    async webhook(@Res() res: Response): Promise<void> {
-        res.send(`
+	@Get('checkout')
+	async webhook(@Res() res: Response): Promise<void> {
+		res.send(`
 <head>
   <title>Checkout</title>
   <script src="https://js.stripe.com/v3/"></script>
@@ -74,15 +74,15 @@ form.addEventListener('submit', async (event) => {
 });
 </script>
 </html>
-    `);
-    }
+    `)
+	}
 }
 
 /**
  * Test plugin for serving the Stripe intent checkout page
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    controllers: [StripeTestCheckoutController],
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	controllers: [StripeTestCheckoutController],
 })
 export class StripeCheckoutTestPlugin {}

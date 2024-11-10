@@ -1,12 +1,12 @@
-import { DeepPartial } from '@vendure/common/lib/shared-types';
-import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
+import { DeepPartial } from '@majel/common/lib/shared-types'
+import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm'
 
-import { PaymentMetadata } from '../../common/types/common-types';
-import { PaymentState } from '../../service/helpers/payment-state-machine/payment-state';
-import { VendureEntity } from '../base/base.entity';
-import { Money } from '../money.decorator';
-import { Order } from '../order/order.entity';
-import { Refund } from '../refund/refund.entity';
+import { PaymentMetadata } from '../../common/types/common-types'
+import { PaymentState } from '../../service/helpers/payment-state-machine/payment-state'
+import { MajelEntity } from '../base/base.entity'
+import { Money } from '../money.decorator'
+import { Order } from '../order/order.entity'
+import { Refund } from '../refund/refund.entity'
 
 /**
  * @description
@@ -16,29 +16,29 @@ import { Refund } from '../refund/refund.entity';
  * @docsCategory entities
  */
 @Entity()
-export class Payment extends VendureEntity {
-    constructor(input?: DeepPartial<Payment>) {
-        super(input);
-    }
+export class Payment extends MajelEntity {
+	constructor(input?: DeepPartial<Payment>) {
+		super(input)
+	}
 
-    @Column() method: string;
+	@Column() method: string
 
-    @Money() amount: number;
+	@Money() amount: number
 
-    @Column('varchar') state: PaymentState;
+	@Column('varchar') state: PaymentState
 
-    @Column({ type: 'varchar', nullable: true })
-    errorMessage: string | undefined;
+	@Column({ type: 'varchar', nullable: true })
+	errorMessage: string | undefined
 
-    @Column({ nullable: true })
-    transactionId: string;
+	@Column({ nullable: true })
+	transactionId: string
 
-    @Column('simple-json') metadata: PaymentMetadata;
+	@Column('simple-json') metadata: PaymentMetadata
 
-    @Index()
-    @ManyToOne(type => Order, order => order.payments)
-    order: Order;
+	@Index()
+	@ManyToOne(type => Order, order => order.payments)
+	order: Order
 
-    @OneToMany(type => Refund, refund => refund.payment)
-    refunds: Refund[];
+	@OneToMany(type => Refund, refund => refund.payment)
+	refunds: Refund[]
 }

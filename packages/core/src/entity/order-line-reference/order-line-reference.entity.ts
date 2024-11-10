@@ -1,9 +1,9 @@
-import { ID } from '@vendure/common/lib/shared-types';
-import { Column, Entity, Index, ManyToOne, TableInheritance } from 'typeorm';
+import { ID } from '@majel/common/lib/shared-types'
+import { Column, Entity, Index, ManyToOne, TableInheritance } from 'typeorm'
 
-import { VendureEntity } from '../base/base.entity';
-import { EntityId } from '../entity-id.decorator';
-import { OrderLine } from '../order-line/order-line.entity';
+import { MajelEntity } from '../base/base.entity'
+import { EntityId } from '../entity-id.decorator'
+import { OrderLine } from '../order-line/order-line.entity'
 
 /**
  * @description
@@ -14,14 +14,14 @@ import { OrderLine } from '../order-line/order-line.entity';
  */
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'discriminator' } })
-export abstract class OrderLineReference extends VendureEntity {
-    @Column()
-    quantity: number;
+export abstract class OrderLineReference extends MajelEntity {
+	@Column()
+	quantity: number
 
-    @Index()
-    @ManyToOne(type => OrderLine, line => line.linesReferences, { onDelete: 'CASCADE' })
-    orderLine: OrderLine;
+	@Index()
+	@ManyToOne(type => OrderLine, line => line.linesReferences, { onDelete: 'CASCADE' })
+	orderLine: OrderLine
 
-    @EntityId()
-    orderLineId: ID;
+	@EntityId()
+	orderLineId: ID
 }

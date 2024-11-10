@@ -1,15 +1,15 @@
-import { HealthIndicatorFunction } from '@nestjs/terminus';
-import { HealthCheckStrategy, Injector } from '@vendure/core';
+import { HealthIndicatorFunction } from '@nestjs/terminus'
+import { HealthCheckStrategy, Injector } from '@majel/core'
 
-import { RedisHealthIndicator } from './redis-health-indicator';
+import { RedisHealthIndicator } from './redis-health-indicator'
 
-let indicator: RedisHealthIndicator;
+let indicator: RedisHealthIndicator
 
 export class RedisHealthCheckStrategy implements HealthCheckStrategy {
-    init(injector: Injector) {
-        indicator = injector.get(RedisHealthIndicator);
-    }
-    getHealthIndicator(): HealthIndicatorFunction {
-        return () => indicator.isHealthy('redis (job queue)');
-    }
+	init(injector: Injector) {
+		indicator = injector.get(RedisHealthIndicator)
+	}
+	getHealthIndicator(): HealthIndicatorFunction {
+		return () => indicator.isHealthy('redis (job queue)')
+	}
 }

@@ -1,15 +1,15 @@
-import { CreateCustomerInput, UpdateCustomerInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreateCustomerInput, UpdateCustomerInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { Customer } from '../../entity/customer/customer.entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Customer } from '../../entity/customer/customer.entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
 type CustomerInputTypes =
-    | CreateCustomerInput
-    | UpdateCustomerInput
-    | (Partial<CreateCustomerInput> & { emailAddress: string })
-    | ID;
+	| CreateCustomerInput
+	| UpdateCustomerInput
+	| (Partial<CreateCustomerInput> & { emailAddress: string })
+	| ID
 
 /**
  * @description
@@ -19,23 +19,23 @@ type CustomerInputTypes =
  * @docsCategory events
  * @docsPage Event Types
  */
-export class CustomerEvent extends VendureEntityEvent<Customer, CustomerInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: Customer,
-        type: 'created' | 'updated' | 'deleted',
-        input?: CustomerInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class CustomerEvent extends MajelEntityEvent<Customer, CustomerInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: Customer,
+		type: 'created' | 'updated' | 'deleted',
+		input?: CustomerInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 
-    /**
-     * Return an customer field to become compatible with the
-     * deprecated old version of CustomerEvent
-     * @deprecated Use `entity` instead
-     * @since 1.4
-     */
-    get customer(): Customer {
-        return this.entity;
-    }
+	/**
+	 * Return an customer field to become compatible with the
+	 * deprecated old version of CustomerEvent
+	 * @deprecated Use `entity` instead
+	 * @since 1.4
+	 */
+	get customer(): Customer {
+		return this.entity
+	}
 }

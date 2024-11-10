@@ -2,17 +2,17 @@ import {
     dummyPaymentHandler,
     DefaultJobQueuePlugin,
     DefaultSearchPlugin,
-    VendureConfig,
-} from '@vendure/core';
-import { defaultEmailHandlers, EmailPlugin } from '@vendure/email-plugin';
-import { AssetServerPlugin } from '@vendure/asset-server-plugin';
-import { AdminUiPlugin } from '@vendure/admin-ui-plugin';
+    MajelConfig,
+} from '@majel/core';
+import { defaultEmailHandlers, EmailPlugin } from '@majel/email-plugin';
+import { AssetServerPlugin } from '@majel/asset-server-plugin';
+import { AdminUiPlugin } from '@majel/admin-ui-plugin';
 import 'dotenv/config';
 import path from 'path';
 
 const IS_DEV = process.env.APP_ENV === 'dev';
 
-export const config: VendureConfig = {
+export const config: MajelConfig = {
     apiOptions: {
         port: 3000,
         adminApiPath: 'admin-api',
@@ -48,7 +48,7 @@ export const config: VendureConfig = {
         synchronize: false,
         migrations: [path.join(__dirname, './migrations/*.+(js|ts)')],
         logging: false,
-        database: {{#if isSQLjs}}new Uint8Array([]){{else if isSQLite}}path.join(__dirname, '../vendure.sqlite'){{else}}process.env.DB_NAME{{/if}},
+        database: {{#if isSQLjs}}new Uint8Array([]){{else if isSQLite}}path.join(__dirname, '../majel.sqlite'){{else}}process.env.DB_NAME{{/if}},
         {{#if dbSchema}}
         schema: process.env.DB_SCHEMA,
         {{/if}}
@@ -56,7 +56,7 @@ export const config: VendureConfig = {
         ssl: true,
         {{/if}}
         {{#if isSQLjs}}
-        location: path.join(__dirname, 'vendure.sqlite'),
+        location: path.join(__dirname, 'majel.sqlite'),
         autoSave: true,
         {{/if}}
         {{#if requiresConnection}}

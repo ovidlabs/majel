@@ -1,13 +1,13 @@
-import { HealthIndicatorFunction, TypeOrmHealthIndicator } from '@nestjs/terminus';
+import { HealthIndicatorFunction, TypeOrmHealthIndicator } from '@nestjs/terminus'
 
-import { Injector } from '../common/injector';
-import { HealthCheckStrategy } from '../config/system/health-check-strategy';
+import { Injector } from '../common/injector'
+import { HealthCheckStrategy } from '../config/system/health-check-strategy'
 
-let indicator: TypeOrmHealthIndicator;
+let indicator: TypeOrmHealthIndicator
 
 export interface TypeORMHealthCheckOptions {
-    key?: string;
-    timeout?: number;
+	key?: string
+	timeout?: number
 }
 
 /**
@@ -18,7 +18,7 @@ export interface TypeORMHealthCheckOptions {
  *
  * @example
  * ```ts
- * import { TypeORMHealthCheckStrategy } from '\@vendure/core';
+ * import { TypeORMHealthCheckStrategy } from '\@majel/core';
  *
  * export const config = {
  *   // ...
@@ -36,15 +36,15 @@ export interface TypeORMHealthCheckOptions {
  * @docsCategory health-check
  */
 export class TypeORMHealthCheckStrategy implements HealthCheckStrategy {
-    constructor(private options?: TypeORMHealthCheckOptions) {}
+	constructor(private options?: TypeORMHealthCheckOptions) {}
 
-    async init(injector: Injector) {
-        indicator = await injector.resolve(TypeOrmHealthIndicator);
-    }
+	async init(injector: Injector) {
+		indicator = await injector.resolve(TypeOrmHealthIndicator)
+	}
 
-    getHealthIndicator(): HealthIndicatorFunction {
-        const key = this.options?.key || 'database';
-        const timeout = this.options?.timeout ?? 1000;
-        return () => indicator.pingCheck(key, { timeout });
-    }
+	getHealthIndicator(): HealthIndicatorFunction {
+		const key = this.options?.key || 'database'
+		const timeout = this.options?.timeout ?? 1000
+		return () => indicator.pingCheck(key, { timeout })
+	}
 }

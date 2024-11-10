@@ -1,6 +1,6 @@
-import { APP_INITIALIZER, FactoryProvider, Type } from '@angular/core';
-import { FormInputComponent } from '../common/component-registry-types';
-import { ComponentRegistryService } from '../providers/component-registry/component-registry.service';
+import { APP_INITIALIZER, FactoryProvider, Type } from '@angular/core'
+import { FormInputComponent } from '../common/component-registry-types'
+import { ComponentRegistryService } from '../providers/component-registry/component-registry.service'
 
 /**
  * @description
@@ -10,7 +10,7 @@ import { ComponentRegistryService } from '../providers/component-registry/compon
  *
  * @example
  * ```ts title="providers.ts"
- * import { registerFormInputComponent } from '\@vendure/admin-ui/core';
+ * import { registerFormInputComponent } from '\@majel/admin-ui/core';
  *
  * export default [
  *     // highlight-next-line
@@ -21,10 +21,10 @@ import { ComponentRegistryService } from '../providers/component-registry/compon
  * This input component can then be used in a custom field:
  *
  * @example
- * ```ts title="src/vendure-config.ts"
- * import { VendureConfig } from '\@vendure/core';
+ * ```ts title="src/majel-config.ts"
+ * import { MajelConfig } from '\@majel/core';
  *
- * const config: VendureConfig = {
+ * const config: MajelConfig = {
  *   // ...
  *   customFields: {
  *     ProductVariant: [
@@ -51,12 +51,12 @@ import { ComponentRegistryService } from '../providers/component-registry/compon
  * @docsCategory custom-input-components
  */
 export function registerFormInputComponent(id: string, component: Type<FormInputComponent>): FactoryProvider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (registry: ComponentRegistryService) => () => {
-            registry.registerInputComponent(id, component);
-        },
-        deps: [ComponentRegistryService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (registry: ComponentRegistryService) => () => {
+			registry.registerInputComponent(id, component)
+		},
+		deps: [ComponentRegistryService],
+	}
 }

@@ -1,8 +1,8 @@
-import { ID } from '@vendure/common/lib/shared-types';
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { Zone } from '../../entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Zone } from '../../entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -12,13 +12,13 @@ import { VendureEvent } from '../vendure-event';
  * @docsCategory events
  * @docsPage Event Types
  */
-export class ZoneMembersEvent extends VendureEvent {
-    constructor(
-        public ctx: RequestContext,
-        public entity: Zone,
-        public type: 'assigned' | 'removed',
-        public memberIds: ID[],
-    ) {
-        super();
-    }
+export class ZoneMembersEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public entity: Zone,
+		public type: 'assigned' | 'removed',
+		public memberIds: ID[],
+	) {
+		super()
+	}
 }

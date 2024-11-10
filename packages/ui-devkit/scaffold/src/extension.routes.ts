@@ -1,1 +1,1 @@
-export const extensionRoutes = [];
+export const extensionRoutes = []

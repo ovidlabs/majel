@@ -1,6 +1,6 @@
-import { APP_INITIALIZER, Provider } from '@angular/core';
-import { CustomDetailComponentConfig } from '../providers/custom-detail-component/custom-detail-component-types';
-import { CustomDetailComponentService } from '../providers/custom-detail-component/custom-detail-component.service';
+import { APP_INITIALIZER, Provider } from '@angular/core'
+import { CustomDetailComponentConfig } from '../providers/custom-detail-component/custom-detail-component-types'
+import { CustomDetailComponentService } from '../providers/custom-detail-component/custom-detail-component.service'
 
 /**
  * @description
@@ -12,14 +12,14 @@ import { CustomDetailComponentService } from '../providers/custom-detail-compone
  * import { Component, OnInit } from '\@angular/core';
  * import { switchMap } from 'rxjs';
  * import { FormGroup } from '\@angular/forms';
- * import { CustomFieldConfig } from '\@vendure/common/lib/generated-types';
+ * import { CustomFieldConfig } from '\@majel/common/lib/generated-types';
  * import {
  *     DataService,
  *     SharedModule,
  *     CustomDetailComponent,
  *     registerCustomDetailComponent,
  *     GetProductWithVariants
- * } from '\@vendure/admin-ui/core';
+ * } from '\@majel/admin-ui/core';
  *
  * \@Component({
  *     template: `{{ extraInfo$ | async | json }}`,
@@ -27,7 +27,7 @@ import { CustomDetailComponentService } from '../providers/custom-detail-compone
  *     imports: [SharedModule],
  * })
  * export class ProductInfoComponent implements CustomDetailComponent, OnInit {
- *     // These two properties are provided by Vendure and will vary
+ *     // These two properties are provided by Majel and will vary
  *     // depending on the particular detail page you are embedding this
  *     // component into.
  *     entity$: Observable<GetProductWithVariants.Product>
@@ -55,12 +55,12 @@ import { CustomDetailComponentService } from '../providers/custom-detail-compone
  * @docsCategory custom-detail-components
  */
 export function registerCustomDetailComponent(config: CustomDetailComponentConfig): Provider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (customDetailComponentService: CustomDetailComponentService) => () => {
-            customDetailComponentService.registerCustomDetailComponent(config);
-        },
-        deps: [CustomDetailComponentService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (customDetailComponentService: CustomDetailComponentService) => () => {
+			customDetailComponentService.registerCustomDetailComponent(config)
+		},
+		deps: [CustomDetailComponentService],
+	}
 }

@@ -1,10 +1,10 @@
-import { Permission } from '@vendure/common/lib/generated-types';
-import { DeepPartial } from '@vendure/common/lib/shared-types';
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { Permission } from '@majel/common/lib/generated-types'
+import { DeepPartial } from '@majel/common/lib/shared-types'
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm'
 
-import { ChannelAware } from '../../common/types/common-types';
-import { VendureEntity } from '../base/base.entity';
-import { Channel } from '../channel/channel.entity';
+import { ChannelAware } from '../../common/types/common-types'
+import { MajelEntity } from '../base/base.entity'
+import { Channel } from '../channel/channel.entity'
 
 /**
  * @description
@@ -14,18 +14,18 @@ import { Channel } from '../channel/channel.entity';
  * @docsCategory entities
  */
 @Entity()
-export class Role extends VendureEntity implements ChannelAware {
-    constructor(input?: DeepPartial<Role>) {
-        super(input);
-    }
+export class Role extends MajelEntity implements ChannelAware {
+	constructor(input?: DeepPartial<Role>) {
+		super(input)
+	}
 
-    @Column() code: string;
+	@Column() code: string
 
-    @Column() description: string;
+	@Column() description: string
 
-    @Column('simple-array') permissions: Permission[];
+	@Column('simple-array') permissions: Permission[]
 
-    @ManyToMany(type => Channel, channel => channel.roles)
-    @JoinTable()
-    channels: Channel[];
+	@ManyToMany(type => Channel, channel => channel.roles)
+	@JoinTable()
+	channels: Channel[]
 }

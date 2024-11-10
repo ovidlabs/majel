@@ -1,7 +1,7 @@
-import { Stream } from 'stream';
+import { Stream } from 'stream'
 
-import { RequestContext } from '../../api/common/request-context';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
+import { RequestContext } from '../../api/common/request-context'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
 
 /**
  * @description
@@ -16,12 +16,12 @@ import { InjectableStrategy } from '../../common/types/injectable-strategy';
  * :::info
  *
  * This is configured via the `assetOptions.assetPreviewStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
  * @docsCategory assets
  */
 export interface AssetPreviewStrategy extends InjectableStrategy {
-    generatePreviewImage(ctx: RequestContext, mimeType: string, data: Buffer): Promise<Buffer>;
+	generatePreviewImage(ctx: RequestContext, mimeType: string, data: Buffer): Promise<Buffer>
 }

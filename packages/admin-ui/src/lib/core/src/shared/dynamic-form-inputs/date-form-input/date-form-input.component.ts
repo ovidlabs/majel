@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { DefaultFormComponentConfig, DefaultFormComponentId } from '@vendure/common/lib/shared-types';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { UntypedFormControl } from '@angular/forms'
+import { DefaultFormComponentConfig, DefaultFormComponentId } from '@majel/common/lib/shared-types'
 
-import { FormInputComponent } from '../../../common/component-registry-types';
+import { FormInputComponent } from '../../../common/component-registry-types'
 
 /**
  * @description
@@ -12,23 +12,23 @@ import { FormInputComponent } from '../../../common/component-registry-types';
  * @docsPage default-inputs
  */
 @Component({
-    selector: 'vdr-date-form-input',
-    templateUrl: './date-form-input.component.html',
-    styleUrls: ['./date-form-input.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-date-form-input',
+	templateUrl: './date-form-input.component.html',
+	styleUrls: ['./date-form-input.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateFormInputComponent implements FormInputComponent {
-    static readonly id: DefaultFormComponentId = 'date-form-input';
-    @Input() readonly: boolean;
-    formControl: UntypedFormControl;
-    config: DefaultFormComponentConfig<'date-form-input'>;
-    get min() {
-        return this.config.ui?.min || this.config.min;
-    }
-    get max() {
-        return this.config.ui?.max || this.config.max;
-    }
-    get yearRange() {
-        return this.config.ui?.yearRange || this.config.yearRange;
-    }
+	static readonly id: DefaultFormComponentId = 'date-form-input'
+	@Input() readonly: boolean
+	formControl: UntypedFormControl
+	config: DefaultFormComponentConfig<'date-form-input'>
+	get min() {
+		return this.config.ui?.min || this.config.min
+	}
+	get max() {
+		return this.config.ui?.max || this.config.max
+	}
+	get yearRange() {
+		return this.config.ui?.yearRange || this.config.yearRange
+	}
 }

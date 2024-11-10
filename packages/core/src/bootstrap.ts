@@ -1,76 +1,76 @@
-import { INestApplication, INestApplicationContext } from '@nestjs/common';
-import { NestApplicationContextOptions } from '@nestjs/common/interfaces/nest-application-context-options.interface';
-import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
-import { NestFactory } from '@nestjs/core';
-import { getConnectionToken } from '@nestjs/typeorm';
-import { DEFAULT_COOKIE_NAME } from '@vendure/common/lib/shared-constants';
-import { Type } from '@vendure/common/lib/shared-types';
-import cookieSession = require('cookie-session');
-import { satisfies } from 'semver';
-import { Connection, DataSourceOptions, EntitySubscriberInterface } from 'typeorm';
+import { INestApplication, INestApplicationContext } from '@nestjs/common'
+import { NestApplicationContextOptions } from '@nestjs/common/interfaces/nest-application-context-options.interface'
+import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface'
+import { NestFactory } from '@nestjs/core'
+import { getConnectionToken } from '@nestjs/typeorm'
+import { DEFAULT_COOKIE_NAME } from '@majel/common/lib/shared-constants'
+import { Type } from '@majel/common/lib/shared-types'
+import cookieSession = require('cookie-session')
+import { satisfies } from 'semver'
+import { Connection, DataSourceOptions, EntitySubscriberInterface } from 'typeorm'
 
-import { InternalServerError } from './common/error/errors';
-import { getConfig, setConfig } from './config/config-helpers';
-import { DefaultLogger } from './config/logger/default-logger';
-import { Logger } from './config/logger/vendure-logger';
-import { RuntimeVendureConfig, VendureConfig } from './config/vendure-config';
-import { Administrator } from './entity/administrator/administrator.entity';
-import { coreEntitiesMap } from './entity/entities';
-import { registerCustomEntityFields } from './entity/register-custom-entity-fields';
-import { runEntityMetadataModifiers } from './entity/run-entity-metadata-modifiers';
-import { setEntityIdStrategy } from './entity/set-entity-id-strategy';
-import { setMoneyStrategy } from './entity/set-money-strategy';
-import { validateCustomFieldsConfig } from './entity/validate-custom-fields-config';
-import { getCompatibility, getConfigurationFunction, getEntitiesFromPlugins } from './plugin/plugin-metadata';
-import { getPluginStartupMessages } from './plugin/plugin-utils';
-import { setProcessContext } from './process-context/process-context';
-import { VENDURE_VERSION } from './version';
-import { VendureWorker } from './worker/vendure-worker';
+import { InternalServerError } from './common/error/errors'
+import { getConfig, setConfig } from './config/config-helpers'
+import { DefaultLogger } from './config/logger/default-logger'
+import { Logger } from './config/logger/majel-logger'
+import { RuntimeMajelConfig, MajelConfig } from './config/majel-config'
+import { Administrator } from './entity/administrator/administrator.entity'
+import { coreEntitiesMap } from './entity/entities'
+import { registerCustomEntityFields } from './entity/register-custom-entity-fields'
+import { runEntityMetadataModifiers } from './entity/run-entity-metadata-modifiers'
+import { setEntityIdStrategy } from './entity/set-entity-id-strategy'
+import { setMoneyStrategy } from './entity/set-money-strategy'
+import { validateCustomFieldsConfig } from './entity/validate-custom-fields-config'
+import { getCompatibility, getConfigurationFunction, getEntitiesFromPlugins } from './plugin/plugin-metadata'
+import { getPluginStartupMessages } from './plugin/plugin-utils'
+import { setProcessContext } from './process-context/process-context'
+import { MAJEL_VERSION } from './version'
+import { MajelWorker } from './worker/majel-worker'
 
-export type VendureBootstrapFunction = (config: VendureConfig) => Promise<INestApplication>;
+export type MajelBootstrapFunction = (config: MajelConfig) => Promise<INestApplication>
 
 /**
  * @description
  * Additional options that can be used to configure the bootstrap process of the
- * Vendure server.
+ * Majel server.
  *
  * @since 2.2.0
  * @docsCategory common
  * @docsPage bootstrap
  */
 export interface BootstrapOptions {
-    /**
-     * @description
-     * These options get passed directly to the `NestFactory.create()` method.
-     */
-    nestApplicationOptions: NestApplicationOptions;
+	/**
+	 * @description
+	 * These options get passed directly to the `NestFactory.create()` method.
+	 */
+	nestApplicationOptions: NestApplicationOptions
 }
 
 /**
  * @description
  * Additional options that can be used to configure the bootstrap process of the
- * Vendure worker.
+ * Majel worker.
  *
  * @since 2.2.0
  * @docsCategory worker
  * @docsPage bootstrapWorker
  */
 export interface BootstrapWorkerOptions {
-    /**
-     * @description
-     * These options get passed directly to the `NestFactory.createApplicationContext` method.
-     */
-    nestApplicationContextOptions: NestApplicationContextOptions;
+	/**
+	 * @description
+	 * These options get passed directly to the `NestFactory.createApplicationContext` method.
+	 */
+	nestApplicationContextOptions: NestApplicationContextOptions
 }
 
 /**
  * @description
- * Bootstraps the Vendure server. This is the entry point to the application.
+ * Bootstraps the Majel server. This is the entry point to the application.
  *
  * @example
  * ```ts
- * import { bootstrap } from '\@vendure/core';
- * import { config } from './vendure-config';
+ * import { bootstrap } from '\@majel/core';
+ * import { config } from './majel-config';
  *
  * bootstrap(config).catch(err => {
  *   console.log(err);
@@ -85,8 +85,8 @@ export interface BootstrapWorkerOptions {
  * pass the `snapshot` option:
  *
  * ```ts
- * import { bootstrap } from '\@vendure/core';
- * import { config } from './vendure-config';
+ * import { bootstrap } from '\@majel/core';
+ * import { config } from './majel-config';
  *
  * bootstrap(config, {
  *   // highlight-start
@@ -104,56 +104,56 @@ export interface BootstrapWorkerOptions {
  * @docsWeight 0
  * */
 export async function bootstrap(
-    userConfig: Partial<VendureConfig>,
-    options?: BootstrapOptions,
+	userConfig: Partial<MajelConfig>,
+	options?: BootstrapOptions,
 ): Promise<INestApplication> {
-    const config = await preBootstrapConfig(userConfig);
-    Logger.useLogger(config.logger);
-    Logger.info(`Bootstrapping Vendure Server (pid: ${process.pid})...`);
-    checkPluginCompatibility(config);
+	const config = await preBootstrapConfig(userConfig)
+	Logger.useLogger(config.logger)
+	Logger.info(`Bootstrapping Majel Server (pid: ${process.pid})...`)
+	checkPluginCompatibility(config)
 
-    // The AppModule *must* be loaded only after the entities have been set in the
-    // config, so that they are available when the AppModule decorator is evaluated.
-    // eslint-disable-next-line
-    const appModule = await import('./app.module.js');
-    setProcessContext('server');
-    const { hostname, port, cors, middleware } = config.apiOptions;
-    DefaultLogger.hideNestBoostrapLogs();
-    const app = await NestFactory.create(appModule.AppModule, {
-        cors,
-        logger: new Logger(),
-        ...options?.nestApplicationOptions,
-    });
-    DefaultLogger.restoreOriginalLogLevel();
-    app.useLogger(new Logger());
-    const { tokenMethod } = config.authOptions;
-    const usingCookie =
-        tokenMethod === 'cookie' || (Array.isArray(tokenMethod) && tokenMethod.includes('cookie'));
-    if (usingCookie) {
-        configureSessionCookies(app, config);
-    }
-    const earlyMiddlewares = middleware.filter(mid => mid.beforeListen);
-    earlyMiddlewares.forEach(mid => {
-        app.use(mid.route, mid.handler);
-    });
-    await app.listen(port, hostname || '');
-    app.enableShutdownHooks();
-    logWelcomeMessage(config);
-    return app;
+	// The AppModule *must* be loaded only after the entities have been set in the
+	// config, so that they are available when the AppModule decorator is evaluated.
+	// eslint-disable-next-line
+	const appModule = await import('./app.module.js')
+	setProcessContext('server')
+	const { hostname, port, cors, middleware } = config.apiOptions
+	DefaultLogger.hideNestBoostrapLogs()
+	const app = await NestFactory.create(appModule.AppModule, {
+		cors,
+		logger: new Logger(),
+		...options?.nestApplicationOptions,
+	})
+	DefaultLogger.restoreOriginalLogLevel()
+	app.useLogger(new Logger())
+	const { tokenMethod } = config.authOptions
+	const usingCookie =
+		tokenMethod === 'cookie' || (Array.isArray(tokenMethod) && tokenMethod.includes('cookie'))
+	if (usingCookie) {
+		configureSessionCookies(app, config)
+	}
+	const earlyMiddlewares = middleware.filter(mid => mid.beforeListen)
+	earlyMiddlewares.forEach(mid => {
+		app.use(mid.route, mid.handler)
+	})
+	await app.listen(port, hostname || '')
+	app.enableShutdownHooks()
+	logWelcomeMessage(config)
+	return app
 }
 
 /**
  * @description
- * Bootstraps a Vendure worker. Resolves to a {@link VendureWorker} object containing a reference to the underlying
+ * Bootstraps a Majel worker. Resolves to a {@link MajelWorker} object containing a reference to the underlying
  * NestJs [standalone application](https://docs.nestjs.com/standalone-applications) as well as convenience
  * methods for starting the job queue and health check server.
  *
- * Read more about the [Vendure Worker](/guides/developer-guide/worker-job-queue/).
+ * Read more about the [Majel Worker](/guides/developer-guide/worker-job-queue/).
  *
  * @example
  * ```ts
- * import { bootstrapWorker } from '\@vendure/core';
- * import { config } from './vendure-config';
+ * import { bootstrapWorker } from '\@majel/core';
+ * import { config } from './majel-config';
  *
  * bootstrapWorker(config)
  *   .then(worker => worker.startJobQueue())
@@ -168,204 +168,204 @@ export async function bootstrap(
  * @docsWeight 0
  * */
 export async function bootstrapWorker(
-    userConfig: Partial<VendureConfig>,
-    options?: BootstrapWorkerOptions,
-): Promise<VendureWorker> {
-    const vendureConfig = await preBootstrapConfig(userConfig);
-    const config = disableSynchronize(vendureConfig);
-    config.logger.setDefaultContext?.('Vendure Worker');
-    Logger.useLogger(config.logger);
-    Logger.info(`Bootstrapping Vendure Worker (pid: ${process.pid})...`);
-    checkPluginCompatibility(config);
+	userConfig: Partial<MajelConfig>,
+	options?: BootstrapWorkerOptions,
+): Promise<MajelWorker> {
+	const majelConfig = await preBootstrapConfig(userConfig)
+	const config = disableSynchronize(majelConfig)
+	config.logger.setDefaultContext?.('Majel Worker')
+	Logger.useLogger(config.logger)
+	Logger.info(`Bootstrapping Majel Worker (pid: ${process.pid})...`)
+	checkPluginCompatibility(config)
 
-    setProcessContext('worker');
-    DefaultLogger.hideNestBoostrapLogs();
+	setProcessContext('worker')
+	DefaultLogger.hideNestBoostrapLogs()
 
-    const WorkerModule = await import('./worker/worker.module.js').then(m => m.WorkerModule);
-    const workerApp = await NestFactory.createApplicationContext(WorkerModule, {
-        logger: new Logger(),
-        ...options?.nestApplicationContextOptions,
-    });
-    DefaultLogger.restoreOriginalLogLevel();
-    workerApp.useLogger(new Logger());
-    workerApp.enableShutdownHooks();
-    await validateDbTablesForWorker(workerApp);
-    Logger.info('Vendure Worker is ready');
-    return new VendureWorker(workerApp);
+	const WorkerModule = await import('./worker/worker.module.js').then(m => m.WorkerModule)
+	const workerApp = await NestFactory.createApplicationContext(WorkerModule, {
+		logger: new Logger(),
+		...options?.nestApplicationContextOptions,
+	})
+	DefaultLogger.restoreOriginalLogLevel()
+	workerApp.useLogger(new Logger())
+	workerApp.enableShutdownHooks()
+	await validateDbTablesForWorker(workerApp)
+	Logger.info('Majel Worker is ready')
+	return new MajelWorker(workerApp)
 }
 
 /**
  * Setting the global config must be done prior to loading the AppModule.
  */
 export async function preBootstrapConfig(
-    userConfig: Partial<VendureConfig>,
-): Promise<Readonly<RuntimeVendureConfig>> {
-    if (userConfig) {
-        await setConfig(userConfig);
-    }
+	userConfig: Partial<MajelConfig>,
+): Promise<Readonly<RuntimeMajelConfig>> {
+	if (userConfig) {
+		await setConfig(userConfig)
+	}
 
-    const entities = getAllEntities(userConfig);
-    const { coreSubscribersMap } = await import('./entity/subscribers.js');
-    await setConfig({
-        dbConnectionOptions: {
-            entities,
-            subscribers: [
-                ...((userConfig.dbConnectionOptions?.subscribers ?? []) as Array<
-                    Type<EntitySubscriberInterface>
-                >),
-                ...(Object.values(coreSubscribersMap) as Array<Type<EntitySubscriberInterface>>),
-            ],
-        },
-    });
+	const entities = getAllEntities(userConfig)
+	const { coreSubscribersMap } = await import('./entity/subscribers.js')
+	await setConfig({
+		dbConnectionOptions: {
+			entities,
+			subscribers: [
+				...((userConfig.dbConnectionOptions?.subscribers ?? []) as Array<
+					Type<EntitySubscriberInterface>
+				>),
+				...(Object.values(coreSubscribersMap) as Array<Type<EntitySubscriberInterface>>),
+			],
+		},
+	})
 
-    let config = getConfig();
-    // The logger is set here so that we are able to log any messages prior to the final
-    // logger (which may depend on config coming from a plugin) being set.
-    Logger.useLogger(config.logger);
-    config = await runPluginConfigurations(config);
-    const entityIdStrategy = config.entityOptions.entityIdStrategy ?? config.entityIdStrategy;
-    setEntityIdStrategy(entityIdStrategy, entities);
-    const moneyStrategy = config.entityOptions.moneyStrategy;
-    setMoneyStrategy(moneyStrategy, entities);
-    const customFieldValidationResult = validateCustomFieldsConfig(config.customFields, entities);
-    if (!customFieldValidationResult.valid) {
-        process.exitCode = 1;
-        throw new Error('CustomFields config error:\n- ' + customFieldValidationResult.errors.join('\n- '));
-    }
-    registerCustomEntityFields(config);
-    await runEntityMetadataModifiers(config);
-    setExposedHeaders(config);
-    return config;
+	let config = getConfig()
+	// The logger is set here so that we are able to log any messages prior to the final
+	// logger (which may depend on config coming from a plugin) being set.
+	Logger.useLogger(config.logger)
+	config = await runPluginConfigurations(config)
+	const entityIdStrategy = config.entityOptions.entityIdStrategy ?? config.entityIdStrategy
+	setEntityIdStrategy(entityIdStrategy, entities)
+	const moneyStrategy = config.entityOptions.moneyStrategy
+	setMoneyStrategy(moneyStrategy, entities)
+	const customFieldValidationResult = validateCustomFieldsConfig(config.customFields, entities)
+	if (!customFieldValidationResult.valid) {
+		process.exitCode = 1
+		throw new Error('CustomFields config error:\n- ' + customFieldValidationResult.errors.join('\n- '))
+	}
+	registerCustomEntityFields(config)
+	await runEntityMetadataModifiers(config)
+	setExposedHeaders(config)
+	return config
 }
 
-function checkPluginCompatibility(config: RuntimeVendureConfig): void {
-    for (const plugin of config.plugins) {
-        const compatibility = getCompatibility(plugin);
-        const pluginName = (plugin as any).name as string;
-        if (!compatibility) {
-            Logger.info(
-                `The plugin "${pluginName}" does not specify a compatibility range, so it is not guaranteed to be compatible with this version of Vendure.`,
-            );
-        } else {
-            if (!satisfies(VENDURE_VERSION, compatibility, { loose: true, includePrerelease: true })) {
-                Logger.error(
-                    `Plugin "${pluginName}" is not compatible with this version of Vendure. ` +
-                        `It specifies a semver range of "${compatibility}" but the current version is "${VENDURE_VERSION}".`,
-                );
-                throw new InternalServerError(
-                    `Plugin "${pluginName}" is not compatible with this version of Vendure.`,
-                );
-            }
-        }
-    }
+function checkPluginCompatibility(config: RuntimeMajelConfig): void {
+	for (const plugin of config.plugins) {
+		const compatibility = getCompatibility(plugin)
+		const pluginName = (plugin as any).name as string
+		if (!compatibility) {
+			Logger.info(
+				`The plugin "${pluginName}" does not specify a compatibility range, so it is not guaranteed to be compatible with this version of Majel.`,
+			)
+		} else {
+			if (!satisfies(MAJEL_VERSION, compatibility, { loose: true, includePrerelease: true })) {
+				Logger.error(
+					`Plugin "${pluginName}" is not compatible with this version of Majel. ` +
+						`It specifies a semver range of "${compatibility}" but the current version is "${MAJEL_VERSION}".`,
+				)
+				throw new InternalServerError(
+					`Plugin "${pluginName}" is not compatible with this version of Majel.`,
+				)
+			}
+		}
+	}
 }
 
 /**
  * Initialize any configured plugins.
  */
-async function runPluginConfigurations(config: RuntimeVendureConfig): Promise<RuntimeVendureConfig> {
-    for (const plugin of config.plugins) {
-        const configFn = getConfigurationFunction(plugin);
-        if (typeof configFn === 'function') {
-            const result = await configFn(config);
-            Object.assign(config, result);
-        }
-    }
-    return config;
+async function runPluginConfigurations(config: RuntimeMajelConfig): Promise<RuntimeMajelConfig> {
+	for (const plugin of config.plugins) {
+		const configFn = getConfigurationFunction(plugin)
+		if (typeof configFn === 'function') {
+			const result = await configFn(config)
+			Object.assign(config, result)
+		}
+	}
+	return config
 }
 
 /**
  * Returns an array of core entities and any additional entities defined in plugins.
  */
-export function getAllEntities(userConfig: Partial<VendureConfig>): Array<Type<any>> {
-    const coreEntities = Object.values(coreEntitiesMap) as Array<Type<any>>;
-    const pluginEntities = getEntitiesFromPlugins(userConfig.plugins);
+export function getAllEntities(userConfig: Partial<MajelConfig>): Array<Type<any>> {
+	const coreEntities = Object.values(coreEntitiesMap) as Array<Type<any>>
+	const pluginEntities = getEntitiesFromPlugins(userConfig.plugins)
 
-    const allEntities: Array<Type<any>> = coreEntities;
+	const allEntities: Array<Type<any>> = coreEntities
 
-    // Check to ensure that no plugins are defining entities with names
-    // which conflict with existing entities.
-    for (const pluginEntity of pluginEntities) {
-        if (allEntities.find(e => e.name === pluginEntity.name)) {
-            throw new InternalServerError('error.entity-name-conflict', { entityName: pluginEntity.name });
-        } else {
-            allEntities.push(pluginEntity);
-        }
-    }
-    return allEntities;
+	// Check to ensure that no plugins are defining entities with names
+	// which conflict with existing entities.
+	for (const pluginEntity of pluginEntities) {
+		if (allEntities.find(e => e.name === pluginEntity.name)) {
+			throw new InternalServerError('error.entity-name-conflict', { entityName: pluginEntity.name })
+		} else {
+			allEntities.push(pluginEntity)
+		}
+	}
+	return allEntities
 }
 
 /**
  * If the 'bearer' tokenMethod is being used, then we automatically expose the authTokenHeaderKey header
  * in the CORS options, making sure to preserve any user-configured exposedHeaders.
  */
-function setExposedHeaders(config: Readonly<RuntimeVendureConfig>) {
-    const { tokenMethod } = config.authOptions;
-    const isUsingBearerToken =
-        tokenMethod === 'bearer' || (Array.isArray(tokenMethod) && tokenMethod.includes('bearer'));
-    if (isUsingBearerToken) {
-        const authTokenHeaderKey = config.authOptions.authTokenHeaderKey;
-        const corsOptions = config.apiOptions.cors;
-        if (typeof corsOptions !== 'boolean') {
-            const { exposedHeaders } = corsOptions;
-            let exposedHeadersWithAuthKey: string[];
-            if (!exposedHeaders) {
-                exposedHeadersWithAuthKey = [authTokenHeaderKey];
-            } else if (typeof exposedHeaders === 'string') {
-                exposedHeadersWithAuthKey = exposedHeaders
-                    .split(',')
-                    .map(x => x.trim())
-                    .concat(authTokenHeaderKey);
-            } else {
-                exposedHeadersWithAuthKey = exposedHeaders.concat(authTokenHeaderKey);
-            }
-            corsOptions.exposedHeaders = exposedHeadersWithAuthKey;
-        }
-    }
+function setExposedHeaders(config: Readonly<RuntimeMajelConfig>) {
+	const { tokenMethod } = config.authOptions
+	const isUsingBearerToken =
+		tokenMethod === 'bearer' || (Array.isArray(tokenMethod) && tokenMethod.includes('bearer'))
+	if (isUsingBearerToken) {
+		const authTokenHeaderKey = config.authOptions.authTokenHeaderKey
+		const corsOptions = config.apiOptions.cors
+		if (typeof corsOptions !== 'boolean') {
+			const { exposedHeaders } = corsOptions
+			let exposedHeadersWithAuthKey: string[]
+			if (!exposedHeaders) {
+				exposedHeadersWithAuthKey = [authTokenHeaderKey]
+			} else if (typeof exposedHeaders === 'string') {
+				exposedHeadersWithAuthKey = exposedHeaders
+					.split(',')
+					.map(x => x.trim())
+					.concat(authTokenHeaderKey)
+			} else {
+				exposedHeadersWithAuthKey = exposedHeaders.concat(authTokenHeaderKey)
+			}
+			corsOptions.exposedHeaders = exposedHeadersWithAuthKey
+		}
+	}
 }
 
-function logWelcomeMessage(config: RuntimeVendureConfig) {
-    const { port, shopApiPath, adminApiPath, hostname } = config.apiOptions;
-    const apiCliGreetings: Array<readonly [string, string]> = [];
-    const pathToUrl = (path: string) => `http://${hostname || 'localhost'}:${port}/${path}`;
-    apiCliGreetings.push(['Shop API', pathToUrl(shopApiPath)]);
-    apiCliGreetings.push(['Admin API', pathToUrl(adminApiPath)]);
-    apiCliGreetings.push(
-        ...getPluginStartupMessages().map(({ label, path }) => [label, pathToUrl(path)] as const),
-    );
-    const columnarGreetings = arrangeCliGreetingsInColumns(apiCliGreetings);
-    const title = `Vendure server (v${VENDURE_VERSION}) now running on port ${port}`;
-    const maxLineLength = Math.max(title.length, ...columnarGreetings.map(l => l.length));
-    const titlePadLength = title.length < maxLineLength ? Math.floor((maxLineLength - title.length) / 2) : 0;
-    Logger.info('='.repeat(maxLineLength));
-    Logger.info(title.padStart(title.length + titlePadLength));
-    Logger.info('-'.repeat(maxLineLength).padStart(titlePadLength));
-    columnarGreetings.forEach(line => Logger.info(line));
-    Logger.info('='.repeat(maxLineLength));
+function logWelcomeMessage(config: RuntimeMajelConfig) {
+	const { port, shopApiPath, adminApiPath, hostname } = config.apiOptions
+	const apiCliGreetings: Array<readonly [string, string]> = []
+	const pathToUrl = (path: string) => `http://${hostname || 'localhost'}:${port}/${path}`
+	apiCliGreetings.push(['Shop API', pathToUrl(shopApiPath)])
+	apiCliGreetings.push(['Admin API', pathToUrl(adminApiPath)])
+	apiCliGreetings.push(
+		...getPluginStartupMessages().map(({ label, path }) => [label, pathToUrl(path)] as const),
+	)
+	const columnarGreetings = arrangeCliGreetingsInColumns(apiCliGreetings)
+	const title = `Majel server (v${MAJEL_VERSION}) now running on port ${port}`
+	const maxLineLength = Math.max(title.length, ...columnarGreetings.map(l => l.length))
+	const titlePadLength = title.length < maxLineLength ? Math.floor((maxLineLength - title.length) / 2) : 0
+	Logger.info('='.repeat(maxLineLength))
+	Logger.info(title.padStart(title.length + titlePadLength))
+	Logger.info('-'.repeat(maxLineLength).padStart(titlePadLength))
+	columnarGreetings.forEach(line => Logger.info(line))
+	Logger.info('='.repeat(maxLineLength))
 }
 
 function arrangeCliGreetingsInColumns(lines: Array<readonly [string, string]>): string[] {
-    const columnWidth = Math.max(...lines.map(l => l[0].length)) + 2;
-    return lines.map(l => `${(l[0] + ':').padEnd(columnWidth)}${l[1]}`);
+	const columnWidth = Math.max(...lines.map(l => l[0].length)) + 2
+	return lines.map(l => `${(l[0] + ':').padEnd(columnWidth)}${l[1]}`)
 }
 
 /**
  * Fix race condition when modifying DB
- * See: https://github.com/vendure-ecommerce/vendure/issues/152
+ * See: https://github.com/majel-ecommerce/majel/issues/152
  */
-function disableSynchronize(userConfig: Readonly<RuntimeVendureConfig>): Readonly<RuntimeVendureConfig> {
-    const config = {
-        ...userConfig,
-        dbConnectionOptions: {
-            ...userConfig.dbConnectionOptions,
-            synchronize: false,
-        } as DataSourceOptions,
-    };
-    return config;
+function disableSynchronize(userConfig: Readonly<RuntimeMajelConfig>): Readonly<RuntimeMajelConfig> {
+	const config = {
+		...userConfig,
+		dbConnectionOptions: {
+			...userConfig.dbConnectionOptions,
+			synchronize: false,
+		} as DataSourceOptions,
+	}
+	return config
 }
 
 /**
- * Check that the Database tables exist. When running Vendure server & worker
+ * Check that the Database tables exist. When running Majel server & worker
  * concurrently for the first time, the worker will attempt to access the
  * DB tables before the server has populated them (assuming synchronize = true
  * in config). This method will use polling to check the existence of a known table
@@ -373,52 +373,51 @@ function disableSynchronize(userConfig: Readonly<RuntimeVendureConfig>): Readonl
  * @param worker
  */
 async function validateDbTablesForWorker(worker: INestApplicationContext) {
-    const connection: Connection = worker.get(getConnectionToken());
-    await new Promise<void>(async (resolve, reject) => {
-        const checkForTables = async (): Promise<boolean> => {
-            try {
-                const adminCount = await connection.getRepository(Administrator).count();
-                return 0 < adminCount;
-            } catch (e: any) {
-                return false;
-            }
-        };
+	const connection: Connection = worker.get(getConnectionToken())
+	await new Promise<void>(async (resolve, reject) => {
+		const checkForTables = async (): Promise<boolean> => {
+			try {
+				const adminCount = await connection.getRepository(Administrator).count()
+				return 0 < adminCount
+			} catch (e: any) {
+				return false
+			}
+		}
 
-        const pollIntervalMs = 5000;
-        let attempts = 0;
-        const maxAttempts = 10;
-        let validTableStructure = false;
-        Logger.verbose('Checking for expected DB table structure...');
-        while (!validTableStructure && attempts < maxAttempts) {
-            attempts++;
-            validTableStructure = await checkForTables();
-            if (validTableStructure) {
-                Logger.verbose('Table structure verified');
-                resolve();
-                return;
-            }
-            Logger.verbose(
-                `Table structure could not be verified, trying again after ${pollIntervalMs}ms (attempt ${attempts} of ${maxAttempts})`,
-            );
-            await new Promise(resolve1 => setTimeout(resolve1, pollIntervalMs));
-        }
-        reject('Could not validate DB table structure. Aborting bootstrap.');
-    });
+		const pollIntervalMs = 5000
+		let attempts = 0
+		const maxAttempts = 10
+		let validTableStructure = false
+		Logger.verbose('Checking for expected DB table structure...')
+		while (!validTableStructure && attempts < maxAttempts) {
+			attempts++
+			validTableStructure = await checkForTables()
+			if (validTableStructure) {
+				Logger.verbose('Table structure verified')
+				resolve()
+				return
+			}
+			Logger.verbose(
+				`Table structure could not be verified, trying again after ${pollIntervalMs}ms (attempt ${attempts} of ${maxAttempts})`,
+			)
+			await new Promise(resolve1 => setTimeout(resolve1, pollIntervalMs))
+		}
+		reject('Could not validate DB table structure. Aborting bootstrap.')
+	})
 }
 
 export function configureSessionCookies(
-    app: INestApplication,
-    userConfig: Readonly<RuntimeVendureConfig>,
+	app: INestApplication,
+	userConfig: Readonly<RuntimeMajelConfig>,
 ): void {
-    const { cookieOptions } = userConfig.authOptions;
+	const { cookieOptions } = userConfig.authOptions
 
-    // Globally set the cookie session middleware
-    const cookieName =
-        typeof cookieOptions?.name !== 'string' ? cookieOptions.name?.shop : cookieOptions.name;
-    app.use(
-        cookieSession({
-            ...cookieOptions,
-            name: cookieName ?? DEFAULT_COOKIE_NAME,
-        }),
-    );
+	// Globally set the cookie session middleware
+	const cookieName = typeof cookieOptions?.name !== 'string' ? cookieOptions.name?.shop : cookieOptions.name
+	app.use(
+		cookieSession({
+			...cookieOptions,
+			name: cookieName ?? DEFAULT_COOKIE_NAME,
+		}),
+	)
 }

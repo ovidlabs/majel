@@ -1,8 +1,8 @@
-import { HistoryEntryType } from '@vendure/common/lib/generated-types';
-import { Column, Entity, Index, ManyToOne, TableInheritance } from 'typeorm';
+import { HistoryEntryType } from '@majel/common/lib/generated-types'
+import { Column, Entity, Index, ManyToOne, TableInheritance } from 'typeorm'
 
-import { Administrator } from '../administrator/administrator.entity';
-import { VendureEntity } from '../base/base.entity';
+import { Administrator } from '../administrator/administrator.entity'
+import { MajelEntity } from '../base/base.entity'
 
 /**
  * @description
@@ -13,17 +13,17 @@ import { VendureEntity } from '../base/base.entity';
  */
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'discriminator' } })
-export abstract class HistoryEntry extends VendureEntity {
-    @Index()
-    @ManyToOne(type => Administrator)
-    administrator?: Administrator;
+export abstract class HistoryEntry extends MajelEntity {
+	@Index()
+	@ManyToOne(type => Administrator)
+	administrator?: Administrator
 
-    @Column({ nullable: false, type: 'varchar' })
-    readonly type: HistoryEntryType;
+	@Column({ nullable: false, type: 'varchar' })
+	readonly type: HistoryEntryType
 
-    @Column()
-    isPublic: boolean;
+	@Column()
+	isPublic: boolean
 
-    @Column('simple-json')
-    data: any;
+	@Column('simple-json')
+	data: any
 }

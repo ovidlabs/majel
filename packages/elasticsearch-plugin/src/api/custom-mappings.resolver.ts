@@ -1,9 +1,9 @@
-import { Inject } from '@nestjs/common';
-import { ResolveField, Resolver } from '@nestjs/graphql';
-import { DeepRequired } from '@vendure/common/lib/shared-types';
+import { Inject } from '@nestjs/common'
+import { ResolveField, Resolver } from '@nestjs/graphql'
+import { DeepRequired } from '@majel/common/lib/shared-types'
 
-import { ELASTIC_SEARCH_OPTIONS } from '../constants';
-import { ElasticsearchOptions } from '../options';
+import { ELASTIC_SEARCH_OPTIONS } from '../constants'
+import { ElasticsearchOptions } from '../options'
 
 /**
  * This resolver is only required if both customProductMappings and customProductVariantMappings are
@@ -12,13 +12,13 @@ import { ElasticsearchOptions } from '../options';
  */
 @Resolver('CustomMappings')
 export class CustomMappingsResolver {
-    constructor(@Inject(ELASTIC_SEARCH_OPTIONS) private options: DeepRequired<ElasticsearchOptions>) {}
+	constructor(@Inject(ELASTIC_SEARCH_OPTIONS) private options: DeepRequired<ElasticsearchOptions>) {}
 
-    @ResolveField()
-    __resolveType(value: any): string {
-        const productPropertyNames = Object.keys(this.options.customProductMappings);
-        return Object.keys(value).every(k => productPropertyNames.includes(k))
-            ? 'CustomProductMappings'
-            : 'CustomProductVariantMappings';
-    }
+	@ResolveField()
+	__resolveType(value: any): string {
+		const productPropertyNames = Object.keys(this.options.customProductMappings)
+		return Object.keys(value).every(k => productPropertyNames.includes(k))
+			? 'CustomProductMappings'
+			: 'CustomProductVariantMappings'
+	}
 }

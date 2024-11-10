@@ -1,17 +1,17 @@
 @import 'variables';
 
 .test-wrapper {
-    display: flex;
-    width: 100%;
-    gap: var(--space-unit);
+	display: flex;
+	width: 100%;
+	gap: var(--space-unit);
 
-    > div {
-        flex: 1;
-    }
+	> div {
+		flex: 1;
+	}
 }
 
 @media screen and (max-width: $breakpoint-medium) {
-    .test-wrapper {
-        flex-direction: column;
-    }
+	.test-wrapper {
+		flex-direction: column;
+	}
 }

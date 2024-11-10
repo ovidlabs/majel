@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 
 /**
  * @description
@@ -11,31 +11,31 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
  * @docsCategory components
  */
 @Component({
-    selector: 'vdr-order-state-label',
-    templateUrl: './order-state-label.component.html',
-    styleUrls: ['./order-state-label.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-order-state-label',
+	templateUrl: './order-state-label.component.html',
+	styleUrls: ['./order-state-label.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderStateLabelComponent {
-    @Input() state: string;
+	@Input() state: string
 
-    get chipColorType() {
-        switch (this.state) {
-            case 'AddingItems':
-            case 'ArrangingPayment':
-                return '';
-            case 'Delivered':
-                return 'success';
-            case 'Cancelled':
-            case 'Draft':
-                return 'error';
-            case 'PaymentAuthorized':
-            case 'PaymentSettled':
-            case 'PartiallyDelivered':
-            case 'PartiallyShipped':
-            case 'Shipped':
-            default:
-                return 'warning';
-        }
-    }
+	get chipColorType() {
+		switch (this.state) {
+			case 'AddingItems':
+			case 'ArrangingPayment':
+				return ''
+			case 'Delivered':
+				return 'success'
+			case 'Cancelled':
+			case 'Draft':
+				return 'error'
+			case 'PaymentAuthorized':
+			case 'PaymentSettled':
+			case 'PartiallyDelivered':
+			case 'PartiallyShipped':
+			case 'Shipped':
+			default:
+				return 'warning'
+		}
+	}
 }

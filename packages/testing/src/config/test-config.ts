@@ -1,24 +1,24 @@
-import { ADMIN_API_PATH, SHOP_API_PATH } from '@vendure/common/lib/shared-constants';
+import { ADMIN_API_PATH, SHOP_API_PATH } from '@majel/common/lib/shared-constants'
 import {
-    DefaultAssetNamingStrategy,
-    defaultConfig,
-    DefaultLogger,
-    mergeConfig,
-    NoopLogger,
-    VendureConfig,
-} from '@vendure/core';
+	DefaultAssetNamingStrategy,
+	defaultConfig,
+	DefaultLogger,
+	mergeConfig,
+	NoopLogger,
+	MajelConfig,
+} from '@majel/core'
 
-import { TestingAssetPreviewStrategy } from './testing-asset-preview-strategy';
-import { TestingAssetStorageStrategy } from './testing-asset-storage-strategy';
-import { TestingEntityIdStrategy } from './testing-entity-id-strategy';
+import { TestingAssetPreviewStrategy } from './testing-asset-preview-strategy'
+import { TestingAssetStorageStrategy } from './testing-asset-storage-strategy'
+import { TestingEntityIdStrategy } from './testing-entity-id-strategy'
 
-export const E2E_DEFAULT_CHANNEL_TOKEN = 'e2e-default-channel';
+export const E2E_DEFAULT_CHANNEL_TOKEN = 'e2e-default-channel'
 
-const logger = process.env.LOG ? new DefaultLogger() : new NoopLogger();
+const logger = process.env.LOG ? new DefaultLogger() : new NoopLogger()
 
 /**
  * @description
- * A {@link VendureConfig} object used for e2e tests. This configuration uses sqljs as the database
+ * A {@link MajelConfig} object used for e2e tests. This configuration uses sqljs as the database
  * and configures some special settings which are optimized for e2e tests:
  *
  * * `entityIdStrategy: new TestingEntityIdStrategy()` This ID strategy uses auto-increment IDs but encodes all IDs
@@ -39,39 +39,39 @@ const logger = process.env.LOG ? new DefaultLogger() : new NoopLogger();
  *
  * @docsCategory testing
  */
-export const testConfig: Required<VendureConfig> = mergeConfig(defaultConfig, {
-    apiOptions: {
-        port: 3050,
-        adminApiPath: ADMIN_API_PATH,
-        shopApiPath: SHOP_API_PATH,
-        cors: true,
-    },
-    defaultChannelToken: E2E_DEFAULT_CHANNEL_TOKEN,
-    authOptions: {
-        tokenMethod: 'bearer',
-        requireVerification: true,
-        cookieOptions: {
-            secret: 'some-secret',
-        },
-    },
-    dbConnectionOptions: {
-        type: 'sqljs',
-        database: new Uint8Array([]),
-        location: '',
-        autoSave: false,
-        logging: false,
-    },
-    promotionOptions: {},
-    customFields: {},
-    entityOptions: { entityIdStrategy: new TestingEntityIdStrategy() },
-    paymentOptions: {
-        paymentMethodHandlers: [],
-    },
-    logger,
-    importExportOptions: {},
-    assetOptions: {
-        assetNamingStrategy: new DefaultAssetNamingStrategy(),
-        assetStorageStrategy: new TestingAssetStorageStrategy(),
-        assetPreviewStrategy: new TestingAssetPreviewStrategy(),
-    },
-});
+export const testConfig: Required<MajelConfig> = mergeConfig(defaultConfig, {
+	apiOptions: {
+		port: 3050,
+		adminApiPath: ADMIN_API_PATH,
+		shopApiPath: SHOP_API_PATH,
+		cors: true,
+	},
+	defaultChannelToken: E2E_DEFAULT_CHANNEL_TOKEN,
+	authOptions: {
+		tokenMethod: 'bearer',
+		requireVerification: true,
+		cookieOptions: {
+			secret: 'some-secret',
+		},
+	},
+	dbConnectionOptions: {
+		type: 'sqljs',
+		database: new Uint8Array([]),
+		location: '',
+		autoSave: false,
+		logging: false,
+	},
+	promotionOptions: {},
+	customFields: {},
+	entityOptions: { entityIdStrategy: new TestingEntityIdStrategy() },
+	paymentOptions: {
+		paymentMethodHandlers: [],
+	},
+	logger,
+	importExportOptions: {},
+	assetOptions: {
+		assetNamingStrategy: new DefaultAssetNamingStrategy(),
+		assetStorageStrategy: new TestingAssetStorageStrategy(),
+		assetPreviewStrategy: new TestingAssetPreviewStrategy(),
+	},
+})

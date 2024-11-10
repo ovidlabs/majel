@@ -1,11 +1,11 @@
-import { Route } from '@angular/router';
+import { Route } from '@angular/router'
 
-import { ExtensionHostConfig, ExtensionHostOptions } from './extension-host-config';
-import { ExtensionHostComponent } from './extension-host.component';
+import { ExtensionHostConfig, ExtensionHostOptions } from './extension-host-config'
+import { ExtensionHostComponent } from './extension-host.component'
 
 export interface ExternalFrameOptions extends ExtensionHostOptions {
-    path: string;
-    breadcrumbLabel: string;
+	path: string
+	breadcrumbLabel: string
 }
 
 /**
@@ -30,19 +30,19 @@ export interface ExternalFrameOptions extends ExtensionHostOptions {
  * ```
  */
 export function hostExternalFrame(options: ExternalFrameOptions): Route {
-    const pathMatch = options.path === '' ? 'full' : 'prefix';
-    return {
-        path: options.path,
-        pathMatch,
-        component: ExtensionHostComponent,
-        data: {
-            breadcrumb: [
-                {
-                    label: options.breadcrumbLabel,
-                    link: ['./'],
-                },
-            ],
-            extensionHostConfig: new ExtensionHostConfig(options),
-        },
-    };
+	const pathMatch = options.path === '' ? 'full' : 'prefix'
+	return {
+		path: options.path,
+		pathMatch,
+		component: ExtensionHostComponent,
+		data: {
+			breadcrumb: [
+				{
+					label: options.breadcrumbLabel,
+					link: ['./'],
+				},
+			],
+			extensionHostConfig: new ExtensionHostConfig(options),
+		},
+	}
 }

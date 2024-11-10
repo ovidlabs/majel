@@ -1,20 +1,20 @@
 import {
-    ActiveRouteData,
-    BaseExtensionMessage,
-    ExtensionMessage,
-    MessageResponse,
-    NotificationMessage,
-    WatchQueryFetchPolicy,
-} from '@vendure/common/lib/extension-host-types';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+	ActiveRouteData,
+	BaseExtensionMessage,
+	ExtensionMessage,
+	MessageResponse,
+	NotificationMessage,
+	WatchQueryFetchPolicy,
+} from '@majel/common/lib/extension-host-types'
+import { Observable } from 'rxjs'
+import { take } from 'rxjs/operators'
 
-let targetOrigin = 'http://localhost:3000';
+let targetOrigin = 'http://localhost:3000'
 
 /**
  * @description
  * Set the [window.postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
- * `targetOrigin`. The Vendure ui-devkit uses the postMessage API to
+ * `targetOrigin`. The Majel ui-devkit uses the postMessage API to
  * enable cross-frame and cross-origin communication between the ui extension code and the Admin UI
  * app. The `targetOrigin` is a security feature intended to provide control over where messages are sent.
  *
@@ -22,7 +22,7 @@ let targetOrigin = 'http://localhost:3000';
  * @docsPage UiDevkitClient
  */
 export function setTargetOrigin(value: string) {
-    targetOrigin = value;
+	targetOrigin = value
 }
 
 /**
@@ -32,7 +32,7 @@ export function setTargetOrigin(value: string) {
  *
  * @example
  * ```ts
- * import { getActivatedRoute } from '\@vendure/ui-devkit';
+ * import { getActivatedRoute } from '\@majel/ui-devkit';
  *
  * const route = await getActivatedRoute();
  * const slug = route.params.slug;
@@ -41,7 +41,7 @@ export function setTargetOrigin(value: string) {
  * @docsPage UiDevkitClient
  */
 export function getActivatedRoute(): Promise<ActiveRouteData> {
-    return sendMessage('active-route', {}).toPromise();
+	return sendMessage('active-route', {}).toPromise()
 }
 
 /**
@@ -50,7 +50,7 @@ export function getActivatedRoute(): Promise<ActiveRouteData> {
  *
  * @example
  * ```ts
- * import { graphQlQuery } from '\@vendure/ui-devkit';
+ * import { graphQlQuery } from '\@majel/ui-devkit';
  *
  * const productList = await graphQlQuery(`
  *   query GetProducts($skip: Int, $take: Int) {
@@ -68,22 +68,22 @@ export function getActivatedRoute(): Promise<ActiveRouteData> {
  * @docsPage UiDevkitClient
  */
 export function graphQlQuery<T, V extends { [key: string]: any }>(
-    document: string,
-    variables?: { [key: string]: any },
-    fetchPolicy?: WatchQueryFetchPolicy,
+	document: string,
+	variables?: { [key: string]: any },
+	fetchPolicy?: WatchQueryFetchPolicy,
 ): {
-    then: Promise<T>['then'];
-    stream: Observable<T>;
+	then: Promise<T>['then']
+	stream: Observable<T>
 } {
-    const result$ = sendMessage('graphql-query', { document, variables, fetchPolicy });
-    return {
-        then: (...args: any[]) =>
-            result$
-                .pipe(take(1))
-                .toPromise()
-                .then(...args),
-        stream: result$,
-    };
+	const result$ = sendMessage('graphql-query', { document, variables, fetchPolicy })
+	return {
+		then: (...args: any[]) =>
+			result$
+				.pipe(take(1))
+				.toPromise()
+				.then(...args),
+		stream: result$,
+	}
 }
 
 /**
@@ -92,7 +92,7 @@ export function graphQlQuery<T, V extends { [key: string]: any }>(
  *
  * @example
  * ```ts
- * import { graphQlMutation } from '\@vendure/ui-devkit';
+ * import { graphQlMutation } from '\@majel/ui-devkit';
  *
  * const disableProduct = (id: string) => {
  *   return graphQlMutation(`
@@ -110,21 +110,21 @@ export function graphQlQuery<T, V extends { [key: string]: any }>(
  * @docsPage UiDevkitClient
  */
 export function graphQlMutation<T, V extends { [key: string]: any }>(
-    document: string,
-    variables?: { [key: string]: any },
+	document: string,
+	variables?: { [key: string]: any },
 ): {
-    then: Promise<T>['then'];
-    stream: Observable<T>;
+	then: Promise<T>['then']
+	stream: Observable<T>
 } {
-    const result$ = sendMessage('graphql-mutation', { document, variables });
-    return {
-        then: (...args: any[]) =>
-            result$
-                .pipe(take(1))
-                .toPromise()
-                .then(...args),
-        stream: result$,
-    };
+	const result$ = sendMessage('graphql-mutation', { document, variables })
+	return {
+		then: (...args: any[]) =>
+			result$
+				.pipe(take(1))
+				.toPromise()
+				.then(...args),
+		stream: result$,
+	}
 }
 
 /**
@@ -133,7 +133,7 @@ export function graphQlMutation<T, V extends { [key: string]: any }>(
  *
  * @example
  * ```ts
- * import { notify } from '\@vendure/ui-devkit';
+ * import { notify } from '\@majel/ui-devkit';
  *
  * notify({
  *   message: 'Updated Product',
@@ -145,41 +145,41 @@ export function graphQlMutation<T, V extends { [key: string]: any }>(
  * @docsPage UiDevkitClient
  */
 export function notify(options: NotificationMessage['data']): void {
-    void sendMessage('notification', options).toPromise();
+	void sendMessage('notification', options).toPromise()
 }
 
 function sendMessage<T extends ExtensionMessage>(type: T['type'], data: T['data']): Observable<any> {
-    const requestId = type + '__' + Math.random().toString(36).substr(3);
-    const message: BaseExtensionMessage = {
-        requestId,
-        type,
-        data,
-    };
+	const requestId = type + '__' + Math.random().toString(36).substr(3)
+	const message: BaseExtensionMessage = {
+		requestId,
+		type,
+		data,
+	}
 
-    return new Observable<any>(subscriber => {
-        const hostWindow = window.opener || window.parent;
-        const handleReply = (event: MessageEvent) => {
-            const response: MessageResponse = event.data;
-            if (response && response.requestId === requestId) {
-                if (response.complete) {
-                    subscriber.complete();
-                    tearDown();
-                    return;
-                }
-                if (response.error) {
-                    subscriber.error(response.data);
-                    tearDown();
-                    return;
-                }
-                subscriber.next(response.data);
-            }
-        };
-        const tearDown = () => {
-            hostWindow.postMessage({ requestId, type: 'cancellation', data: null }, targetOrigin);
-        };
-        window.addEventListener('message', handleReply);
-        hostWindow.postMessage(message, targetOrigin);
+	return new Observable<any>(subscriber => {
+		const hostWindow = window.opener || window.parent
+		const handleReply = (event: MessageEvent) => {
+			const response: MessageResponse = event.data
+			if (response && response.requestId === requestId) {
+				if (response.complete) {
+					subscriber.complete()
+					tearDown()
+					return
+				}
+				if (response.error) {
+					subscriber.error(response.data)
+					tearDown()
+					return
+				}
+				subscriber.next(response.data)
+			}
+		}
+		const tearDown = () => {
+			hostWindow.postMessage({ requestId, type: 'cancellation', data: null }, targetOrigin)
+		}
+		window.addEventListener('message', handleReply)
+		hostWindow.postMessage(message, targetOrigin)
 
-        return tearDown;
-    });
+		return tearDown
+	})
 }

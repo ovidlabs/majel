@@ -1,7 +1,7 @@
-import { SetMetadata } from '@nestjs/common';
-import { Permission } from '@vendure/common/lib/generated-types';
+import { SetMetadata } from '@nestjs/common'
+import { Permission } from '@majel/common/lib/generated-types'
 
-export const PERMISSIONS_METADATA_KEY = '__permissions__';
+export const PERMISSIONS_METADATA_KEY = '__permissions__'
 
 /**
  * @description
@@ -13,7 +13,7 @@ export const PERMISSIONS_METADATA_KEY = '__permissions__';
  * For REST controllers, it can be applied to route handler.
  *
  * ## Allow and Sessions
- * The `@Allow()` decorator is closely linked to the way Vendure manages sessions. For any operation or route that is decorated
+ * The `@Allow()` decorator is closely linked to the way Majel manages sessions. For any operation or route that is decorated
  * with `@Allow()`, there must be an authenticated session in progress, which would have been created during a prior authentication
  * step.
  *
@@ -35,4 +35,4 @@ export const PERMISSIONS_METADATA_KEY = '__permissions__';
  * @docsCategory request
  * @docsPage Allow Decorator
  */
-export const Allow = (...permissions: Permission[]) => SetMetadata(PERMISSIONS_METADATA_KEY, permissions);
+export const Allow = (...permissions: Permission[]) => SetMetadata(PERMISSIONS_METADATA_KEY, permissions)

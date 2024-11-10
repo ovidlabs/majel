@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
-import { Order, OrderLine } from '../../entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Order, OrderLine } from '../../entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -10,13 +10,13 @@ import { VendureEvent } from '../vendure-event';
  * @docsCategory events
  * @docsPage Event Types
  */
-export class OrderLineEvent extends VendureEvent {
-    constructor(
-        public ctx: RequestContext,
-        public order: Order,
-        public orderLine: OrderLine,
-        public type: 'created' | 'updated' | 'deleted' | 'cancelled',
-    ) {
-        super();
-    }
+export class OrderLineEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public order: Order,
+		public orderLine: OrderLine,
+		public type: 'created' | 'updated' | 'deleted' | 'cancelled',
+	) {
+		super()
+	}
 }

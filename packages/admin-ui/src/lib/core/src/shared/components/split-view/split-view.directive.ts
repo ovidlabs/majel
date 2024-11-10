@@ -1,14 +1,14 @@
-import { Directive, Input, TemplateRef } from '@angular/core';
+import { Directive, Input, TemplateRef } from '@angular/core'
 
 @Directive({
-    selector: '[vdrSplitViewLeft]',
+	selector: '[vdrSplitViewLeft]',
 })
 export class SplitViewLeftDirective {}
 
 @Directive({
-    selector: '[vdrSplitViewRight]',
+	selector: '[vdrSplitViewRight]',
 })
 export class SplitViewRightDirective {
-    constructor(public template: TemplateRef<any>) {}
-    @Input() splitViewTitle?: string;
+	constructor(public template: TemplateRef<any>) {}
+	@Input() splitViewTitle?: string
 }

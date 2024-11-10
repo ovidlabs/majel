@@ -1,4 +1,4 @@
-import { CollectionFragment } from '@vendure/admin-ui/core';
+import { CollectionFragment } from '@majel/admin-ui/core'
 
-export type RearrangeEvent = { collectionId: string; parentId: string; index: number };
-export type CollectionPartial = Pick<CollectionFragment, 'id' | 'parent' | 'name'>;
+export type RearrangeEvent = { collectionId: string; parentId: string; index: number }
+export type CollectionPartial = Pick<CollectionFragment, 'id' | 'parent' | 'name'>

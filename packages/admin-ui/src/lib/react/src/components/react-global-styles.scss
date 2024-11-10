@@ -4,10 +4,10 @@
 @import '../../core/src/shared/components/page-detail-layout/page-detail-layout.component';
 
 .form-group .input-row.invalid {
-    input:not([type='checkbox']):not([type='radio']),
-    select,
-    textarea {
-        color: var(--color-error-700);
-        border-color: var(--color-error-300);
-    }
+	input:not([type='checkbox']):not([type='radio']),
+	select,
+	textarea {
+		color: var(--color-error-700);
+		border-color: var(--color-error-300);
+	}
 }

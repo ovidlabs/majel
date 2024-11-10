@@ -1,10 +1,10 @@
-import { CreateCustomerInput, SetCustomerForOrderResult } from '@vendure/common/lib/generated-shop-types';
+import { CreateCustomerInput, SetCustomerForOrderResult } from '@majel/common/lib/generated-shop-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { ErrorResultUnion } from '../../common/error/error-result';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
-import { Customer } from '../../entity/customer/customer.entity';
-import { Order } from '../../entity/order/order.entity';
+import { RequestContext } from '../../api/common/request-context'
+import { ErrorResultUnion } from '../../common/error/error-result'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
+import { Customer } from '../../entity/customer/customer.entity'
+import { Order } from '../../entity/order/order.entity'
 
 /**
  * @description
@@ -23,7 +23,7 @@ import { Order } from '../../entity/order/order.entity';
  * :::info
  *
  * This is configured via the `orderOptions.guestCheckoutStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
@@ -31,16 +31,16 @@ import { Order } from '../../entity/order/order.entity';
  * @since 2.0.0
  */
 export interface GuestCheckoutStrategy extends InjectableStrategy {
-    /**
-     * @description
-     * This method is called when the `setCustomerForOrder` mutation is executed.
-     * It should return either a Customer object or an ErrorResult.
-     */
-    setCustomerForOrder(
-        ctx: RequestContext,
-        order: Order,
-        input: CreateCustomerInput,
-    ):
-        | ErrorResultUnion<SetCustomerForOrderResult, Customer>
-        | Promise<ErrorResultUnion<SetCustomerForOrderResult, Customer>>;
+	/**
+	 * @description
+	 * This method is called when the `setCustomerForOrder` mutation is executed.
+	 * It should return either a Customer object or an ErrorResult.
+	 */
+	setCustomerForOrder(
+		ctx: RequestContext,
+		order: Order,
+		input: CreateCustomerInput,
+	):
+		| ErrorResultUnion<SetCustomerForOrderResult, Customer>
+		| Promise<ErrorResultUnion<SetCustomerForOrderResult, Customer>>
 }

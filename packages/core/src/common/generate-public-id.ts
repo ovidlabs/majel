@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { customAlphabet } = require('nanoid');
+const { customAlphabet } = require('nanoid')
 
-const nanoid = customAlphabet('123456789ABCDEFGHJKLMNPQRSTUVWXYZ', 16);
+const nanoid = customAlphabet('123456789ABCDEFGHJKLMNPQRSTUVWXYZ', 16)
 
 /**
  * Generates a random, human-readable string of numbers and upper-case letters
@@ -19,5 +19,5 @@ const nanoid = customAlphabet('123456789ABCDEFGHJKLMNPQRSTUVWXYZ', 16);
  * reach a probability of 1% that a collision would occur.
  */
 export function generatePublicId(): string {
-    return nanoid();
+	return nanoid()
 }

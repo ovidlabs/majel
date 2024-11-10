@@ -1,7 +1,7 @@
-@import "mixins";
+@import 'mixins';
 
 :host {
-    ::ng-deep {
-        @include ng-select-facet-values;
-    }
+	::ng-deep {
+		@include ng-select-facet-values;
+	}
 }

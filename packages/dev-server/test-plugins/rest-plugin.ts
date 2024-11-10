@@ -1,21 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
-import { Ctx, PluginCommonModule, ProductService, RequestContext, VendurePlugin } from '@vendure/core';
+import { Controller, Get } from '@nestjs/common'
+import { Ctx, PluginCommonModule, ProductService, RequestContext, MajelPlugin } from '@majel/core'
 
 @Controller('products')
 export class ProductsController {
-    constructor(private productService: ProductService) {}
+	constructor(private productService: ProductService) {}
 
-    @Get()
-    findAll(@Ctx() ctx: RequestContext) {
-        return this.productService.findAll(ctx);
-    }
+	@Get()
+	findAll(@Ctx() ctx: RequestContext) {
+		return this.productService.findAll(ctx)
+	}
 }
 
 /**
  * A proof-of-concept plugin which adds a REST endpoint for querying products.
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    controllers: [ProductsController],
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	controllers: [ProductsController],
 })
 export class RestPlugin {}

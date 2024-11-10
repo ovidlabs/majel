@@ -1,9 +1,9 @@
 <vdr-chip
-    [icon]="removable ? 'times' : undefined"
-    [colorFrom]="facetValue.facet.name"
-    (iconClick)="remove.emit()"
-    [title]="facetValue.facet.name + ' - ' + facetValue.name"
+	[icon]="removable ? 'times' : undefined"
+	[colorFrom]="facetValue.facet.name"
+	(iconClick)="remove.emit()"
+	[title]="facetValue.facet.name + ' - ' + facetValue.name"
 >
-    <span *ngIf="displayFacetName" class="facet-name">{{ facetValue.facet.name }}</span>
-    <span>{{ facetValue.name }}</span>
+	<span *ngIf="displayFacetName" class="facet-name">{{ facetValue.facet.name }}</span>
+	<span>{{ facetValue.name }}</span>
 </vdr-chip>

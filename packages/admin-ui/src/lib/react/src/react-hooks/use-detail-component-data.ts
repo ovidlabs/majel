@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
-import { ReactCustomDetailComponentContext } from '../components/react-custom-detail.component';
-import { HostedComponentContext } from '../directives/react-component-host.directive';
-import { HostedReactComponentContext } from '../types';
+import { useContext, useEffect, useState } from 'react'
+import { ReactCustomDetailComponentContext } from '../components/react-custom-detail.component'
+import { HostedComponentContext } from '../directives/react-component-host.directive'
+import { HostedReactComponentContext } from '../types'
 
 /**
  * @description
@@ -9,7 +9,7 @@ import { HostedReactComponentContext } from '../types';
  *
  * @example
  * ```ts
- * import { Card, useDetailComponentData } from '\@vendure/admin-ui/react';
+ * import { Card, useDetailComponentData } from '\@majel/admin-ui/react';
  * import React from 'react';
  *
  * export function CustomDetailComponent(props: any) {
@@ -32,25 +32,25 @@ import { HostedReactComponentContext } from '../types';
  * @docsCategory react-hooks
  */
 export function useDetailComponentData<T = any>() {
-    const context = useContext(
-        HostedComponentContext,
-    ) as HostedReactComponentContext<ReactCustomDetailComponentContext>;
+	const context = useContext(
+		HostedComponentContext,
+	) as HostedReactComponentContext<ReactCustomDetailComponentContext>
 
-    if (!context.detailForm || !context.entity$) {
-        throw new Error(`The useDetailComponentData hook can only be used within a CustomDetailComponent`);
-    }
+	if (!context.detailForm || !context.entity$) {
+		throw new Error(`The useDetailComponentData hook can only be used within a CustomDetailComponent`)
+	}
 
-    const [entity, setEntity] = useState<T | null>(null);
+	const [entity, setEntity] = useState<T | null>(null)
 
-    useEffect(() => {
-        const subscription = context.entity$.subscribe(value => {
-            setEntity(value);
-        });
-        return () => subscription.unsubscribe();
-    }, []);
+	useEffect(() => {
+		const subscription = context.entity$.subscribe(value => {
+			setEntity(value)
+		})
+		return () => subscription.unsubscribe()
+	}, [])
 
-    return {
-        entity,
-        detailForm: context.detailForm,
-    };
+	return {
+		entity,
+		detailForm: context.detailForm,
+	}
 }

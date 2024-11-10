@@ -1,6 +1,6 @@
-import { APP_INITIALIZER, Provider } from '@angular/core';
-import { ActionBarDropdownMenuItem } from '../providers/nav-builder/nav-builder-types';
-import { NavBuilderService } from '../providers/nav-builder/nav-builder.service';
+import { APP_INITIALIZER, Provider } from '@angular/core'
+import { ActionBarDropdownMenuItem } from '../providers/nav-builder/nav-builder-types'
+import { NavBuilderService } from '../providers/nav-builder/nav-builder.service'
 
 /**
  * @description
@@ -9,7 +9,7 @@ import { NavBuilderService } from '../providers/nav-builder/nav-builder.service'
  *
  * @example
  * ```ts title="providers.ts"
- * import { addActionBarDropdownMenuItem } from '\@vendure/admin-ui/core';
+ * import { addActionBarDropdownMenuItem } from '\@majel/admin-ui/core';
  *
  * export default [
  *     addActionBarDropdownMenuItem({
@@ -25,12 +25,12 @@ import { NavBuilderService } from '../providers/nav-builder/nav-builder.service'
  * @docsCategory action-bar
  */
 export function addActionBarDropdownMenuItem(config: ActionBarDropdownMenuItem): Provider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (navBuilderService: NavBuilderService) => () => {
-            navBuilderService.addActionBarDropdownMenuItem(config);
-        },
-        deps: [NavBuilderService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (navBuilderService: NavBuilderService) => () => {
+			navBuilderService.addActionBarDropdownMenuItem(config)
+		},
+		deps: [NavBuilderService],
+	}
 }

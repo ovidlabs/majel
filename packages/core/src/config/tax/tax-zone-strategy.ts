@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
-import { Channel, Order, Zone } from '../../entity';
+import { RequestContext } from '../../api/common/request-context'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
+import { Channel, Order, Zone } from '../../entity'
 
 /**
  * @description
@@ -19,17 +19,17 @@ import { Channel, Order, Zone } from '../../entity';
  * :::info
  *
  * This is configured via the `taxOptions.taxZoneStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
  * @docsCategory tax
  */
 export interface TaxZoneStrategy extends InjectableStrategy {
-    determineTaxZone(
-        ctx: RequestContext,
-        zones: Zone[],
-        channel: Channel,
-        order?: Order,
-    ): Zone | Promise<Zone> | undefined;
+	determineTaxZone(
+		ctx: RequestContext,
+		zones: Zone[],
+		channel: Channel,
+		order?: Order,
+	): Zone | Promise<Zone> | undefined
 }

@@ -1,19 +1,19 @@
 import {
-    CreateFacetValueInput,
-    CreateFacetValueWithFacetInput,
-    UpdateFacetValueInput,
-} from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+	CreateFacetValueInput,
+	CreateFacetValueWithFacetInput,
+	UpdateFacetValueInput,
+} from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api';
-import { FacetValue } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api'
+import { FacetValue } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
 type FacetValueInputTypes =
-    | CreateFacetValueInput
-    | CreateFacetValueWithFacetInput
-    | UpdateFacetValueInput
-    | ID;
+	| CreateFacetValueInput
+	| CreateFacetValueWithFacetInput
+	| UpdateFacetValueInput
+	| ID
 
 /**
  * @description
@@ -23,13 +23,13 @@ type FacetValueInputTypes =
  * @docsPage Event Types
  * @since 1.4
  */
-export class FacetValueEvent extends VendureEntityEvent<FacetValue, FacetValueInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: FacetValue,
-        type: 'created' | 'updated' | 'deleted',
-        input?: FacetValueInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class FacetValueEvent extends MajelEntityEvent<FacetValue, FacetValueInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: FacetValue,
+		type: 'created' | 'updated' | 'deleted',
+		input?: FacetValueInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

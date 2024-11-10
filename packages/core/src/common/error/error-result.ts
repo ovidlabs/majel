@@ -1,9 +1,9 @@
-import { VendureEntity } from '../../entity/base/base.entity';
+import { MajelEntity } from '../../entity/base/base.entity'
 
 export type GraphQLErrorResult = {
-    errorCode: string;
-    message: string;
-};
+	errorCode: string
+	message: string
+}
 
 /**
  * @description
@@ -19,9 +19,9 @@ export type GraphQLErrorResult = {
  * ```
  */
 export type JustErrorResults<T extends GraphQLErrorResult | U, U = any> = Exclude<
-    T,
-    T extends GraphQLErrorResult ? never : T
->;
+	T,
+	T extends GraphQLErrorResult ? never : T
+>
 
 /**
  * @description
@@ -35,15 +35,15 @@ export type JustErrorResults<T extends GraphQLErrorResult | U, U = any> = Exclud
  * @example
  * ```ts
  * type UpdateOrderItemsResult = Order | OrderModificationError | OrderLimitError | NegativeQuantityError;
- * type T1 = ErrorResultUnion<UpdateOrderItemsResult, VendureEntityOrder>;
- * // T1 = VendureEntityOrder | OrderModificationError | OrderLimitError | NegativeQuantityError;
+ * type T1 = ErrorResultUnion<UpdateOrderItemsResult, MajelEntityOrder>;
+ * // T1 = MajelEntityOrder | OrderModificationError | OrderLimitError | NegativeQuantityError;
  * ```
  *
  * @docsCategory errors
  */
-export type ErrorResultUnion<T extends GraphQLErrorResult | U, E extends VendureEntity, U = any> =
-    | JustErrorResults<T>
-    | E;
+export type ErrorResultUnion<T extends GraphQLErrorResult | U, E extends MajelEntity, U = any> =
+	| JustErrorResults<T>
+	| E
 
 /**
  * @description
@@ -52,7 +52,7 @@ export type ErrorResultUnion<T extends GraphQLErrorResult | U, E extends Vendure
  *
  * @example
  * ```ts
- * import { isGraphQlErrorResult } from '\@vendure/core';
+ * import { isGraphQlErrorResult } from '\@majel/core';
  *
  * // ...
  *
@@ -69,17 +69,17 @@ export type ErrorResultUnion<T extends GraphQLErrorResult | U, E extends Vendure
  * @docsCategory errors
  */
 export function isGraphQlErrorResult<T extends GraphQLErrorResult | U, U = any>(
-    input: T,
-): input is JustErrorResults<T>;
-export function isGraphQlErrorResult<T, E extends VendureEntity>(
-    input: ErrorResultUnion<T, E>,
+	input: T,
+): input is JustErrorResults<T>
+export function isGraphQlErrorResult<T, E extends MajelEntity>(
+	input: ErrorResultUnion<T, E>,
 ): input is JustErrorResults<ErrorResultUnion<T, E>> {
-    return (
-        input &&
-        !!(
-            (input as unknown as GraphQLErrorResult).errorCode &&
-            (input as unknown as GraphQLErrorResult).message != null
-        ) &&
-        (input as any).__typename
-    );
+	return (
+		input &&
+		!!(
+			(input as unknown as GraphQLErrorResult).errorCode &&
+			(input as unknown as GraphQLErrorResult).message != null
+		) &&
+		(input as any).__typename
+	)
 }

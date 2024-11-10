@@ -1,8 +1,8 @@
-# Vendure Job Queue Plugin
+# Majel Job Queue Plugin
 
 This plugin includes alternate JobQueueStrategy implementations built on different technologies.
 
-Implemented: 
+Implemented:
 
-* The `PubSubPlugin` uses Google Cloud Pub/Sub to power the Vendure job queue. 
-* The `BullMQJobQueuePlugin` uses Redis via BullMQ.
+-  The `PubSubPlugin` uses Google Cloud Pub/Sub to power the Majel job queue.
+-  The `BullMQJobQueuePlugin` uses Redis via BullMQ.

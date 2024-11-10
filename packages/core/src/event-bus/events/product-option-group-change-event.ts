@@ -1,8 +1,8 @@
-import { ID } from '@vendure/common/lib/shared-types';
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { Product } from '../../entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Product } from '../../entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -12,13 +12,13 @@ import { VendureEvent } from '../vendure-event';
  * @docsPage Event Types
  * @since 1.4
  */
-export class ProductOptionGroupChangeEvent extends VendureEvent {
-    constructor(
-        public ctx: RequestContext,
-        public product: Product,
-        public optionGroupId: ID,
-        public type: 'assigned' | 'removed',
-    ) {
-        super();
-    }
+export class ProductOptionGroupChangeEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public product: Product,
+		public optionGroupId: ID,
+		public type: 'assigned' | 'removed',
+	) {
+		super()
+	}
 }

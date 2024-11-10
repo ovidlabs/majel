@@ -1,8 +1,8 @@
-import { StockMovementType } from '@vendure/common/lib/generated-types';
+import { StockMovementType } from '@majel/common/lib/generated-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { StockMovement } from '../../entity/stock-movement/stock-movement.entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { StockMovement } from '../../entity/stock-movement/stock-movement.entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -13,11 +13,14 @@ import { VendureEvent } from '../vendure-event';
  * @docsCategory events
  * @docsPage Event Types
  */
-export class StockMovementEvent extends VendureEvent {
-    public readonly type: StockMovementType;
+export class StockMovementEvent extends MajelEvent {
+	public readonly type: StockMovementType
 
-    constructor(public ctx: RequestContext, public stockMovements: StockMovement[]) {
-        super();
-        this.type = stockMovements[0]?.type;
-    }
+	constructor(
+		public ctx: RequestContext,
+		public stockMovements: StockMovement[],
+	) {
+		super()
+		this.type = stockMovements[0]?.type
+	}
 }

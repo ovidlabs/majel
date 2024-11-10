@@ -1,5 +1,5 @@
-# Vendure AdminUiPlugin
+# Majel AdminUiPlugin
 
-`npm install @vendure/admin-ui-plugin`
+`npm install @majel/admin-ui-plugin`
 
-For documentation, see [docs.vendure.io/reference/core-plugins/admin-ui-plugin/](https://docs.vendure.io/reference/core-plugins/admin-ui-plugin/)
+For documentation, see [docs.majel.io/reference/core-plugins/admin-ui-plugin/](https://docs.majel.io/reference/core-plugins/admin-ui-plugin/)

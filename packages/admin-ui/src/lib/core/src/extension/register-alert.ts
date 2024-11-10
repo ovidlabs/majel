@@ -1,5 +1,5 @@
-import { APP_INITIALIZER, FactoryProvider } from '@angular/core';
-import { AlertConfig, AlertsService } from '../providers/alerts/alerts.service';
+import { APP_INITIALIZER, FactoryProvider } from '@angular/core'
+import { AlertConfig, AlertsService } from '../providers/alerts/alerts.service'
 
 /**
  * @description
@@ -10,13 +10,13 @@ import { AlertConfig, AlertsService } from '../providers/alerts/alerts.service';
  * @docsCategory alerts
  */
 export function registerAlert(config: AlertConfig): FactoryProvider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (alertsService: AlertsService) => () => {
-            alertsService.configureAlert(config);
-            alertsService.refresh(config.id);
-        },
-        deps: [AlertsService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (alertsService: AlertsService) => () => {
+			alertsService.configureAlert(config)
+			alertsService.refresh(config.id)
+		},
+		deps: [AlertsService],
+	}
 }

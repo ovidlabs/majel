@@ -7,26 +7,26 @@ import {
     LocalizedString,
     Maybe,
     StringFieldOption,
-} from '@vendure/common/lib/generated-types';
+} from '@majel/common/lib/generated-types';
 import {
-    ConfigArgType,
-    DefaultFormComponentConfig,
-    ID,
-    UiComponentConfig,
-} from '@vendure/common/lib/shared-types';
-import { assertNever } from '@vendure/common/lib/shared-utils';
+	ConfigArgType,
+	DefaultFormComponentConfig,
+	ID,
+	UiComponentConfig,
+} from '@majel/common/lib/shared-types'
+import { assertNever } from '@majel/common/lib/shared-utils'
 
-import { RequestContext } from '../api/common/request-context';
+import { RequestContext } from '../api/common/request-context'
 
-import { DEFAULT_LANGUAGE_CODE } from './constants';
-import { InternalServerError } from './error/errors';
-import { Injector } from './injector';
-import { InjectableStrategy } from './types/injectable-strategy';
+import { DEFAULT_LANGUAGE_CODE } from './constants'
+import { InternalServerError } from './error/errors'
+import { Injector } from './injector'
+import { InjectableStrategy } from './types/injectable-strategy'
 
 /**
  * @description
  * An array of string values in a given {@link LanguageCode}, used to define human-readable string values.
- * The `ui` property can be used in conjunction with the Vendure Admin UI to specify a custom form input
+ * The `ui` property can be used in conjunction with the Majel Admin UI to specify a custom form input
  * component.
  *
  * @example
@@ -40,39 +40,39 @@ import { InjectableStrategy } from './types/injectable-strategy';
  *
  * @docsCategory ConfigurableOperationDef
  */
-export type LocalizedStringArray = Array<Omit<LocalizedString, '__typename'>>;
+export type LocalizedStringArray = Array<Omit<LocalizedString, '__typename'>>
 
 export interface ConfigArgCommonDef<T extends ConfigArgType> {
-    type: T;
-    required?: boolean;
-    defaultValue?: ConfigArgTypeToTsType<T>;
-    list?: boolean;
-    label?: LocalizedStringArray;
-    description?: LocalizedStringArray;
-    ui?: UiComponentConfig<string>;
+	type: T
+	required?: boolean
+	defaultValue?: ConfigArgTypeToTsType<T>
+	list?: boolean
+	label?: LocalizedStringArray
+	description?: LocalizedStringArray
+	ui?: UiComponentConfig<string>
 }
 
 export type ConfigArgListDef<
-    T extends ConfigArgType,
-    C extends ConfigArgCommonDef<T> = ConfigArgCommonDef<T>,
-> = C & { list: true };
+	T extends ConfigArgType,
+	C extends ConfigArgCommonDef<T> = ConfigArgCommonDef<T>,
+> = C & { list: true }
 
 export type WithArgConfig<T> = {
-    config?: T;
-};
+	config?: T
+}
 
 export type StringArgConfig = WithArgConfig<{
-    options?: Maybe<StringFieldOption[]>;
-}>;
+	options?: Maybe<StringFieldOption[]>
+}>
 export type IntArgConfig = WithArgConfig<{
-    inputType?: 'default' | 'percentage' | 'money';
-}>;
+	inputType?: 'default' | 'percentage' | 'money'
+}>
 
 export type ConfigArgDef<T extends ConfigArgType> = T extends 'string'
-    ? ConfigArgCommonDef<'string'> & StringArgConfig
-    : T extends 'int'
-    ? ConfigArgCommonDef<'int'> & IntArgConfig
-    : ConfigArgCommonDef<T> & WithArgConfig<never>;
+	? ConfigArgCommonDef<'string'> & StringArgConfig
+	: T extends 'int'
+		? ConfigArgCommonDef<'int'> & IntArgConfig
+		: ConfigArgCommonDef<T> & WithArgConfig<never>
 
 /**
  * @description
@@ -133,21 +133,21 @@ export type ConfigArgDef<T extends ConfigArgType> = T extends 'string'
  * ```
  * The available components as well as their configuration options can be found in the {@link DefaultFormConfigHash} docs.
  * Custom UI components may also be defined via an Admin UI extension using the `registerFormInputComponent()` function
- * which is exported from `@vendure/admin-ui/core`.
+ * which is exported from `@majel/admin-ui/core`.
  *
  * @docsCategory ConfigurableOperationDef
  */
 export type ConfigArgs = {
-    [name: string]: ConfigArgDef<ConfigArgType>;
-};
+	[name: string]: ConfigArgDef<ConfigArgType>
+}
 
 /**
  * Represents the ConfigArgs once they have been coerced into JavaScript values for use
  * in business logic.
  */
 export type ConfigArgValues<T extends ConfigArgs> = {
-    [K in keyof T]: ConfigArgDefToType<T[K]>;
-};
+	[K in keyof T]: ConfigArgDefToType<T[K]>
+}
 
 /**
  * Converts a ConfigArgDef to a TS type, e.g:
@@ -155,27 +155,26 @@ export type ConfigArgValues<T extends ConfigArgs> = {
  * ConfigArgListDef<'datetime'> -> Date[]
  * ConfigArgDef<'boolean'> -> boolean
  */
-export type ConfigArgDefToType<D extends ConfigArgDef<ConfigArgType>> = D extends ConfigArgListDef<
-    'int' | 'float'
->
-    ? number[]
-    : D extends ConfigArgDef<'int' | 'float'>
-    ? number
-    : D extends ConfigArgListDef<'datetime'>
-    ? Date[]
-    : D extends ConfigArgDef<'datetime'>
-    ? Date
-    : D extends ConfigArgListDef<'boolean'>
-    ? boolean[]
-    : D extends ConfigArgDef<'boolean'>
-    ? boolean
-    : D extends ConfigArgListDef<'ID'>
-    ? ID[]
-    : D extends ConfigArgDef<'ID'>
-    ? ID
-    : D extends ConfigArgListDef<'string'>
-    ? string[]
-    : string;
+export type ConfigArgDefToType<D extends ConfigArgDef<ConfigArgType>> =
+	D extends ConfigArgListDef<'int' | 'float'>
+		? number[]
+		: D extends ConfigArgDef<'int' | 'float'>
+			? number
+			: D extends ConfigArgListDef<'datetime'>
+				? Date[]
+				: D extends ConfigArgDef<'datetime'>
+					? Date
+					: D extends ConfigArgListDef<'boolean'>
+						? boolean[]
+						: D extends ConfigArgDef<'boolean'>
+							? boolean
+							: D extends ConfigArgListDef<'ID'>
+								? ID[]
+								: D extends ConfigArgDef<'ID'>
+									? ID
+									: D extends ConfigArgListDef<'string'>
+										? string[]
+										: string
 
 /**
  * Converts a ConfigArgType to a TypeScript type
@@ -183,16 +182,16 @@ export type ConfigArgDefToType<D extends ConfigArgDef<ConfigArgType>> = D extend
  * ConfigArgTypeToTsType<'int'> -> number
  */
 export type ConfigArgTypeToTsType<T extends ConfigArgType> = T extends 'string'
-    ? string
-    : T extends 'int'
-    ? number
-    : T extends 'float'
-    ? number
-    : T extends 'boolean'
-    ? boolean
-    : T extends 'datetime'
-    ? Date
-    : ID;
+	? string
+	: T extends 'int'
+		? number
+		: T extends 'float'
+			? number
+			: T extends 'boolean'
+				? boolean
+				: T extends 'datetime'
+					? Date
+					: ID
 
 /**
  * Converts a TS type to a ConfigArgDef, e.g:
@@ -201,24 +200,24 @@ export type ConfigArgTypeToTsType<T extends ConfigArgType> = T extends 'string'
  * boolean -> ConfigArgDef<'boolean'>
  */
 export type TypeToConfigArgDef<T extends ConfigArgDefToType<any>> = T extends number
-    ? ConfigArgDef<'int' | 'float'>
-    : T extends number[]
-    ? ConfigArgListDef<'int' | 'float'>
-    : T extends Date[]
-    ? ConfigArgListDef<'datetime'>
-    : T extends Date
-    ? ConfigArgDef<'datetime'>
-    : T extends boolean[]
-    ? ConfigArgListDef<'boolean'>
-    : T extends boolean
-    ? ConfigArgDef<'boolean'>
-    : T extends string[]
-    ? ConfigArgListDef<'string'>
-    : T extends string
-    ? ConfigArgDef<'string'>
-    : T extends ID[]
-    ? ConfigArgListDef<'ID'>
-    : ConfigArgDef<'ID'>;
+	? ConfigArgDef<'int' | 'float'>
+	: T extends number[]
+		? ConfigArgListDef<'int' | 'float'>
+		: T extends Date[]
+			? ConfigArgListDef<'datetime'>
+			: T extends Date
+				? ConfigArgDef<'datetime'>
+				: T extends boolean[]
+					? ConfigArgListDef<'boolean'>
+					: T extends boolean
+						? ConfigArgDef<'boolean'>
+						: T extends string[]
+							? ConfigArgListDef<'string'>
+							: T extends string
+								? ConfigArgDef<'string'>
+								: T extends ID[]
+									? ConfigArgListDef<'ID'>
+									: ConfigArgDef<'ID'>
 
 /**
  * @description
@@ -228,37 +227,37 @@ export type TypeToConfigArgDef<T extends ConfigArgDefToType<any>> = T extends nu
  * @docsCategory ConfigurableOperationDef
  */
 export interface ConfigurableOperationDefOptions<T extends ConfigArgs> extends InjectableStrategy {
-    /**
-     * @description
-     * A unique code used to identify this operation.
-     */
-    code: string;
-    /**
-     * @description
-     * Optional provider-specific arguments which, when specified, are
-     * editable in the admin-ui. For example, args could be used to store an API key
-     * for a payment provider service.
-     *
-     * @example
-     * ```ts
-     * args: {
-     *   apiKey: { type: 'string' },
-     * }
-     * ```
-     *
-     * See {@link ConfigArgs} for available configuration options.
-     */
-    args: T;
-    /**
-     * @description
-     * A human-readable description for the operation method.
-     */
-    description: LocalizedStringArray;
+	/**
+	 * @description
+	 * A unique code used to identify this operation.
+	 */
+	code: string
+	/**
+	 * @description
+	 * Optional provider-specific arguments which, when specified, are
+	 * editable in the admin-ui. For example, args could be used to store an API key
+	 * for a payment provider service.
+	 *
+	 * @example
+	 * ```ts
+	 * args: {
+	 *   apiKey: { type: 'string' },
+	 * }
+	 * ```
+	 *
+	 * See {@link ConfigArgs} for available configuration options.
+	 */
+	args: T
+	/**
+	 * @description
+	 * A human-readable description for the operation method.
+	 */
+	description: LocalizedStringArray
 }
 
 /**
  * @description
- * A ConfigurableOperationDef is a special type of object used extensively by Vendure to define
+ * A ConfigurableOperationDef is a special type of object used extensively by Majel to define
  * code blocks which have arguments which are configurable at run-time by the administrator.
  *
  * This is the mechanism used by:
@@ -290,14 +289,14 @@ export interface ConfigurableOperationDefOptions<T extends ConfigArgs> extends I
  *
  * ## Dependency Injection
  * If your business logic relies on injectable providers, such as the `TransactionalConnection` object, or any of the
- * internal Vendure services or those defined in a plugin, you can inject them by using the config object's
+ * internal Majel services or those defined in a plugin, you can inject them by using the config object's
  * `init()` method, which exposes the {@link Injector}.
  *
  * Here's an example of a ShippingCalculator that injects a service which has been defined in a plugin:
  *
  * @example
  * ```ts
- * import { Injector, ShippingCalculator } from '\@vendure/core';
+ * import { Injector, ShippingCalculator } from '\@majel/core';
  * import { ShippingRatesService } from './shipping-rates.service';
  *
  * // We keep reference to our injected service by keeping it
@@ -333,132 +332,128 @@ export interface ConfigurableOperationDefOptions<T extends ConfigArgs> extends I
  * @docsCategory ConfigurableOperationDef
  */
 export class ConfigurableOperationDef<T extends ConfigArgs = ConfigArgs> {
-    get code(): string {
-        return this.options.code;
-    }
-    get args(): T {
-        return this.options.args;
-    }
-    get description(): LocalizedStringArray {
-        return this.options.description;
-    }
-    constructor(protected options: ConfigurableOperationDefOptions<T>) {}
+	get code(): string {
+		return this.options.code
+	}
+	get args(): T {
+		return this.options.args
+	}
+	get description(): LocalizedStringArray {
+		return this.options.description
+	}
+	constructor(protected options: ConfigurableOperationDefOptions<T>) {}
 
-    async init(injector: Injector) {
-        if (typeof this.options.init === 'function') {
-            await this.options.init(injector);
-        }
-    }
-    async destroy() {
-        if (typeof this.options.destroy === 'function') {
-            await this.options.destroy();
-        }
-    }
+	async init(injector: Injector) {
+		if (typeof this.options.init === 'function') {
+			await this.options.init(injector)
+		}
+	}
+	async destroy() {
+		if (typeof this.options.destroy === 'function') {
+			await this.options.destroy()
+		}
+	}
 
-    /**
-     * @description
-     * Convert a ConfigurableOperationDef into a ConfigurableOperationDefinition object, typically
-     * so that it can be sent via the API.
-     */
-    toGraphQlType(ctx: RequestContext): ConfigurableOperationDefinition {
-        return {
-            code: this.code,
-            description: localizeString(this.description, ctx.languageCode, ctx.channel.defaultLanguageCode),
-            args: Object.entries(this.args).map(
-                ([name, arg]) =>
-                    ({
-                        name,
-                        type: arg.type,
-                        list: arg.list ?? false,
-                        required: arg.required ?? true,
-                        defaultValue: arg.defaultValue,
-                        ui: arg.ui,
-                        label:
-                            arg.label &&
-                            localizeString(arg.label, ctx.languageCode, ctx.channel.defaultLanguageCode),
-                        description:
-                            arg.description &&
-                            localizeString(
-                                arg.description,
-                                ctx.languageCode,
-                                ctx.channel.defaultLanguageCode,
-                            ),
-                    } as Required<ConfigArgDefinition>),
-            ),
-        };
-    }
+	/**
+	 * @description
+	 * Convert a ConfigurableOperationDef into a ConfigurableOperationDefinition object, typically
+	 * so that it can be sent via the API.
+	 */
+	toGraphQlType(ctx: RequestContext): ConfigurableOperationDefinition {
+		return {
+			code: this.code,
+			description: localizeString(this.description, ctx.languageCode, ctx.channel.defaultLanguageCode),
+			args: Object.entries(this.args).map(
+				([name, arg]) =>
+					({
+						name,
+						type: arg.type,
+						list: arg.list ?? false,
+						required: arg.required ?? true,
+						defaultValue: arg.defaultValue,
+						ui: arg.ui,
+						label:
+							arg.label &&
+							localizeString(arg.label, ctx.languageCode, ctx.channel.defaultLanguageCode),
+						description:
+							arg.description &&
+							localizeString(arg.description, ctx.languageCode, ctx.channel.defaultLanguageCode),
+					}) as Required<ConfigArgDefinition>,
+			),
+		}
+	}
 
-    /**
-     * @description
-     * Coverts an array of ConfigArgs into a hash object:
-     *
-     * from:
-     * `[{ name: 'foo', type: 'string', value: 'bar'}]`
-     *
-     * to:
-     * `{ foo: 'bar' }`
-     **/
-    protected argsArrayToHash(args: ConfigArg[]): ConfigArgValues<T> {
-        const output: ConfigArgValues<T> = {} as any;
-        for (const arg of args) {
-            if (arg && arg.value != null && this.args[arg.name] != null) {
-                output[arg.name as keyof ConfigArgValues<T>] = coerceValueToType<T>(
-                    arg.value,
-                    this.args[arg.name].type,
-                    this.args[arg.name].list || false,
-                );
-            }
-        }
-        return output;
-    }
+	/**
+	 * @description
+	 * Coverts an array of ConfigArgs into a hash object:
+	 *
+	 * from:
+	 * `[{ name: 'foo', type: 'string', value: 'bar'}]`
+	 *
+	 * to:
+	 * `{ foo: 'bar' }`
+	 **/
+	protected argsArrayToHash(args: ConfigArg[]): ConfigArgValues<T> {
+		const output: ConfigArgValues<T> = {} as any
+		for (const arg of args) {
+			if (arg && arg.value != null && this.args[arg.name] != null) {
+				output[arg.name as keyof ConfigArgValues<T>] = coerceValueToType<T>(
+					arg.value,
+					this.args[arg.name].type,
+					this.args[arg.name].list || false,
+				)
+			}
+		}
+		return output
+	}
 }
 
 function localizeString(
-    stringArray: LocalizedStringArray,
-    languageCode: LanguageCode,
-    channelLanguageCode: LanguageCode,
+	stringArray: LocalizedStringArray,
+	languageCode: LanguageCode,
+	channelLanguageCode: LanguageCode,
 ): string {
-    let match = stringArray.find(x => x.languageCode === languageCode);
-    if (!match) {
-        match = stringArray.find(x => x.languageCode === channelLanguageCode);
-    }
-    if (!match) {
-        match = stringArray.find(x => x.languageCode === DEFAULT_LANGUAGE_CODE);
-    }
-    if (!match) {
-        match = stringArray[0];
-    }
-    return match.value;
+	let match = stringArray.find(x => x.languageCode === languageCode)
+	if (!match) {
+		match = stringArray.find(x => x.languageCode === channelLanguageCode)
+	}
+	if (!match) {
+		match = stringArray.find(x => x.languageCode === DEFAULT_LANGUAGE_CODE)
+	}
+	if (!match) {
+		match = stringArray[0]
+	}
+	return match.value
 }
 
 function coerceValueToType<T extends ConfigArgs>(
-    value: string,
-    type: ConfigArgType,
-    isList: boolean,
+	value: string,
+	type: ConfigArgType,
+	isList: boolean,
 ): ConfigArgValues<T>[keyof T] {
-    if (isList) {
-        try {
-            return (JSON.parse(value) as string[]).map(v => coerceValueToType(v, type, false)) as any;
-        } catch (err: any) {
-            throw new InternalServerError(
-                `Could not parse list value "${value}": ` + JSON.stringify(err.message),
-            );
-        }
-    }
-    switch (type) {
-        case 'string':
-            return value as any;
-        case 'int':
-            return Number.parseInt(value || '', 10) as any;
-        case 'float':
-            return Number.parseFloat(value || '') as any;
-        case 'datetime':
-            return Date.parse(value || '') as any;
-        case 'boolean':
-            return !!(value && (value.toLowerCase() === 'true' || value === '1')) as any;
-        case 'ID':
-            return value as any;
-        default:
-            assertNever(type);
-    }
+	if (isList) {
+		try {
+			return (JSON.parse(value) as string[]).map(v => coerceValueToType(v, type, false)) as any
+		} catch (err: any) {
+			throw new InternalServerError(
+				`Could not parse list value "${value}": ` + JSON.stringify(err.message),
+			)
+		}
+	}
+	switch (type) {
+		case 'string':
+			return value as any
+		case 'int':
+			return Number.parseInt(value || '', 10) as any
+		case 'float':
+			return Number.parseFloat(value || '') as any
+		case 'datetime':
+			return Date.parse(value || '') as any
+		case 'boolean':
+			return !!(value && (value.toLowerCase() === 'true' || value === '1')) as any
+		case 'ID':
+			return value as any
+		default:
+			assertNever(type)
+	}
 }

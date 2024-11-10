@@ -1,30 +1,30 @@
-import { MiddlewareConsumer, NestModule, OnApplicationBootstrap } from '@nestjs/common';
-import { Type } from '@vendure/common/lib/shared-types';
+import { MiddlewareConsumer, NestModule, OnApplicationBootstrap } from '@nestjs/common'
+import { Type } from '@majel/common/lib/shared-types'
 import {
-    AssetStorageStrategy,
-    Logger,
-    PluginCommonModule,
-    ProcessContext,
-    registerPluginStartupMessage,
-    RuntimeVendureConfig,
-    VendurePlugin,
-} from '@vendure/core';
-import { createHash } from 'crypto';
-import express, { NextFunction, Request, Response } from 'express';
-import fs from 'fs-extra';
-import path from 'path';
+	AssetStorageStrategy,
+	Logger,
+	PluginCommonModule,
+	ProcessContext,
+	registerPluginStartupMessage,
+	RuntimeMajelConfig,
+	MajelPlugin,
+} from '@majel/core'
+import { createHash } from 'crypto'
+import express, { NextFunction, Request, Response } from 'express'
+import fs from 'fs-extra'
+import path from 'path'
 
-import { getValidFormat } from './common';
-import { DEFAULT_CACHE_HEADER, loggerCtx } from './constants';
-import { defaultAssetStorageStrategyFactory } from './default-asset-storage-strategy-factory';
-import { HashedAssetNamingStrategy } from './hashed-asset-naming-strategy';
-import { SharpAssetPreviewStrategy } from './sharp-asset-preview-strategy';
-import { transformImage } from './transform-image';
-import { AssetServerOptions, ImageTransformPreset } from './types';
+import { getValidFormat } from './common'
+import { DEFAULT_CACHE_HEADER, loggerCtx } from './constants'
+import { defaultAssetStorageStrategyFactory } from './default-asset-storage-strategy-factory'
+import { HashedAssetNamingStrategy } from './hashed-asset-naming-strategy'
+import { SharpAssetPreviewStrategy } from './sharp-asset-preview-strategy'
+import { transformImage } from './transform-image'
+import { AssetServerOptions, ImageTransformPreset } from './types'
 
 async function getFileType(buffer: Buffer) {
-    const { fileTypeFromBuffer } = await import('file-type');
-    return fileTypeFromBuffer(buffer);
+	const { fileTypeFromBuffer } = await import('file-type')
+	return fileTypeFromBuffer(buffer)
 }
 
 /**
@@ -35,17 +35,17 @@ async function getFileType(buffer: Buffer) {
  *
  * ## Installation
  *
- * `yarn add \@vendure/asset-server-plugin`
+ * `yarn add \@majel/asset-server-plugin`
  *
  * or
  *
- * `npm install \@vendure/asset-server-plugin`
+ * `npm install \@majel/asset-server-plugin`
  *
  * @example
  * ```ts
- * import { AssetServerPlugin } from '\@vendure/asset-server-plugin';
+ * import { AssetServerPlugin } from '\@majel/asset-server-plugin';
  *
- * const config: VendureConfig = {
+ * const config: MajelConfig = {
  *   // Add an instance of the plugin to the plugins array
  *   plugins: [
  *     AssetServerPlugin.init({
@@ -72,7 +72,7 @@ async function getFileType(buffer: Buffer) {
  *
  * ### Focal point
  *
- * When cropping an image (`mode=crop`), Vendure will attempt to keep the most "interesting" area of the image in the cropped frame. It does this
+ * When cropping an image (`mode=crop`), Majel will attempt to keep the most "interesting" area of the image in the cropped frame. It does this
  * by finding the area of the image with highest entropy (the busiest area of the image). However, sometimes this does not yield a satisfactory
  * result - part or all of the main subject may still be cropped out.
  *
@@ -150,257 +150,252 @@ async function getFileType(buffer: Buffer) {
  *
  * @docsCategory core plugins/AssetServerPlugin
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    configuration: config => AssetServerPlugin.configure(config),
-    compatibility: '^2.0.0',
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	configuration: config => AssetServerPlugin.configure(config),
+	compatibility: '^2.0.0',
 })
 export class AssetServerPlugin implements NestModule, OnApplicationBootstrap {
-    private static assetStorage: AssetStorageStrategy;
-    private readonly cacheDir = 'cache';
-    private presets: ImageTransformPreset[] = [
-        { name: 'tiny', width: 50, height: 50, mode: 'crop' },
-        { name: 'thumb', width: 150, height: 150, mode: 'crop' },
-        { name: 'small', width: 300, height: 300, mode: 'resize' },
-        { name: 'medium', width: 500, height: 500, mode: 'resize' },
-        { name: 'large', width: 800, height: 800, mode: 'resize' },
-    ];
-    private static options: AssetServerOptions;
-    private cacheHeader: string;
+	private static assetStorage: AssetStorageStrategy
+	private readonly cacheDir = 'cache'
+	private presets: ImageTransformPreset[] = [
+		{ name: 'tiny', width: 50, height: 50, mode: 'crop' },
+		{ name: 'thumb', width: 150, height: 150, mode: 'crop' },
+		{ name: 'small', width: 300, height: 300, mode: 'resize' },
+		{ name: 'medium', width: 500, height: 500, mode: 'resize' },
+		{ name: 'large', width: 800, height: 800, mode: 'resize' },
+	]
+	private static options: AssetServerOptions
+	private cacheHeader: string
 
-    /**
-     * @description
-     * Set the plugin options.
-     */
-    static init(options: AssetServerOptions): Type<AssetServerPlugin> {
-        AssetServerPlugin.options = options;
-        return this;
-    }
+	/**
+	 * @description
+	 * Set the plugin options.
+	 */
+	static init(options: AssetServerOptions): Type<AssetServerPlugin> {
+		AssetServerPlugin.options = options
+		return this
+	}
 
-    /** @internal */
-    static async configure(config: RuntimeVendureConfig) {
-        const storageStrategyFactory =
-            this.options.storageStrategyFactory || defaultAssetStorageStrategyFactory;
-        this.assetStorage = await storageStrategyFactory(this.options);
-        config.assetOptions.assetPreviewStrategy =
-            this.options.previewStrategy ??
-            new SharpAssetPreviewStrategy({
-                maxWidth: this.options.previewMaxWidth,
-                maxHeight: this.options.previewMaxHeight,
-            });
-        config.assetOptions.assetStorageStrategy = this.assetStorage;
-        config.assetOptions.assetNamingStrategy =
-            this.options.namingStrategy || new HashedAssetNamingStrategy();
-        return config;
-    }
+	/** @internal */
+	static async configure(config: RuntimeMajelConfig) {
+		const storageStrategyFactory = this.options.storageStrategyFactory || defaultAssetStorageStrategyFactory
+		this.assetStorage = await storageStrategyFactory(this.options)
+		config.assetOptions.assetPreviewStrategy =
+			this.options.previewStrategy ??
+			new SharpAssetPreviewStrategy({
+				maxWidth: this.options.previewMaxWidth,
+				maxHeight: this.options.previewMaxHeight,
+			})
+		config.assetOptions.assetStorageStrategy = this.assetStorage
+		config.assetOptions.assetNamingStrategy = this.options.namingStrategy || new HashedAssetNamingStrategy()
+		return config
+	}
 
-    constructor(private processContext: ProcessContext) {}
+	constructor(private processContext: ProcessContext) {}
 
-    /** @internal */
-    onApplicationBootstrap(): void {
-        if (this.processContext.isWorker) {
-            return;
-        }
-        if (AssetServerPlugin.options.presets) {
-            for (const preset of AssetServerPlugin.options.presets) {
-                const existingIndex = this.presets.findIndex(p => p.name === preset.name);
-                if (-1 < existingIndex) {
-                    this.presets.splice(existingIndex, 1, preset);
-                } else {
-                    this.presets.push(preset);
-                }
-            }
-        }
+	/** @internal */
+	onApplicationBootstrap(): void {
+		if (this.processContext.isWorker) {
+			return
+		}
+		if (AssetServerPlugin.options.presets) {
+			for (const preset of AssetServerPlugin.options.presets) {
+				const existingIndex = this.presets.findIndex(p => p.name === preset.name)
+				if (-1 < existingIndex) {
+					this.presets.splice(existingIndex, 1, preset)
+				} else {
+					this.presets.push(preset)
+				}
+			}
+		}
 
-        // Configure Cache-Control header
-        const { cacheHeader } = AssetServerPlugin.options;
-        if (!cacheHeader) {
-            this.cacheHeader = DEFAULT_CACHE_HEADER;
-        } else {
-            if (typeof cacheHeader === 'string') {
-                this.cacheHeader = cacheHeader;
-            } else {
-                this.cacheHeader = [cacheHeader.restriction, `max-age: ${cacheHeader.maxAge}`]
-                    .filter(value => !!value)
-                    .join(', ');
-            }
-        }
+		// Configure Cache-Control header
+		const { cacheHeader } = AssetServerPlugin.options
+		if (!cacheHeader) {
+			this.cacheHeader = DEFAULT_CACHE_HEADER
+		} else {
+			if (typeof cacheHeader === 'string') {
+				this.cacheHeader = cacheHeader
+			} else {
+				this.cacheHeader = [cacheHeader.restriction, `max-age: ${cacheHeader.maxAge}`]
+					.filter(value => !!value)
+					.join(', ')
+			}
+		}
 
-        const cachePath = path.join(AssetServerPlugin.options.assetUploadDir, this.cacheDir);
-        fs.ensureDirSync(cachePath);
-    }
+		const cachePath = path.join(AssetServerPlugin.options.assetUploadDir, this.cacheDir)
+		fs.ensureDirSync(cachePath)
+	}
 
-    configure(consumer: MiddlewareConsumer) {
-        if (this.processContext.isWorker) {
-            return;
-        }
-        Logger.info('Creating asset server middleware', loggerCtx);
-        consumer.apply(this.createAssetServer()).forRoutes(AssetServerPlugin.options.route);
-        registerPluginStartupMessage('Asset server', AssetServerPlugin.options.route);
-    }
+	configure(consumer: MiddlewareConsumer) {
+		if (this.processContext.isWorker) {
+			return
+		}
+		Logger.info('Creating asset server middleware', loggerCtx)
+		consumer.apply(this.createAssetServer()).forRoutes(AssetServerPlugin.options.route)
+		registerPluginStartupMessage('Asset server', AssetServerPlugin.options.route)
+	}
 
-    /**
-     * Creates the image server instance
-     */
-    private createAssetServer() {
-        const assetServer = express.Router();
-        assetServer.use(this.sendAsset(), this.generateTransformedImage());
-        return assetServer;
-    }
+	/**
+	 * Creates the image server instance
+	 */
+	private createAssetServer() {
+		const assetServer = express.Router()
+		assetServer.use(this.sendAsset(), this.generateTransformedImage())
+		return assetServer
+	}
 
-    /**
-     * Reads the file requested and send the response to the browser.
-     */
-    private sendAsset() {
-        return async (req: Request, res: Response, next: NextFunction) => {
-            const key = this.getFileNameFromRequest(req);
-            try {
-                const file = await AssetServerPlugin.assetStorage.readFileToBuffer(key);
-                let mimeType = this.getMimeType(key);
-                if (!mimeType) {
-                    mimeType = (await getFileType(file))?.mime || 'application/octet-stream';
-                }
-                res.contentType(mimeType);
-                res.setHeader('content-security-policy', "default-src 'self'");
-                res.setHeader('Cache-Control', this.cacheHeader);
-                res.send(file);
-            } catch (e: any) {
-                const err = new Error('File not found');
-                (err as any).status = 404;
-                return next(err);
-            }
-        };
-    }
+	/**
+	 * Reads the file requested and send the response to the browser.
+	 */
+	private sendAsset() {
+		return async (req: Request, res: Response, next: NextFunction) => {
+			const key = this.getFileNameFromRequest(req)
+			try {
+				const file = await AssetServerPlugin.assetStorage.readFileToBuffer(key)
+				let mimeType = this.getMimeType(key)
+				if (!mimeType) {
+					mimeType = (await getFileType(file))?.mime || 'application/octet-stream'
+				}
+				res.contentType(mimeType)
+				res.setHeader('content-security-policy', "default-src 'self'")
+				res.setHeader('Cache-Control', this.cacheHeader)
+				res.send(file)
+			} catch (e: any) {
+				const err = new Error('File not found')
+				;(err as any).status = 404
+				return next(err)
+			}
+		}
+	}
 
-    /**
-     * If an exception was thrown by the first handler, then it may be because a transformed image
-     * is being requested which does not yet exist. In this case, this handler will generate the
-     * transformed image, save it to cache, and serve the result as a response.
-     */
-    private generateTransformedImage() {
-        return async (err: any, req: Request, res: Response, next: NextFunction) => {
-            if (err && (err.status === 404 || err.statusCode === 404)) {
-                if (req.query) {
-                    const decodedReqPath = this.sanitizeFilePath(req.path);
-                    Logger.debug(`Pre-cached Asset not found: ${decodedReqPath}`, loggerCtx);
-                    let file: Buffer;
-                    try {
-                        file = await AssetServerPlugin.assetStorage.readFileToBuffer(decodedReqPath);
-                    } catch (_err: any) {
-                        res.status(404).send('Resource not found');
-                        return;
-                    }
-                    const image = await transformImage(file, req.query as any, this.presets || []);
-                    try {
-                        const imageBuffer = await image.toBuffer();
-                        const cachedFileName = this.getFileNameFromRequest(req);
-                        if (!req.query.cache || req.query.cache === 'true') {
-                            await AssetServerPlugin.assetStorage.writeFileFromBuffer(
-                                cachedFileName,
-                                imageBuffer,
-                            );
-                            Logger.debug(`Saved cached asset: ${cachedFileName}`, loggerCtx);
-                        }
-                        let mimeType = this.getMimeType(cachedFileName);
-                        if (!mimeType) {
-                            mimeType = (await getFileType(imageBuffer))?.mime || 'image/jpeg';
-                        }
-                        res.set('Content-Type', mimeType);
-                        res.setHeader('content-security-policy', "default-src 'self'");
-                        res.send(imageBuffer);
-                        return;
-                    } catch (e: any) {
-                        Logger.error(e, loggerCtx, e.stack);
-                        res.status(500).send(e.message);
-                        return;
-                    }
-                }
-            }
-            next();
-        };
-    }
+	/**
+	 * If an exception was thrown by the first handler, then it may be because a transformed image
+	 * is being requested which does not yet exist. In this case, this handler will generate the
+	 * transformed image, save it to cache, and serve the result as a response.
+	 */
+	private generateTransformedImage() {
+		return async (err: any, req: Request, res: Response, next: NextFunction) => {
+			if (err && (err.status === 404 || err.statusCode === 404)) {
+				if (req.query) {
+					const decodedReqPath = this.sanitizeFilePath(req.path)
+					Logger.debug(`Pre-cached Asset not found: ${decodedReqPath}`, loggerCtx)
+					let file: Buffer
+					try {
+						file = await AssetServerPlugin.assetStorage.readFileToBuffer(decodedReqPath)
+					} catch (_err: any) {
+						res.status(404).send('Resource not found')
+						return
+					}
+					const image = await transformImage(file, req.query as any, this.presets || [])
+					try {
+						const imageBuffer = await image.toBuffer()
+						const cachedFileName = this.getFileNameFromRequest(req)
+						if (!req.query.cache || req.query.cache === 'true') {
+							await AssetServerPlugin.assetStorage.writeFileFromBuffer(cachedFileName, imageBuffer)
+							Logger.debug(`Saved cached asset: ${cachedFileName}`, loggerCtx)
+						}
+						let mimeType = this.getMimeType(cachedFileName)
+						if (!mimeType) {
+							mimeType = (await getFileType(imageBuffer))?.mime || 'image/jpeg'
+						}
+						res.set('Content-Type', mimeType)
+						res.setHeader('content-security-policy', "default-src 'self'")
+						res.send(imageBuffer)
+						return
+					} catch (e: any) {
+						Logger.error(e, loggerCtx, e.stack)
+						res.status(500).send(e.message)
+						return
+					}
+				}
+			}
+			next()
+		}
+	}
 
-    private getFileNameFromRequest(req: Request): string {
-        const { w, h, mode, preset, fpx, fpy, format, q } = req.query;
-        /* eslint-disable @typescript-eslint/restrict-template-expressions */
-        const focalPoint = fpx && fpy ? `_fpx${fpx}_fpy${fpy}` : '';
-        const quality = q ? `_q${q}` : '';
-        const imageFormat = getValidFormat(format);
-        let imageParamsString = '';
-        if (w || h) {
-            const width = w || '';
-            const height = h || '';
-            imageParamsString = `_transform_w${width}_h${height}_m${mode}`;
-        } else if (preset) {
-            if (this.presets && !!this.presets.find(p => p.name === preset)) {
-                imageParamsString = `_transform_pre_${preset}`;
-            }
-        }
+	private getFileNameFromRequest(req: Request): string {
+		const { w, h, mode, preset, fpx, fpy, format, q } = req.query
+		/* eslint-disable @typescript-eslint/restrict-template-expressions */
+		const focalPoint = fpx && fpy ? `_fpx${fpx}_fpy${fpy}` : ''
+		const quality = q ? `_q${q}` : ''
+		const imageFormat = getValidFormat(format)
+		let imageParamsString = ''
+		if (w || h) {
+			const width = w || ''
+			const height = h || ''
+			imageParamsString = `_transform_w${width}_h${height}_m${mode}`
+		} else if (preset) {
+			if (this.presets && !!this.presets.find(p => p.name === preset)) {
+				imageParamsString = `_transform_pre_${preset}`
+			}
+		}
 
-        if (focalPoint) {
-            imageParamsString += focalPoint;
-        }
-        if (imageFormat) {
-            imageParamsString += imageFormat;
-        }
-        if (quality) {
-            imageParamsString += quality;
-        }
+		if (focalPoint) {
+			imageParamsString += focalPoint
+		}
+		if (imageFormat) {
+			imageParamsString += imageFormat
+		}
+		if (quality) {
+			imageParamsString += quality
+		}
 
-        const decodedReqPath = this.sanitizeFilePath(req.path);
-        if (imageParamsString !== '') {
-            const imageParamHash = this.md5(imageParamsString);
-            return path.join(this.cacheDir, this.addSuffix(decodedReqPath, imageParamHash, imageFormat));
-        } else {
-            return decodedReqPath;
-        }
-    }
+		const decodedReqPath = this.sanitizeFilePath(req.path)
+		if (imageParamsString !== '') {
+			const imageParamHash = this.md5(imageParamsString)
+			return path.join(this.cacheDir, this.addSuffix(decodedReqPath, imageParamHash, imageFormat))
+		} else {
+			return decodedReqPath
+		}
+	}
 
-    /**
-     * Sanitize the file path to prevent directory traversal attacks.
-     */
-    private sanitizeFilePath(filePath: string): string {
-        let decodedPath: string;
-        try {
-            decodedPath = decodeURIComponent(filePath);
-        } catch (e: any) {
-            Logger.error((e.message as string) + ': ' + filePath, loggerCtx);
-            return '';
-        }
-        return path.normalize(decodedPath).replace(/(\.\.[\/\\])+/, '');
-    }
+	/**
+	 * Sanitize the file path to prevent directory traversal attacks.
+	 */
+	private sanitizeFilePath(filePath: string): string {
+		let decodedPath: string
+		try {
+			decodedPath = decodeURIComponent(filePath)
+		} catch (e: any) {
+			Logger.error((e.message as string) + ': ' + filePath, loggerCtx)
+			return ''
+		}
+		return path.normalize(decodedPath).replace(/(\.\.[\/\\])+/, '')
+	}
 
-    private md5(input: string): string {
-        return createHash('md5').update(input).digest('hex');
-    }
+	private md5(input: string): string {
+		return createHash('md5').update(input).digest('hex')
+	}
 
-    private addSuffix(fileName: string, suffix: string, ext?: string): string {
-        const originalExt = path.extname(fileName);
-        const effectiveExt = ext ? `.${ext}` : originalExt;
-        const baseName = path.basename(fileName, originalExt);
-        const dirName = path.dirname(fileName);
-        return path.join(dirName, `${baseName}${suffix}${effectiveExt}`);
-    }
+	private addSuffix(fileName: string, suffix: string, ext?: string): string {
+		const originalExt = path.extname(fileName)
+		const effectiveExt = ext ? `.${ext}` : originalExt
+		const baseName = path.basename(fileName, originalExt)
+		const dirName = path.dirname(fileName)
+		return path.join(dirName, `${baseName}${suffix}${effectiveExt}`)
+	}
 
-    /**
-     * Attempt to get the mime type from the file name.
-     */
-    private getMimeType(fileName: string): string | undefined {
-        const ext = path.extname(fileName);
-        switch (ext) {
-            case '.jpg':
-            case '.jpeg':
-                return 'image/jpeg';
-            case '.png':
-                return 'image/png';
-            case '.gif':
-                return 'image/gif';
-            case '.svg':
-                return 'image/svg+xml';
-            case '.tiff':
-                return 'image/tiff';
-            case '.webp':
-                return 'image/webp';
-        }
-    }
+	/**
+	 * Attempt to get the mime type from the file name.
+	 */
+	private getMimeType(fileName: string): string | undefined {
+		const ext = path.extname(fileName)
+		switch (ext) {
+			case '.jpg':
+			case '.jpeg':
+				return 'image/jpeg'
+			case '.png':
+				return 'image/png'
+			case '.gif':
+				return 'image/gif'
+			case '.svg':
+				return 'image/svg+xml'
+			case '.tiff':
+				return 'image/tiff'
+			case '.webp':
+				return 'image/webp'
+		}
+	}
 }

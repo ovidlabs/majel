@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
-import { User } from '../../entity/user/user.entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { User } from '../../entity/user/user.entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -9,8 +9,8 @@ import { VendureEvent } from '../vendure-event';
  * @docsCategory events
  * @docsPage Event Types
  */
-export class LogoutEvent extends VendureEvent {
-    constructor(public ctx: RequestContext) {
-        super();
-    }
+export class LogoutEvent extends MajelEvent {
+	constructor(public ctx: RequestContext) {
+		super()
+	}
 }

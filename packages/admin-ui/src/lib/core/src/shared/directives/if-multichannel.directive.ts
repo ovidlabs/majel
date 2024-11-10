@@ -1,12 +1,12 @@
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core'
 
-import { DataService } from '../../data/providers/data.service';
+import { DataService } from '../../data/providers/data.service'
 
-import { IfDirectiveBase } from './if-directive-base';
+import { IfDirectiveBase } from './if-directive-base'
 
 /**
  * @description
- * Structural directive that displays the given element if the Vendure instance has multiple channels
+ * Structural directive that displays the given element if the Majel instance has multiple channels
  * configured.
  *
  * @example
@@ -19,26 +19,24 @@ import { IfDirectiveBase } from './if-directive-base';
  * @docsCategory directives
  */
 @Directive({
-    selector: '[vdrIfMultichannel]',
+	selector: '[vdrIfMultichannel]',
 })
 export class IfMultichannelDirective extends IfDirectiveBase<[]> {
-    constructor(
-        _viewContainer: ViewContainerRef,
-        templateRef: TemplateRef<any>,
-        private dataService: DataService,
-    ) {
-        super(_viewContainer, templateRef, () =>
-            this.dataService.client
-                .userStatus()
-                .mapStream(({ userStatus }) => 1 < userStatus.channels.length),
-        );
-    }
+	constructor(
+		_viewContainer: ViewContainerRef,
+		templateRef: TemplateRef<any>,
+		private dataService: DataService,
+	) {
+		super(_viewContainer, templateRef, () =>
+			this.dataService.client.userStatus().mapStream(({ userStatus }) => 1 < userStatus.channels.length),
+		)
+	}
 
-    /**
-     * A template to show if the current user does not have the specified permission.
-     */
-    @Input()
-    set vdrIfMultichannelElse(templateRef: TemplateRef<any> | null) {
-        this.setElseTemplate(templateRef);
-    }
+	/**
+	 * A template to show if the current user does not have the specified permission.
+	 */
+	@Input()
+	set vdrIfMultichannelElse(templateRef: TemplateRef<any> | null) {
+		this.setElseTemplate(templateRef)
+	}
 }

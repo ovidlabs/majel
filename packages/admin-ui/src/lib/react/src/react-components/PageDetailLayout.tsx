@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react'
 
 /**
  * @description
@@ -6,7 +6,7 @@ import React, { PropsWithChildren, ReactNode } from 'react';
  *
  * @example
  * ```ts
- * import { PageDetailLayout } from '@vendure/admin-ui/react';
+ * import { PageDetailLayout } from '@majel/admin-ui/react';
  *
  * export function MyComponent() {
  *   return (
@@ -20,10 +20,10 @@ import React, { PropsWithChildren, ReactNode } from 'react';
  * @docsCategory react-components
  */
 export function PageDetailLayout(props: PropsWithChildren<{ sidebar?: ReactNode }>) {
-    return (
-        <div className={'vdr-page-detail-layout'}>
-            <div className="main">{props.children}</div>
-            <div className="sidebar">{props.sidebar}</div>
-        </div>
-    );
+	return (
+		<div className={'vdr-page-detail-layout'}>
+			<div className="main">{props.children}</div>
+			<div className="sidebar">{props.sidebar}</div>
+		</div>
+	)
 }

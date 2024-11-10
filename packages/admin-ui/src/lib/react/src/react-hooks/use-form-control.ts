@@ -1,7 +1,7 @@
-import { CustomFieldType } from '@vendure/common/lib/shared-types';
-import { useContext, useEffect, useState } from 'react';
-import { HostedComponentContext } from '../directives/react-component-host.directive';
-import { HostedReactComponentContext, ReactFormInputOptions } from '../types';
+import { CustomFieldType } from '@majel/common/lib/shared-types'
+import { useContext, useEffect, useState } from 'react'
+import { HostedComponentContext } from '../directives/react-component-host.directive'
+import { HostedReactComponentContext, ReactFormInputOptions } from '../types'
 
 /**
  * @description
@@ -9,7 +9,7 @@ import { HostedReactComponentContext, ReactFormInputOptions } from '../types';
  *
  * @example
  * ```ts
- * import { useFormControl, ReactFormInputProps } from '\@vendure/admin-ui/react';
+ * import { useFormControl, ReactFormInputProps } from '\@majel/admin-ui/react';
  * import React from 'react';
  *
  * export function ReactNumberInput({ readonly }: ReactFormInputProps) {
@@ -29,47 +29,47 @@ import { HostedReactComponentContext, ReactFormInputOptions } from '../types';
  * @docsCategory react-hooks
  */
 export function useFormControl() {
-    const context = useContext(HostedComponentContext);
-    if (!context) {
-        throw new Error('No HostedComponentContext found');
-    }
-    if (!isFormInputContext(context)) {
-        throw new Error('useFormControl() can only be used in a form input component');
-    }
-    const { formControl, config } = context;
-    const [value, setValue] = useState(formControl.value ?? 0);
+	const context = useContext(HostedComponentContext)
+	if (!context) {
+		throw new Error('No HostedComponentContext found')
+	}
+	if (!isFormInputContext(context)) {
+		throw new Error('useFormControl() can only be used in a form input component')
+	}
+	const { formControl, config } = context
+	const [value, setValue] = useState(formControl.value ?? 0)
 
-    useEffect(() => {
-        const subscription = formControl.valueChanges.subscribe(v => {
-            setValue(v);
-        });
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, []);
+	useEffect(() => {
+		const subscription = formControl.valueChanges.subscribe(v => {
+			setValue(v)
+		})
+		return () => {
+			subscription.unsubscribe()
+		}
+	}, [])
 
-    function setFormValue(newValue: any) {
-        formControl.setValue(coerceFormValue(newValue, config.type as CustomFieldType));
-        formControl.markAsDirty();
-    }
+	function setFormValue(newValue: any) {
+		formControl.setValue(coerceFormValue(newValue, config.type as CustomFieldType))
+		formControl.markAsDirty()
+	}
 
-    return { value, setFormValue };
+	return { value, setFormValue }
 }
 
 function isFormInputContext(
-    context: HostedReactComponentContext,
+	context: HostedReactComponentContext,
 ): context is HostedReactComponentContext<ReactFormInputOptions> {
-    return context.config && context.formControl;
+	return context.config && context.formControl
 }
 
 function coerceFormValue(value: any, type: CustomFieldType) {
-    switch (type) {
-        case 'int':
-        case 'float':
-            return Number(value);
-        case 'boolean':
-            return Boolean(value);
-        default:
-            return value;
-    }
+	switch (type) {
+		case 'int':
+		case 'float':
+			return Number(value)
+		case 'boolean':
+			return Boolean(value)
+		default:
+			return value
+	}
 }

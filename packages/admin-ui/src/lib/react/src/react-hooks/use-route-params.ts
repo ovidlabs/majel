@@ -1,6 +1,6 @@
-import { ActivatedRoute } from '@angular/router';
-import { useEffect, useState } from 'react';
-import { useInjector } from './use-injector';
+import { ActivatedRoute } from '@angular/router'
+import { useEffect, useState } from 'react'
+import { useInjector } from './use-injector'
 
 /**
  * @description
@@ -8,7 +8,7 @@ import { useInjector } from './use-injector';
  *
  * @example
  * ```ts
- * import { useRouteParams } from '\@vendure/admin-ui/react';
+ * import { useRouteParams } from '\@majel/admin-ui/react';
  * import React from 'react';
  *
  * export function MyComponent() {
@@ -21,22 +21,22 @@ import { useInjector } from './use-injector';
  * @docsCategory react-hooks
  */
 export function useRouteParams() {
-    const activatedRoute = useInjector(ActivatedRoute);
-    const [params, setParams] = useState(activatedRoute.snapshot.params);
-    const [queryParams, setQueryParams] = useState(activatedRoute.snapshot.queryParams);
+	const activatedRoute = useInjector(ActivatedRoute)
+	const [params, setParams] = useState(activatedRoute.snapshot.params)
+	const [queryParams, setQueryParams] = useState(activatedRoute.snapshot.queryParams)
 
-    useEffect(() => {
-        const subscription = activatedRoute.params.subscribe(value => {
-            setParams(value);
-        });
-        subscription.add(activatedRoute.queryParams.subscribe(value => setQueryParams(value)));
-        return () => subscription.unsubscribe();
-    }, []);
+	useEffect(() => {
+		const subscription = activatedRoute.params.subscribe(value => {
+			setParams(value)
+		})
+		subscription.add(activatedRoute.queryParams.subscribe(value => setQueryParams(value)))
+		return () => subscription.unsubscribe()
+	}, [])
 
-    activatedRoute;
+	activatedRoute
 
-    return {
-        params,
-        queryParams,
-    };
+	return {
+		params,
+		queryParams,
+	}
 }

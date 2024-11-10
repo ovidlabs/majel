@@ -1,8 +1,8 @@
-import { APP_INITIALIZER } from '@angular/core';
+import { APP_INITIALIZER } from '@angular/core'
 import {
-    DataTableComponentConfig,
-    DataTableCustomComponentService,
-} from '../shared/components/data-table-2/data-table-custom-component.service';
+	DataTableComponentConfig,
+	DataTableCustomComponentService,
+} from '../shared/components/data-table-2/data-table-custom-component.service'
 
 /**
  * @description
@@ -13,7 +13,7 @@ import {
  * @example
  * ```ts title="components/custom-table.component.ts"
  * import { Component, Input } from '\@angular/core';
- * import { CustomColumnComponent } from '\@vendure/admin-ui/core';
+ * import { CustomColumnComponent } from '\@majel/admin-ui/core';
  *
  * \@Component({
  *     selector: 'custom-slug-component',
@@ -28,7 +28,7 @@ import {
  * ```
  *
  * ```ts title="providers.ts"
- * import { registerDataTableComponent } from '\@vendure/admin-ui/core';
+ * import { registerDataTableComponent } from '\@majel/admin-ui/core';
  * import { CustomTableComponent } from './components/custom-table.component';
  *
  * export default [
@@ -43,12 +43,12 @@ import {
  * @docsCategory custom-table-components
  */
 export function registerDataTableComponent(config: DataTableComponentConfig) {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (dataTableCustomComponentService: DataTableCustomComponentService) => () => {
-            dataTableCustomComponentService.registerCustomComponent(config);
-        },
-        deps: [DataTableCustomComponentService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (dataTableCustomComponentService: DataTableCustomComponentService) => () => {
+			dataTableCustomComponentService.registerCustomComponent(config)
+		},
+		deps: [DataTableCustomComponentService],
+	}
 }

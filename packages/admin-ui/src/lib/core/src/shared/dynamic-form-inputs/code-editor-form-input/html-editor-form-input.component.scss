@@ -3,8 +3,8 @@
 @include code-editor;
 
 .code-editor {
-    // prettier-ignore
-    ::ng-deep {
+	// prettier-ignore
+	::ng-deep {
        .he-tag { color: var(--color-json-editor-key); }
        .he-attr { color: var(--color-json-editor-number); }
        .he-error {
@@ -14,5 +14,3 @@
        }
     }
 }
-
-

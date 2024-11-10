@@ -1,21 +1,21 @@
-import { Injector, RequestContext } from '@vendure/core';
+import { Injector, RequestContext } from '@majel/core'
 
-import { EmailPluginDevModeOptions, EmailPluginOptions, EmailTransportOptions } from './types';
+import { EmailPluginDevModeOptions, EmailPluginOptions, EmailTransportOptions } from './types'
 
 export function isDevModeOptions(
-    input: EmailPluginOptions | EmailPluginDevModeOptions,
+	input: EmailPluginOptions | EmailPluginDevModeOptions,
 ): input is EmailPluginDevModeOptions {
-    return (input as EmailPluginDevModeOptions).devMode === true;
+	return (input as EmailPluginDevModeOptions).devMode === true
 }
 
 export async function resolveTransportSettings(
-    options: EmailPluginOptions,
-    injector: Injector,
-    ctx?: RequestContext
+	options: EmailPluginOptions,
+	injector: Injector,
+	ctx?: RequestContext,
 ): Promise<EmailTransportOptions> {
-    if (typeof options.transport === 'function') {
-        return options.transport(injector, ctx);
-    } else {
-        return options.transport;
-    }
+	if (typeof options.transport === 'function') {
+		return options.transport(injector, ctx)
+	} else {
+		return options.transport
+	}
 }

@@ -1,11 +1,11 @@
-import { PluginCommonModule, VendurePlugin } from '@vendure/core';
+import { PluginCommonModule, MajelPlugin } from '@majel/core'
 
-import { BullMQJobQueueStrategy } from './bullmq-job-queue-strategy';
-import { BULLMQ_PLUGIN_OPTIONS } from './constants';
-import { RedisHealthCheckStrategy } from './redis-health-check-strategy';
-import { RedisHealthIndicator } from './redis-health-indicator';
-import { RedisJobBufferStorageStrategy } from './redis-job-buffer-storage-strategy';
-import { BullMQPluginOptions } from './types';
+import { BullMQJobQueueStrategy } from './bullmq-job-queue-strategy'
+import { BULLMQ_PLUGIN_OPTIONS } from './constants'
+import { RedisHealthCheckStrategy } from './redis-health-check-strategy'
+import { RedisHealthIndicator } from './redis-health-indicator'
+import { RedisJobBufferStorageStrategy } from './redis-job-buffer-storage-strategy'
+import { BullMQPluginOptions } from './types'
 
 /**
  * @description
@@ -17,7 +17,7 @@ import { BullMQPluginOptions } from './types';
  * The advantage of this approach is that jobs are stored in Redis rather than in the database. For more complex
  * applications with many job queues and/or multiple worker instances, this can massively reduce the load on the
  * DB server. The reason for this is that the DefaultJobQueuePlugin uses polling to check for new jobs. By default
- * it will poll every 200ms. A typical Vendure instance uses at least 3 queues (handling emails, collections, search index),
+ * it will poll every 200ms. A typical Majel instance uses at least 3 queues (handling emails, collections, search index),
  * so even with a single worker instance this results in 15 queries per second to the DB constantly. Adding more
  * custom queues and multiple worker instances can easily result in 50 or 100 queries per second. At this point
  * performance may be impacted.
@@ -28,19 +28,19 @@ import { BullMQPluginOptions } from './types';
  *
  * ## Installation
  *
- * `yarn add \@vendure/job-queue-plugin bullmq`
+ * `yarn add \@majel/job-queue-plugin bullmq`
  *
  * or
  *
- * `npm install \@vendure/job-queue-plugin bullmq`
+ * `npm install \@majel/job-queue-plugin bullmq`
  *
  * **Note:** The v1.x version of this plugin is designed to work with bullmq v1.x, etc.
  *
  * @example
  * ```ts
- * import { BullMQJobQueuePlugin } from '\@vendure/job-queue-plugin/package/bullmq';
+ * import { BullMQJobQueuePlugin } from '\@majel/job-queue-plugin/package/bullmq';
  *
- * const config: VendureConfig = {
+ * const config: MajelConfig = {
  *   // Add an instance of the plugin to the plugins array
  *   plugins: [
  *     // DefaultJobQueuePlugin should be removed from the plugins array
@@ -87,7 +87,7 @@ import { BullMQPluginOptions } from './types';
  *
  * @example
  * ```ts
- * const config: VendureConfig = {
+ * const config: MajelConfig = {
  *   plugins: [
  *     BullMQJobQueuePlugin.init({
  *       workerOptions: {
@@ -101,14 +101,14 @@ import { BullMQPluginOptions } from './types';
  * ## Removing old jobs
  *
  * By default, BullMQ will keep completed jobs in the `completed` set and failed jobs in the `failed` set. Over time,
- * these sets can grow very large. Since Vendure v2.1, the default behaviour is to remove jobs from these sets after
+ * these sets can grow very large. Since Majel v2.1, the default behaviour is to remove jobs from these sets after
  * 30 days or after a maximum of 5,000 completed or failed jobs.
  *
  * This can be configured using the `removeOnComplete` and `removeOnFail` options:
  *
  * @example
  * ```ts
- * const config: VendureConfig = {
+ * const config: MajelConfig = {
  *   plugins: [
  *     BullMQJobQueuePlugin.init({
  *       workerOptions: {
@@ -131,29 +131,29 @@ import { BullMQPluginOptions } from './types';
  *
  * @docsCategory core plugins/JobQueuePlugin
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    configuration: config => {
-        config.jobQueueOptions.jobQueueStrategy = new BullMQJobQueueStrategy();
-        config.jobQueueOptions.jobBufferStorageStrategy = new RedisJobBufferStorageStrategy();
-        config.systemOptions.healthChecks.push(new RedisHealthCheckStrategy());
-        return config;
-    },
-    providers: [
-        { provide: BULLMQ_PLUGIN_OPTIONS, useFactory: () => BullMQJobQueuePlugin.options },
-        RedisHealthIndicator,
-    ],
-    compatibility: '^2.0.0',
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	configuration: config => {
+		config.jobQueueOptions.jobQueueStrategy = new BullMQJobQueueStrategy()
+		config.jobQueueOptions.jobBufferStorageStrategy = new RedisJobBufferStorageStrategy()
+		config.systemOptions.healthChecks.push(new RedisHealthCheckStrategy())
+		return config
+	},
+	providers: [
+		{ provide: BULLMQ_PLUGIN_OPTIONS, useFactory: () => BullMQJobQueuePlugin.options },
+		RedisHealthIndicator,
+	],
+	compatibility: '^2.0.0',
 })
 export class BullMQJobQueuePlugin {
-    static options: BullMQPluginOptions;
+	static options: BullMQPluginOptions
 
-    /**
-     * @description
-     * Configures the plugin.
-     */
-    static init(options: BullMQPluginOptions) {
-        this.options = options;
-        return this;
-    }
+	/**
+	 * @description
+	 * Configures the plugin.
+	 */
+	static init(options: BullMQPluginOptions) {
+		this.options = options
+		return this
+	}
 }

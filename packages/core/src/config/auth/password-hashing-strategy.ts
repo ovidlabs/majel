@@ -1,4 +1,4 @@
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
 
 /**
  * @description
@@ -7,7 +7,7 @@ import { InjectableStrategy } from '../../common/types/injectable-strategy';
  * :::info
  *
  * This is configured via the `authOptions.passwordHashingStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
@@ -15,6 +15,6 @@ import { InjectableStrategy } from '../../common/types/injectable-strategy';
  * @since 1.3.0
  */
 export interface PasswordHashingStrategy extends InjectableStrategy {
-    hash(plaintext: string): Promise<string>;
-    check(plaintext: string, hash: string): Promise<boolean>;
+	hash(plaintext: string): Promise<string>
+	check(plaintext: string, hash: string): Promise<boolean>
 }

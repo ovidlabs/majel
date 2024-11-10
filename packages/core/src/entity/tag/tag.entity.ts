@@ -1,7 +1,7 @@
-import { DeepPartial } from '@vendure/common/lib/shared-types';
-import { Column, Entity } from 'typeorm';
+import { DeepPartial } from '@majel/common/lib/shared-types'
+import { Column, Entity } from 'typeorm'
 
-import { VendureEntity } from '../base/base.entity';
+import { MajelEntity } from '../base/base.entity'
 
 /**
  * @description
@@ -11,11 +11,11 @@ import { VendureEntity } from '../base/base.entity';
  * @docsCategory entities
  */
 @Entity()
-export class Tag extends VendureEntity {
-    constructor(input?: DeepPartial<Tag>) {
-        super(input);
-    }
+export class Tag extends MajelEntity {
+	constructor(input?: DeepPartial<Tag>) {
+		super(input)
+	}
 
-    @Column()
-    value: string;
+	@Column()
+	value: string
 }

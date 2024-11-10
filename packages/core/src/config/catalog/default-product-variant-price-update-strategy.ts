@@ -1,7 +1,7 @@
-import { RequestContext } from '../../api/common/request-context';
-import { ProductVariantPrice } from '../../entity/product-variant/product-variant-price.entity';
+import { RequestContext } from '../../api/common/request-context'
+import { ProductVariantPrice } from '../../entity/product-variant/product-variant-price.entity'
 
-import { ProductVariantPriceUpdateStrategy } from './product-variant-price-update-strategy';
+import { ProductVariantPriceUpdateStrategy } from './product-variant-price-update-strategy'
 
 /**
  * @description
@@ -12,14 +12,14 @@ import { ProductVariantPriceUpdateStrategy } from './product-variant-price-updat
  * @since 2.2.0
  */
 export interface DefaultProductVariantPriceUpdateStrategyOptions {
-    /**
-     * @description
-     * When `true`, any price changes to a ProductVariant in one Channel will update any other
-     * prices of the same currencyCode in other Channels. Note that if there are different
-     * tax settings across the channels, these will not be taken into account. To handle this
-     * case, a custom strategy should be implemented.
-     */
-    syncPricesAcrossChannels: boolean;
+	/**
+	 * @description
+	 * When `true`, any price changes to a ProductVariant in one Channel will update any other
+	 * prices of the same currencyCode in other Channels. Note that if there are different
+	 * tax settings across the channels, these will not be taken into account. To handle this
+	 * case, a custom strategy should be implemented.
+	 */
+	syncPricesAcrossChannels: boolean
 }
 
 /**
@@ -34,9 +34,9 @@ export interface DefaultProductVariantPriceUpdateStrategyOptions {
  *
  * @example
  * ```ts
- * import { DefaultProductVariantPriceUpdateStrategy, VendureConfig } from '\@vendure/core';
+ * import { DefaultProductVariantPriceUpdateStrategy, MajelConfig } from '\@majel/core';
  *
- * export const config: VendureConfig = {
+ * export const config: MajelConfig = {
  *   // ...
  *   catalogOptions: {
  *     // highlight-start
@@ -54,26 +54,26 @@ export interface DefaultProductVariantPriceUpdateStrategyOptions {
  * @since 2.2.0
  */
 export class DefaultProductVariantPriceUpdateStrategy implements ProductVariantPriceUpdateStrategy {
-    constructor(private options: DefaultProductVariantPriceUpdateStrategyOptions) {}
+	constructor(private options: DefaultProductVariantPriceUpdateStrategyOptions) {}
 
-    onPriceCreated(ctx: RequestContext, price: ProductVariantPrice) {
-        return [];
-    }
+	onPriceCreated(ctx: RequestContext, price: ProductVariantPrice) {
+		return []
+	}
 
-    onPriceUpdated(ctx: RequestContext, updatedPrice: ProductVariantPrice, prices: ProductVariantPrice[]) {
-        if (this.options.syncPricesAcrossChannels) {
-            return prices
-                .filter(p => p.currencyCode === updatedPrice.currencyCode)
-                .map(p => ({
-                    id: p.id,
-                    price: updatedPrice.price,
-                }));
-        } else {
-            return [];
-        }
-    }
+	onPriceUpdated(ctx: RequestContext, updatedPrice: ProductVariantPrice, prices: ProductVariantPrice[]) {
+		if (this.options.syncPricesAcrossChannels) {
+			return prices
+				.filter(p => p.currencyCode === updatedPrice.currencyCode)
+				.map(p => ({
+					id: p.id,
+					price: updatedPrice.price,
+				}))
+		} else {
+			return []
+		}
+	}
 
-    onPriceDeleted(ctx: RequestContext, deletedPrice: ProductVariantPrice, prices: ProductVariantPrice[]) {
-        return [];
-    }
+	onPriceDeleted(ctx: RequestContext, deletedPrice: ProductVariantPrice, prices: ProductVariantPrice[]) {
+		return []
+	}
 }

@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
-import { generatePublicId } from '../../common/generate-public-id';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
+import { RequestContext } from '../../api/common/request-context'
+import { generatePublicId } from '../../common/generate-public-id'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
 
 /**
  * @description
@@ -11,7 +11,7 @@ import { InjectableStrategy } from '../../common/types/injectable-strategy';
  * :::info
  *
  * This is configured via the `orderOptions.orderCodeStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
@@ -37,11 +37,11 @@ import { InjectableStrategy } from '../../common/types/injectable-strategy';
  * @docsPage OrderCodeStrategy
  */
 export interface OrderCodeStrategy extends InjectableStrategy {
-    /**
-     * @description
-     * Generates the order code.
-     */
-    generate(ctx: RequestContext): string | Promise<string>;
+	/**
+	 * @description
+	 * Generates the order code.
+	 */
+	generate(ctx: RequestContext): string | Promise<string>
 }
 
 /**
@@ -53,7 +53,7 @@ export interface OrderCodeStrategy extends InjectableStrategy {
  * @docsPage OrderCodeStrategy
  */
 export class DefaultOrderCodeStrategy implements OrderCodeStrategy {
-    generate(ctx: RequestContext): string {
-        return generatePublicId();
-    }
+	generate(ctx: RequestContext): string {
+		return generatePublicId()
+	}
 }

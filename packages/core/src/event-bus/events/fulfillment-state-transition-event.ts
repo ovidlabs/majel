@@ -1,7 +1,7 @@
-import { RequestContext } from '../../api/common/request-context';
-import { Fulfillment } from '../../entity/fulfillment/fulfillment.entity';
-import { FulfillmentState } from '../../service/helpers/fulfillment-state-machine/fulfillment-state';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Fulfillment } from '../../entity/fulfillment/fulfillment.entity'
+import { FulfillmentState } from '../../service/helpers/fulfillment-state-machine/fulfillment-state'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -10,13 +10,13 @@ import { VendureEvent } from '../vendure-event';
  * @docsCategory events
  * @docsPage Event Types
  */
-export class FulfillmentStateTransitionEvent extends VendureEvent {
-    constructor(
-        public fromState: FulfillmentState,
-        public toState: FulfillmentState,
-        public ctx: RequestContext,
-        public fulfillment: Fulfillment,
-    ) {
-        super();
-    }
+export class FulfillmentStateTransitionEvent extends MajelEvent {
+	constructor(
+		public fromState: FulfillmentState,
+		public toState: FulfillmentState,
+		public ctx: RequestContext,
+		public fulfillment: Fulfillment,
+	) {
+		super()
+	}
 }

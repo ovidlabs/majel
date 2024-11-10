@@ -1,7 +1,7 @@
-import { DeepPartial, ID } from '@vendure/common/lib/shared-types';
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { DeepPartial, ID } from '@majel/common/lib/shared-types'
+import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
-import { PrimaryGeneratedId } from '../entity-id.decorator';
+import { PrimaryGeneratedId } from '../entity-id.decorator'
 
 /**
  * @description
@@ -10,25 +10,25 @@ import { PrimaryGeneratedId } from '../entity-id.decorator';
  *
  * @docsCategory entities
  */
-export abstract class VendureEntity {
-    protected constructor(input?: DeepPartial<VendureEntity>) {
-        if (input) {
-            for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(input))) {
-                if (descriptor.get && !descriptor.set) {
-                    // A getter has been moved to the entity instance
-                    // by the CalculatedPropertySubscriber
-                    // and cannot be copied over to the new instance.
-                    continue;
-                }
-                (this as any)[key] = descriptor.value;
-            }
-        }
-    }
+export abstract class MajelEntity {
+	protected constructor(input?: DeepPartial<MajelEntity>) {
+		if (input) {
+			for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(input))) {
+				if (descriptor.get && !descriptor.set) {
+					// A getter has been moved to the entity instance
+					// by the CalculatedPropertySubscriber
+					// and cannot be copied over to the new instance.
+					continue
+				}
+				;(this as any)[key] = descriptor.value
+			}
+		}
+	}
 
-    @PrimaryGeneratedId()
-    id: ID;
+	@PrimaryGeneratedId()
+	id: ID
 
-    @CreateDateColumn() createdAt: Date;
+	@CreateDateColumn() createdAt: Date
 
-    @UpdateDateColumn() updatedAt: Date;
+	@UpdateDateColumn() updatedAt: Date
 }

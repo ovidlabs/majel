@@ -1,18 +1,18 @@
 # Contribution Guidelines
 
-Hi! Thank you for taking the time to contribute to Vendure!
+Hi! Thank you for taking the time to contribute to NV!
 
-In order to make the best use of both your time and that of the Vendure maintainers, please follow the guidelines in this document.
+In order to make the best use of both your time and that of the NV maintainers, please follow the guidelines in this document.
 
 ## Branches
 
 There are 3 important branches to know about:
 
-* `master` - the default branch
+* `main` - the default branch
 * `minor` - a branch for commits which introduce new features which would go in the next [SemVer minor](https://semver.org/) release.
 * `major` - a branch for commits which introduce breaking changes which would go in the next [SemVer major](https://semver.org/) release.
 
-Bug fixes should go direct in the `master` branch, from which new patch releases will be made regularly. Periodically the master branch will be merged into the `minor` and `major` branches.
+Bug fixes should go direct in the `main` branch, from which new patch releases will be made regularly. Periodically the main branch will be merged into the `minor` and `major` branches.
 
 ## Bug fixes
 
@@ -72,9 +72,9 @@ If a commit applies to no particular package (e.g. a tooling change in the root 
 
 #### Breaking Changes
 
-If your contribution includes any breaking changes (including any changes to the DB schema; backwards-incompatible changes to the GraphQL APIs or VendureConfig; backwards-incompatible changes to current behavior), please include a `BREAKING CHANGE` section in your commit message as per the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/#commit-message-with-both-and-breaking-change-footer).
+If your contribution includes any breaking changes (including any changes to the DB schema; backwards-incompatible changes to the GraphQL APIs or Config; backwards-incompatible changes to current behavior), please include a `BREAKING CHANGE` section in your commit message as per the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/#commit-message-with-both-and-breaking-change-footer).
 
-Please also make your pull request against the `major` branch rather than `master` in the case of breaking changes.
+Please also make your pull request against the `major` branch rather than `main` in the case of breaking changes.
 
 Example:
 
@@ -92,8 +92,8 @@ Commit messages are linted on commit, so you'll know if your message is not quit
 
 ## Setting up the dev environment
 
-After cloning the Vendure repo, please follow the [Development guide](https://github.com/vendure-ecommerce/vendure/blob/master/README.md#development) in the README for instructions on how to get up and running locally.
+After cloning the NV repo, please follow the [Development guide](https://github.com/ovidlabs/nv/blob/main/README.md#development) in the README for instructions on how to get up and running locally.
 
 ## Contributing Admin UI translations
 
-If you wish to contribute translations of the Admin UI into another language (or improve an existing set of translations), please see the [Localization guide](https://github.com/vendure-ecommerce/vendure/blob/master/packages/admin-ui/README.md#localization) in the admin-ui package.
+If you wish to contribute translations of the Admin UI into another language (or improve an existing set of translations), please see the [Localization guide](https://github.com/ovidlabs/nv/blob/main/packages/admin-ui/README.md#localization) in the admin-ui package.

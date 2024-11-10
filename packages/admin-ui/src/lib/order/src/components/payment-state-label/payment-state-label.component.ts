@@ -1,23 +1,23 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 
 @Component({
-    selector: 'vdr-payment-state-label',
-    templateUrl: './payment-state-label.component.html',
-    styleUrls: ['./payment-state-label.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-payment-state-label',
+	templateUrl: './payment-state-label.component.html',
+	styleUrls: ['./payment-state-label.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentStateLabelComponent {
-    @Input() state: string;
+	@Input() state: string
 
-    get chipColorType() {
-        switch (this.state) {
-            case 'Authorized':
-                return 'warning';
-            case 'Settled':
-                return 'success';
-            case 'Declined':
-            case 'Cancelled':
-                return 'error';
-        }
-    }
+	get chipColorType() {
+		switch (this.state) {
+			case 'Authorized':
+				return 'warning'
+			case 'Settled':
+				return 'success'
+			case 'Declined':
+			case 'Cancelled':
+				return 'error'
+		}
+	}
 }

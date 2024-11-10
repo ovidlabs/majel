@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
-import { User } from '../../entity/user/user.entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { User } from '../../entity/user/user.entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -10,8 +10,11 @@ import { VendureEvent } from '../vendure-event';
  * @docsPage Event Types
  * @since 1.4
  */
-export class PasswordResetVerifiedEvent extends VendureEvent {
-    constructor(public ctx: RequestContext, public user: User) {
-        super();
-    }
+export class PasswordResetVerifiedEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public user: User,
+	) {
+		super()
+	}
 }

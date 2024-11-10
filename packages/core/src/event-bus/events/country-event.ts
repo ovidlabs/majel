@@ -1,11 +1,11 @@
-import { CreateCountryInput, UpdateCountryInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreateCountryInput, UpdateCountryInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api';
-import { Country } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api'
+import { Country } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type CountryInputTypes = CreateCountryInput | UpdateCountryInput | ID;
+type CountryInputTypes = CreateCountryInput | UpdateCountryInput | ID
 
 /**
  * @description
@@ -15,13 +15,13 @@ type CountryInputTypes = CreateCountryInput | UpdateCountryInput | ID;
  * @docsPage Event Types
  * @since 1.4
  */
-export class CountryEvent extends VendureEntityEvent<Country, CountryInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: Country,
-        type: 'created' | 'updated' | 'deleted',
-        input?: CountryInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class CountryEvent extends MajelEntityEvent<Country, CountryInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: Country,
+		type: 'created' | 'updated' | 'deleted',
+		input?: CountryInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

@@ -1,7 +1,7 @@
-# Vendure Harden Plugin
+# Majel Harden Plugin
 
-Hardens your Vendure GraphQL APIs against attacks.
+Hardens your Majel GraphQL APIs against attacks.
 
-`npm install @vendure/harden-plugin`
+`npm install @majel/harden-plugin`
 
-For documentation, see [docs.vendure.io/reference/core-plugins/harden-plugin/](https://docs.vendure.io/reference/core-plugins/harden-plugin/)
+For documentation, see [docs.majel.io/reference/core-plugins/harden-plugin/](https://docs.majel.io/reference/core-plugins/harden-plugin/)

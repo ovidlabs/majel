@@ -1,4 +1,4 @@
-import { CurrencyCode, Order } from '@vendure/core';
+import { CurrencyCode, Order } from '@majel/core'
 
 /**
  * @description
@@ -8,30 +8,30 @@ import { CurrencyCode, Order } from '@vendure/core';
  * > For zero-decimal currencies, still provide amounts as an integer but without multiplying by 100.
  * > For example, to charge ¥500, provide an amount value of 500.
  *
- * Therefore, for a fractionless currency like JPY, we need to divide the amount by 100 (since Vendure always
- * stores money amounts multiplied by 100). See https://github.com/vendure-ecommerce/vendure/issues/1630
+ * Therefore, for a fractionless currency like JPY, we need to divide the amount by 100 (since Majel always
+ * stores money amounts multiplied by 100). See https://github.com/majel-ecommerce/majel/issues/1630
  */
 export function getAmountInStripeMinorUnits(order: Order): number {
-    return currencyHasFractionPart(order.currencyCode)
-        ? order.totalWithTax
-        : Math.round(order.totalWithTax / 100);
+	return currencyHasFractionPart(order.currencyCode)
+		? order.totalWithTax
+		: Math.round(order.totalWithTax / 100)
 }
 
 /**
  * @description
  * Performs the reverse of `getAmountInStripeMinorUnits` - converting the Stripe minor units into the format
- * used by Vendure.
+ * used by Majel.
  */
 export function getAmountFromStripeMinorUnits(order: Order, stripeAmount: number): number {
-    return currencyHasFractionPart(order.currencyCode) ? stripeAmount : stripeAmount * 100;
+	return currencyHasFractionPart(order.currencyCode) ? stripeAmount : stripeAmount * 100
 }
 
 function currencyHasFractionPart(currencyCode: CurrencyCode): boolean {
-    const parts = new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency: currencyCode,
-        currencyDisplay: 'symbol',
-    }).formatToParts(123.45);
+	const parts = new Intl.NumberFormat(undefined, {
+		style: 'currency',
+		currency: currencyCode,
+		currencyDisplay: 'symbol',
+	}).formatToParts(123.45)
 
-    return !!parts.find(p => p.type === 'fraction');
+	return !!parts.find(p => p.type === 'fraction')
 }

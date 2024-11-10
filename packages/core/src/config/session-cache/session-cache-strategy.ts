@@ -1,7 +1,7 @@
-import { ID } from '@vendure/common/lib/shared-types';
+import { ID } from '@majel/common/lib/shared-types'
 
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
-import { UserChannelPermissions } from '../../service/helpers/utils/get-user-channels-permissions';
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
+import { UserChannelPermissions } from '../../service/helpers/utils/get-user-channels-permissions'
 
 /**
  * @description
@@ -12,11 +12,11 @@ import { UserChannelPermissions } from '../../service/helpers/utils/get-user-cha
  * @docsPage SessionCacheStrategy
  */
 export type CachedSessionUser = {
-    id: ID;
-    identifier: string;
-    verified: boolean;
-    channelPermissions: UserChannelPermissions[];
-};
+	id: ID
+	identifier: string
+	verified: boolean
+	channelPermissions: UserChannelPermissions[]
+}
 
 /**
  * @description
@@ -27,21 +27,21 @@ export type CachedSessionUser = {
  * @docsPage SessionCacheStrategy
  */
 export type CachedSession = {
-    /**
-     * @description
-     * The timestamp after which this cache entry is considered stale and
-     * a fresh copy of the data will be set. Based on the `sessionCacheTTL`
-     * option.
-     */
-    cacheExpiry: number;
-    id: ID;
-    token: string;
-    expires: Date;
-    activeOrderId?: ID;
-    authenticationStrategy?: string;
-    user?: CachedSessionUser;
-    activeChannelId?: ID;
-};
+	/**
+	 * @description
+	 * The timestamp after which this cache entry is considered stale and
+	 * a fresh copy of the data will be set. Based on the `sessionCacheTTL`
+	 * option.
+	 */
+	cacheExpiry: number
+	id: ID
+	token: string
+	expires: Date
+	activeOrderId?: ID
+	authenticationStrategy?: string
+	user?: CachedSessionUser
+	activeChannelId?: ID
+}
 
 /**
  * @description
@@ -50,7 +50,7 @@ export type CachedSession = {
  * SQL query each time. Therefore, we cache the session data only perform the SQL query once and upon
  * invalidation of the cache.
  *
- * The Vendure default is to use a the {@link InMemorySessionCacheStrategy}, which is fast and suitable for
+ * The Majel default is to use a the {@link InMemorySessionCacheStrategy}, which is fast and suitable for
  * single-instance deployments. However, for multi-instance deployments (horizontally scaled, serverless etc.),
  * you will need to define a custom strategy that stores the session cache in a shared data store, such as in the
  * DB or in Redis.
@@ -58,7 +58,7 @@ export type CachedSession = {
  * :::info
  *
  * This is configured via the `authOptions.sessionCacheStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
@@ -67,7 +67,7 @@ export type CachedSession = {
  *
  * @example
  * ```ts
- * import { CachedSession, Logger, SessionCacheStrategy, VendurePlugin } from '\@vendure/core';
+ * import { CachedSession, Logger, SessionCacheStrategy, MajelPlugin } from '\@majel/core';
  * import { Redis, RedisOptions } from 'ioredis';
  *
  * export interface RedisSessionCachePluginOptions {
@@ -75,7 +75,7 @@ export type CachedSession = {
  *   redisOptions?: RedisOptions;
  * }
  * const loggerCtx = 'RedisSessionCacheStrategy';
- * const DEFAULT_NAMESPACE = 'vendure-session-cache';
+ * const DEFAULT_NAMESPACE = 'majel-session-cache';
  * const DEFAULT_TTL = 86400;
  *
  * export class RedisSessionCacheStrategy implements SessionCacheStrategy {
@@ -131,7 +131,7 @@ export type CachedSession = {
  *   }
  * }
  *
- * \@VendurePlugin({
+ * \@MajelPlugin({
  *   configuration: config => {
  *     config.authOptions.sessionCacheStrategy = new RedisSessionCacheStrategy(
  *       RedisSessionCachePlugin.options,
@@ -153,29 +153,29 @@ export type CachedSession = {
  * @docsWeight 0
  */
 export interface SessionCacheStrategy extends InjectableStrategy {
-    /**
-     * @description
-     * Store the session in the cache. When caching a session, the data
-     * should not be modified apart from performing any transforms needed to
-     * get it into a state to be stored, e.g. JSON.stringify().
-     */
-    set(session: CachedSession): void | Promise<void>;
+	/**
+	 * @description
+	 * Store the session in the cache. When caching a session, the data
+	 * should not be modified apart from performing any transforms needed to
+	 * get it into a state to be stored, e.g. JSON.stringify().
+	 */
+	set(session: CachedSession): void | Promise<void>
 
-    /**
-     * @description
-     * Retrieve the session from the cache
-     */
-    get(sessionToken: string): CachedSession | undefined | Promise<CachedSession | undefined>;
+	/**
+	 * @description
+	 * Retrieve the session from the cache
+	 */
+	get(sessionToken: string): CachedSession | undefined | Promise<CachedSession | undefined>
 
-    /**
-     * @description
-     * Delete a session from the cache
-     */
-    delete(sessionToken: string): void | Promise<void>;
+	/**
+	 * @description
+	 * Delete a session from the cache
+	 */
+	delete(sessionToken: string): void | Promise<void>
 
-    /**
-     * @description
-     * Clear the entire cache
-     */
-    clear(): void | Promise<void>;
+	/**
+	 * @description
+	 * Clear the entire cache
+	 */
+	clear(): void | Promise<void>
 }

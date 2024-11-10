@@ -1,9 +1,9 @@
-import { Type } from '@angular/core';
+import { Type } from '@angular/core'
 
-import { CustomerFragment, GetOrderHistoryQuery, OrderDetailFragment } from '../../common/generated-types';
-import { TimelineDisplayType } from '../../shared/components/timeline-entry/timeline-entry.component';
+import { CustomerFragment, GetOrderHistoryQuery, OrderDetailFragment } from '../../common/generated-types'
+import { TimelineDisplayType } from '../../shared/components/timeline-entry/timeline-entry.component'
 
-export type TimelineHistoryEntry = NonNullable<GetOrderHistoryQuery['order']>['history']['items'][number];
+export type TimelineHistoryEntry = NonNullable<GetOrderHistoryQuery['order']>['history']['items'][number]
 /**
  * @description
  * This interface should be implemented by components intended to display a history entry in the
@@ -14,33 +14,33 @@ export type TimelineHistoryEntry = NonNullable<GetOrderHistoryQuery['order']>['h
  * @docsCategory custom-history-entry-components
  */
 export interface HistoryEntryComponent {
-    /**
-     * @description
-     * The HistoryEntry data.
-     */
-    entry: TimelineHistoryEntry;
-    /**
-     * @description
-     * Defines whether this entry is highlighted with a "success", "error" etc. color.
-     */
-    getDisplayType: (entry: TimelineHistoryEntry) => TimelineDisplayType;
-    /**
-     * @description
-     * Featured entries are always expanded. Non-featured entries start of collapsed and can be clicked
-     * to expand.
-     */
-    isFeatured: (entry: TimelineHistoryEntry) => boolean;
-    /**
-     * @description
-     * Returns the name of the person who did this action. For example, it could be the Customer's name
-     * or "Administrator".
-     */
-    getName?: (entry: TimelineHistoryEntry) => string | undefined;
-    /**
-     * @description
-     * Optional Clarity icon shape to display with the entry. Examples: `'note'`, `['success-standard', 'is-solid']`
-     */
-    getIconShape?: (entry: TimelineHistoryEntry) => string | string[] | undefined;
+	/**
+	 * @description
+	 * The HistoryEntry data.
+	 */
+	entry: TimelineHistoryEntry
+	/**
+	 * @description
+	 * Defines whether this entry is highlighted with a "success", "error" etc. color.
+	 */
+	getDisplayType: (entry: TimelineHistoryEntry) => TimelineDisplayType
+	/**
+	 * @description
+	 * Featured entries are always expanded. Non-featured entries start of collapsed and can be clicked
+	 * to expand.
+	 */
+	isFeatured: (entry: TimelineHistoryEntry) => boolean
+	/**
+	 * @description
+	 * Returns the name of the person who did this action. For example, it could be the Customer's name
+	 * or "Administrator".
+	 */
+	getName?: (entry: TimelineHistoryEntry) => string | undefined
+	/**
+	 * @description
+	 * Optional Clarity icon shape to display with the entry. Examples: `'note'`, `['success-standard', 'is-solid']`
+	 */
+	getIconShape?: (entry: TimelineHistoryEntry) => string | string[] | undefined
 }
 
 /**
@@ -51,7 +51,7 @@ export interface HistoryEntryComponent {
  * @docsCategory custom-history-entry-components
  */
 export interface OrderHistoryEntryComponent extends HistoryEntryComponent {
-    order: OrderDetailFragment;
+	order: OrderDetailFragment
 }
 
 /**
@@ -62,7 +62,7 @@ export interface OrderHistoryEntryComponent extends HistoryEntryComponent {
  * @docsCategory custom-history-entry-components
  */
 export interface CustomerHistoryEntryComponent extends HistoryEntryComponent {
-    customer: CustomerFragment;
+	customer: CustomerFragment
 }
 
 /**
@@ -73,14 +73,14 @@ export interface CustomerHistoryEntryComponent extends HistoryEntryComponent {
  * @docsCategory custom-history-entry-components
  */
 export interface HistoryEntryConfig {
-    /**
-     * @description
-     * The type should correspond to the custom HistoryEntryType string.
-     */
-    type: string;
-    /**
-     * @description
-     * The component to be rendered for this history entry type.
-     */
-    component: Type<HistoryEntryComponent>;
+	/**
+	 * @description
+	 * The type should correspond to the custom HistoryEntryType string.
+	 */
+	type: string
+	/**
+	 * @description
+	 * The component to be rendered for this history entry type.
+	 */
+	component: Type<HistoryEntryComponent>
 }

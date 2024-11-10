@@ -1,5 +1,5 @@
 // language=Lua
-import { CustomScriptDefinition } from '../types';
+import { CustomScriptDefinition } from '../types'
 
 const script = `--[[
   Get job ids per provided states and filter by name
@@ -105,13 +105,13 @@ end
 rcall("DEL", tempSortedSetUnionKey)
 
 return {totalResults, filteredResults}
-`;
+`
 
 export const getJobsByType: CustomScriptDefinition<
-    [totalItems: number, jobIds: string[]],
-    [rangeStart: number, rangeEnd: number, queueName: string | undefined, ...states: string[]]
+	[totalItems: number, jobIds: string[]],
+	[rangeStart: number, rangeEnd: number, queueName: string | undefined, ...states: string[]]
 > = {
-    script,
-    numberOfKeys: 1,
-    name: 'getJobsByType',
-};
+	script,
+	numberOfKeys: 1,
+	name: 'getJobsByType',
+}

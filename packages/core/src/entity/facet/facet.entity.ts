@@ -1,15 +1,15 @@
-import { DeepPartial } from '@vendure/common/lib/shared-types';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { DeepPartial } from '@majel/common/lib/shared-types'
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm'
 
-import { ChannelAware } from '../../common/types/common-types';
-import { LocaleString, Translatable, Translation } from '../../common/types/locale-types';
-import { HasCustomFields } from '../../config/custom-field/custom-field-types';
-import { VendureEntity } from '../base/base.entity';
-import { Channel } from '../channel/channel.entity';
-import { CustomFacetFields } from '../custom-entity-fields';
-import { FacetValue } from '../facet-value/facet-value.entity';
+import { ChannelAware } from '../../common/types/common-types'
+import { LocaleString, Translatable, Translation } from '../../common/types/locale-types'
+import { HasCustomFields } from '../../config/custom-field/custom-field-types'
+import { MajelEntity } from '../base/base.entity'
+import { Channel } from '../channel/channel.entity'
+import { CustomFacetFields } from '../custom-entity-fields'
+import { FacetValue } from '../facet-value/facet-value.entity'
 
-import { FacetTranslation } from './facet-translation.entity';
+import { FacetTranslation } from './facet-translation.entity'
 
 /**
  * @description
@@ -23,29 +23,29 @@ import { FacetTranslation } from './facet-translation.entity';
  * @docsCategory entities
  */
 @Entity()
-export class Facet extends VendureEntity implements Translatable, HasCustomFields, ChannelAware {
-    constructor(input?: DeepPartial<Facet>) {
-        super(input);
-    }
+export class Facet extends MajelEntity implements Translatable, HasCustomFields, ChannelAware {
+	constructor(input?: DeepPartial<Facet>) {
+		super(input)
+	}
 
-    name: LocaleString;
+	name: LocaleString
 
-    @Column({ default: false })
-    isPrivate: boolean;
+	@Column({ default: false })
+	isPrivate: boolean
 
-    @Column({ unique: true })
-    code: string;
+	@Column({ unique: true })
+	code: string
 
-    @OneToMany(type => FacetTranslation, translation => translation.base, { eager: true })
-    translations: Array<Translation<Facet>>;
+	@OneToMany(type => FacetTranslation, translation => translation.base, { eager: true })
+	translations: Array<Translation<Facet>>
 
-    @OneToMany(type => FacetValue, value => value.facet)
-    values: FacetValue[];
+	@OneToMany(type => FacetValue, value => value.facet)
+	values: FacetValue[]
 
-    @Column(type => CustomFacetFields)
-    customFields: CustomFacetFields;
+	@Column(type => CustomFacetFields)
+	customFields: CustomFacetFields
 
-    @ManyToMany(type => Channel, channel => channel.facets)
-    @JoinTable()
-    channels: Channel[];
+	@ManyToMany(type => Channel, channel => channel.facets)
+	@JoinTable()
+	channels: Channel[]
 }

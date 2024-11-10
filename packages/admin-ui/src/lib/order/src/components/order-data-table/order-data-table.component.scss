@@ -1,4 +1,4 @@
-@import "../order-table/order-table-mixin";
+@import '../order-table/order-table-mixin';
 :host {
-    @include order-table;
+	@include order-table;
 }

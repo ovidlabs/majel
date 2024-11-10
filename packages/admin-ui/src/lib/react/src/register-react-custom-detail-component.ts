@@ -1,10 +1,10 @@
-import { APP_INITIALIZER } from '@angular/core';
-import { CustomDetailComponentLocationId, CustomDetailComponentService } from '@vendure/admin-ui/core';
-import { ElementType } from 'react';
+import { APP_INITIALIZER } from '@angular/core'
+import { CustomDetailComponentLocationId, CustomDetailComponentService } from '@majel/admin-ui/core'
+import { ElementType } from 'react'
 import {
-    REACT_CUSTOM_DETAIL_COMPONENT_OPTIONS,
-    ReactCustomDetailComponent,
-} from './components/react-custom-detail.component';
+	REACT_CUSTOM_DETAIL_COMPONENT_OPTIONS,
+	ReactCustomDetailComponent,
+} from './components/react-custom-detail.component'
 
 /**
  * @description
@@ -13,21 +13,21 @@ import {
  * @docsCategory react-extensions
  */
 export interface ReactCustomDetailComponentConfig {
-    /**
-     * @description
-     * The id of the detail page location in which to place the component.
-     */
-    locationId: CustomDetailComponentLocationId;
-    /**
-     * @description
-     * The React component to render.
-     */
-    component: ElementType;
-    /**
-     * @description
-     * Optional props to pass to the React component.
-     */
-    props?: Record<string, any>;
+	/**
+	 * @description
+	 * The id of the detail page location in which to place the component.
+	 */
+	locationId: CustomDetailComponentLocationId
+	/**
+	 * @description
+	 * The React component to render.
+	 */
+	component: ElementType
+	/**
+	 * @description
+	 * Optional props to pass to the React component.
+	 */
+	props?: Record<string, any>
 }
 
 /**
@@ -38,24 +38,24 @@ export interface ReactCustomDetailComponentConfig {
  * @docsCategory react-extensions
  */
 export function registerReactCustomDetailComponent(config: ReactCustomDetailComponentConfig) {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (customDetailComponentService: CustomDetailComponentService) => () => {
-            customDetailComponentService.registerCustomDetailComponent({
-                component: ReactCustomDetailComponent,
-                locationId: config.locationId,
-                providers: [
-                    {
-                        provide: REACT_CUSTOM_DETAIL_COMPONENT_OPTIONS,
-                        useValue: {
-                            component: config.component,
-                            props: config.props,
-                        },
-                    },
-                ],
-            });
-        },
-        deps: [CustomDetailComponentService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (customDetailComponentService: CustomDetailComponentService) => () => {
+			customDetailComponentService.registerCustomDetailComponent({
+				component: ReactCustomDetailComponent,
+				locationId: config.locationId,
+				providers: [
+					{
+						provide: REACT_CUSTOM_DETAIL_COMPONENT_OPTIONS,
+						useValue: {
+							component: config.component,
+							props: config.props,
+						},
+					},
+				],
+			})
+		},
+		deps: [CustomDetailComponentService],
+	}
 }

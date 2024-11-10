@@ -1,27 +1,27 @@
-import { LanguageCode } from '@vendure/common/lib/generated-types';
-import { DeepPartial } from '@vendure/common/lib/shared-types';
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { LanguageCode } from '@majel/common/lib/generated-types'
+import { DeepPartial } from '@majel/common/lib/shared-types'
+import { Column, Entity, Index, ManyToOne } from 'typeorm'
 
-import { Translation } from '../../common/types/locale-types';
-import { VendureEntity } from '../base/base.entity';
-import { CustomFacetValueFieldsTranslation } from '../custom-entity-fields';
+import { Translation } from '../../common/types/locale-types'
+import { MajelEntity } from '../base/base.entity'
+import { CustomFacetValueFieldsTranslation } from '../custom-entity-fields'
 
-import { FacetValue } from './facet-value.entity';
+import { FacetValue } from './facet-value.entity'
 
 @Entity()
-export class FacetValueTranslation extends VendureEntity implements Translation<FacetValue> {
-    constructor(input?: DeepPartial<Translation<FacetValue>>) {
-        super(input);
-    }
+export class FacetValueTranslation extends MajelEntity implements Translation<FacetValue> {
+	constructor(input?: DeepPartial<Translation<FacetValue>>) {
+		super(input)
+	}
 
-    @Column('varchar') languageCode: LanguageCode;
+	@Column('varchar') languageCode: LanguageCode
 
-    @Column() name: string;
+	@Column() name: string
 
-    @Index()
-    @ManyToOne(type => FacetValue, base => base.translations, { onDelete: 'CASCADE' })
-    base: FacetValue;
+	@Index()
+	@ManyToOne(type => FacetValue, base => base.translations, { onDelete: 'CASCADE' })
+	base: FacetValue
 
-    @Column(type => CustomFacetValueFieldsTranslation)
-    customFields: CustomFacetValueFieldsTranslation;
+	@Column(type => CustomFacetValueFieldsTranslation)
+	customFields: CustomFacetValueFieldsTranslation
 }

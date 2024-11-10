@@ -1,9 +1,9 @@
-import { Logger, VendurePlugin } from '@vendure/core';
+import { Logger, MajelPlugin } from '@majel/core'
 
-import { HARDEN_PLUGIN_OPTIONS, loggerCtx } from './constants';
-import { HideValidationErrorsPlugin } from './middleware/hide-validation-errors-plugin';
-import { QueryComplexityPlugin } from './middleware/query-complexity-plugin';
-import { HardenPluginOptions } from './types';
+import { HARDEN_PLUGIN_OPTIONS, loggerCtx } from './constants'
+import { HideValidationErrorsPlugin } from './middleware/hide-validation-errors-plugin'
+import { QueryComplexityPlugin } from './middleware/query-complexity-plugin'
+import { HardenPluginOptions } from './types'
 
 /**
  * @description
@@ -18,19 +18,19 @@ import { HardenPluginOptions } from './types';
  *
  * ## Installation
  *
- * `yarn add \@vendure/harden-plugin`
+ * `yarn add \@majel/harden-plugin`
  *
  * or
  *
- * `npm install \@vendure/harden-plugin`
+ * `npm install \@majel/harden-plugin`
  *
  * Then add the `HardenPlugin`, calling the `.init()` method with {@link HardenPluginOptions}:
  *
  * @example
  * ```ts
- * import { HardenPlugin } from '\@vendure/harden-plugin';
+ * import { HardenPlugin } from '\@majel/harden-plugin';
  *
- * const config: VendureConfig = {
+ * const config: MajelConfig = {
  *   // Add an instance of the plugin to the plugins array
  *   plugins: [
  *      HardenPlugin.init({
@@ -48,7 +48,7 @@ import { HardenPluginOptions } from './types';
  * be required to resolve that query.
  *
  * The goal of this setting is to prevent attacks in which a malicious actor crafts a very complex query in order to overwhelm your
- * server resources. Here's an example of a request which would likely overwhelm a Vendure server:
+ * server resources. Here's an example of a request which would likely overwhelm a Majel server:
  *
  * ```GraphQL
  * query EvilQuery {
@@ -81,7 +81,7 @@ import { HardenPluginOptions } from './types';
  * This evil query has a complexity score of 2,443,203 - much greater than the default of 1,000!
  *
  * The complexity score is calculated by the [graphql-query-complexity library](https://www.npmjs.com/package/graphql-query-complexity),
- * and by default uses the {@link defaultVendureComplexityEstimator}, which is tuned specifically to the Vendure Shop API.
+ * and by default uses the {@link defaultMajelComplexityEstimator}, which is tuned specifically to the Majel Shop API.
  *
  * :::caution
  * Note: By default, if the "take" argument is omitted from a list query (e.g. the `products` or `collections` query), a default factor of 1000 is applied.
@@ -99,9 +99,9 @@ import { HardenPluginOptions } from './types';
  *
  * @example
  * ```ts
- * import { HardenPlugin } from '\@vendure/harden-plugin';
+ * import { HardenPlugin } from '\@majel/harden-plugin';
  *
- * const config: VendureConfig = {
+ * const config: MajelConfig = {
  *   // A detailed summary is logged at the "debug" level
  *   logger: new DefaultLogger({ level: LogLevel.Debug }),
  *   plugins: [
@@ -143,34 +143,34 @@ import { HardenPluginOptions } from './types';
  *
  * @docsCategory core plugins/HardenPlugin
  */
-@VendurePlugin({
-    providers: [
-        {
-            provide: HARDEN_PLUGIN_OPTIONS,
-            useFactory: () => HardenPlugin.options,
-        },
-    ],
-    configuration: config => {
-        if (HardenPlugin.options.hideFieldSuggestions !== false) {
-            Logger.verbose('Configuring HideValidationErrorsPlugin', loggerCtx);
-            config.apiOptions.apolloServerPlugins.push(new HideValidationErrorsPlugin());
-        }
-        config.apiOptions.apolloServerPlugins.push(new QueryComplexityPlugin(HardenPlugin.options));
-        if (HardenPlugin.options.apiMode !== 'dev') {
-            config.apiOptions.adminApiDebug = false;
-            config.apiOptions.shopApiDebug = false;
-            config.apiOptions.introspection = false;
-        }
+@MajelPlugin({
+	providers: [
+		{
+			provide: HARDEN_PLUGIN_OPTIONS,
+			useFactory: () => HardenPlugin.options,
+		},
+	],
+	configuration: config => {
+		if (HardenPlugin.options.hideFieldSuggestions !== false) {
+			Logger.verbose('Configuring HideValidationErrorsPlugin', loggerCtx)
+			config.apiOptions.apolloServerPlugins.push(new HideValidationErrorsPlugin())
+		}
+		config.apiOptions.apolloServerPlugins.push(new QueryComplexityPlugin(HardenPlugin.options))
+		if (HardenPlugin.options.apiMode !== 'dev') {
+			config.apiOptions.adminApiDebug = false
+			config.apiOptions.shopApiDebug = false
+			config.apiOptions.introspection = false
+		}
 
-        return config;
-    },
-    compatibility: '^2.0.0',
+		return config
+	},
+	compatibility: '^2.0.0',
 })
 export class HardenPlugin {
-    static options: HardenPluginOptions;
+	static options: HardenPluginOptions
 
-    static init(options: HardenPluginOptions) {
-        this.options = options;
-        return HardenPlugin;
-    }
+	static init(options: HardenPluginOptions) {
+		this.options = options
+		return HardenPlugin
+	}
 }

@@ -1,4 +1,4 @@
 type Collection implements Node {
-    isPrivate: Boolean!
-    inheritFilters: Boolean!
+	isPrivate: Boolean!
+	inheritFilters: Boolean!
 }

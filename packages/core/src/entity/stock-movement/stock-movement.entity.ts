@@ -1,11 +1,11 @@
-import { StockMovementType } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
-import { Column, Entity, Index, ManyToOne, TableInheritance } from 'typeorm';
+import { StockMovementType } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
+import { Column, Entity, Index, ManyToOne, TableInheritance } from 'typeorm'
 
-import { VendureEntity } from '../base/base.entity';
-import { EntityId } from '../entity-id.decorator';
-import { ProductVariant } from '../product-variant/product-variant.entity';
-import { StockLocation } from '../stock-location/stock-location.entity';
+import { MajelEntity } from '../base/base.entity'
+import { EntityId } from '../entity-id.decorator'
+import { ProductVariant } from '../product-variant/product-variant.entity'
+import { StockLocation } from '../stock-location/stock-location.entity'
 
 /**
  * @description
@@ -18,21 +18,21 @@ import { StockLocation } from '../stock-location/stock-location.entity';
  */
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'discriminator' } })
-export abstract class StockMovement extends VendureEntity {
-    @Column({ nullable: false, type: 'varchar' })
-    readonly type: StockMovementType;
+export abstract class StockMovement extends MajelEntity {
+	@Column({ nullable: false, type: 'varchar' })
+	readonly type: StockMovementType
 
-    @Index()
-    @ManyToOne(type => ProductVariant, variant => variant.stockMovements)
-    productVariant: ProductVariant;
+	@Index()
+	@ManyToOne(type => ProductVariant, variant => variant.stockMovements)
+	productVariant: ProductVariant
 
-    @Index()
-    @ManyToOne(type => StockLocation, stockLocation => stockLocation.stockMovements, { onDelete: 'CASCADE' })
-    stockLocation: StockLocation;
+	@Index()
+	@ManyToOne(type => StockLocation, stockLocation => stockLocation.stockMovements, { onDelete: 'CASCADE' })
+	stockLocation: StockLocation
 
-    @EntityId()
-    stockLocationId: ID;
+	@EntityId()
+	stockLocationId: ID
 
-    @Column()
-    quantity: number;
+	@Column()
+	quantity: number
 }

@@ -1,44 +1,44 @@
 import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    Component,
-    ComponentRef,
-    Input,
-    OnDestroy,
-    ViewChild,
-    ViewContainerRef,
-} from '@angular/core';
-import { DashboardWidgetConfig } from '@vendure/admin-ui/core';
+	AfterViewInit,
+	ChangeDetectionStrategy,
+	Component,
+	ComponentRef,
+	Input,
+	OnDestroy,
+	ViewChild,
+	ViewContainerRef,
+} from '@angular/core'
+import { DashboardWidgetConfig } from '@majel/admin-ui/core'
 
 @Component({
-    selector: 'vdr-dashboard-widget',
-    templateUrl: './dashboard-widget.component.html',
-    styleUrls: ['./dashboard-widget.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-dashboard-widget',
+	templateUrl: './dashboard-widget.component.html',
+	styleUrls: ['./dashboard-widget.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardWidgetComponent implements AfterViewInit, OnDestroy {
-    @Input() widgetConfig: DashboardWidgetConfig;
+	@Input() widgetConfig: DashboardWidgetConfig
 
-    @ViewChild('portal', { read: ViewContainerRef })
-    private portal: ViewContainerRef;
+	@ViewChild('portal', { read: ViewContainerRef })
+	private portal: ViewContainerRef
 
-    private componentRef: ComponentRef<any>;
+	private componentRef: ComponentRef<any>
 
-    ngAfterViewInit(): void {
-        this.loadWidget();
-    }
+	ngAfterViewInit(): void {
+		this.loadWidget()
+	}
 
-    private async loadWidget() {
-        const loadComponentResult = this.widgetConfig.loadComponent();
-        const componentType =
-            loadComponentResult instanceof Promise ? await loadComponentResult : loadComponentResult;
-        this.componentRef = this.portal.createComponent(componentType);
-        this.componentRef.changeDetectorRef.detectChanges();
-    }
+	private async loadWidget() {
+		const loadComponentResult = this.widgetConfig.loadComponent()
+		const componentType =
+			loadComponentResult instanceof Promise ? await loadComponentResult : loadComponentResult
+		this.componentRef = this.portal.createComponent(componentType)
+		this.componentRef.changeDetectorRef.detectChanges()
+	}
 
-    ngOnDestroy() {
-        if (this.componentRef) {
-            this.componentRef.destroy();
-        }
-    }
+	ngOnDestroy() {
+		if (this.componentRef) {
+			this.componentRef.destroy()
+		}
+	}
 }

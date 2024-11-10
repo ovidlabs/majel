@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react'
 
 /**
  * @description
@@ -6,7 +6,7 @@ import React, { PropsWithChildren } from 'react';
  *
  * @example
  * ```ts
- * import { FormField } from '@vendure/admin-ui/react';
+ * import { FormField } from '@majel/admin-ui/react';
  *
  * export function MyReactComponent() {
  *     return (
@@ -20,22 +20,20 @@ import React, { PropsWithChildren } from 'react';
  * @docsCategory react-components
  */
 export function FormField(
-    props: PropsWithChildren<{
-        for?: string;
-        label?: string;
-        tooltip?: string;
-        invalid?: boolean;
-        errorMessage?: string;
-    }>,
+	props: PropsWithChildren<{
+		for?: string
+		label?: string
+		tooltip?: string
+		invalid?: boolean
+		errorMessage?: string
+	}>,
 ) {
-    return (
-        <div
-            className={`form-group ` + (!props.label ? 'no-label' : '') + (props.invalid ? 'clr-error' : '')}
-        >
-            {props.label && <label htmlFor={props.for ?? ''}>{props.label}</label>}
-            {props.tooltip && <div className="tooltip-text">{props.tooltip}</div>}
-            <div className={`input-row ` + (props.invalid ? 'invalid' : '')}>{props.children}</div>
-            {props.errorMessage && <div className="error-message">{props.errorMessage}</div>}
-        </div>
-    );
+	return (
+		<div className={`form-group ` + (!props.label ? 'no-label' : '') + (props.invalid ? 'clr-error' : '')}>
+			{props.label && <label htmlFor={props.for ?? ''}>{props.label}</label>}
+			{props.tooltip && <div className="tooltip-text">{props.tooltip}</div>}
+			<div className={`input-row ` + (props.invalid ? 'invalid' : '')}>{props.children}</div>
+			{props.errorMessage && <div className="error-message">{props.errorMessage}</div>}
+		</div>
+	)
 }

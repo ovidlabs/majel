@@ -6,16 +6,16 @@
 // scoped to this Angular component.
 
 :host {
-    display: block;
-    margin-bottom: 0.5rem;
+	display: block;
+	margin-bottom: 0.5rem;
 
-    &.readonly {
-        ::ng-deep .ProseMirror-menubar {
-            display: none;
-        }
-    }
+	&.readonly {
+		::ng-deep .ProseMirror-menubar {
+			display: none;
+		}
+	}
 }
 
 .context-menu {
-    position: fixed;
+	position: fixed;
 }

@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 
-type ProcessContextType = 'server' | 'worker';
-let currentContext: ProcessContextType = 'server';
+type ProcessContextType = 'server' | 'worker'
+let currentContext: ProcessContextType = 'server'
 
 /**
  * @description
  * The ProcessContext can be injected into your providers & modules in order to know whether it
- * is being executed in the context of the main Vendure server or the worker.
+ * is being executed in the context of the main Majel server or the worker.
  *
  * @example
  * ```ts
  * import { Injectable, OnApplicationBootstrap } from '\@nestjs/common';
- * import { ProcessContext } from '\@vendure/core';
+ * import { ProcessContext } from '\@majel/core';
  *
  * \@Injectable()
  * export class MyService implements OnApplicationBootstrap {
@@ -29,12 +29,12 @@ let currentContext: ProcessContextType = 'server';
  * @docsCategory common
  */
 export class ProcessContext {
-    get isServer(): boolean {
-        return currentContext === 'server';
-    }
-    get isWorker(): boolean {
-        return currentContext === 'worker';
-    }
+	get isServer(): boolean {
+		return currentContext === 'server'
+	}
+	get isWorker(): boolean {
+		return currentContext === 'worker'
+	}
 }
 
 /**
@@ -45,5 +45,5 @@ export class ProcessContext {
  * @internal
  */
 export function setProcessContext(context: ProcessContextType) {
-    currentContext = context;
+	currentContext = context
 }

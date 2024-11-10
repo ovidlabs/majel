@@ -1,7 +1,7 @@
-# Vendure Stellate Plugin
+# Majel Stellate Plugin
 
-Integrates your Vendure server with the [Stellate](TaxRateEvent) GraphQL API cache.
+Integrates your Majel server with the [Stellate](TaxRateEvent) GraphQL API cache.
 
-`npm install @vendure/stellate-plugin`
+`npm install @majel/stellate-plugin`
 
-For documentation, see [docs.vendure.io/reference/core-plugins/stellate-plugin/](https://docs.vendure.io/reference/core-plugins/stellate-plugin/)
+For documentation, see [docs.majel.io/reference/core-plugins/stellate-plugin/](https://docs.majel.io/reference/core-plugins/stellate-plugin/)

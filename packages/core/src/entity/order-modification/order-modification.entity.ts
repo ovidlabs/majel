@@ -1,15 +1,15 @@
-import { OrderAddress } from '@vendure/common/lib/generated-types';
-import { DeepPartial } from '@vendure/common/lib/shared-types';
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { OrderAddress } from '@majel/common/lib/generated-types'
+import { DeepPartial } from '@majel/common/lib/shared-types'
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 
-import { Calculated } from '../../common/calculated-decorator';
-import { VendureEntity } from '../base/base.entity';
-import { Money } from '../money.decorator';
-import { Order } from '../order/order.entity';
-import { OrderModificationLine } from '../order-line-reference/order-modification-line.entity';
-import { Payment } from '../payment/payment.entity';
-import { Refund } from '../refund/refund.entity';
-import { Surcharge } from '../surcharge/surcharge.entity';
+import { Calculated } from '../../common/calculated-decorator'
+import { MajelEntity } from '../base/base.entity'
+import { Money } from '../money.decorator'
+import { Order } from '../order/order.entity'
+import { OrderModificationLine } from '../order-line-reference/order-modification-line.entity'
+import { Payment } from '../payment/payment.entity'
+import { Refund } from '../refund/refund.entity'
+import { Surcharge } from '../surcharge/surcharge.entity'
 
 /**
  * @description
@@ -19,44 +19,44 @@ import { Surcharge } from '../surcharge/surcharge.entity';
  * @docsCategory entities
  */
 @Entity()
-export class OrderModification extends VendureEntity {
-    constructor(input?: DeepPartial<OrderModification>) {
-        super(input);
-    }
+export class OrderModification extends MajelEntity {
+	constructor(input?: DeepPartial<OrderModification>) {
+		super(input)
+	}
 
-    @Column()
-    note: string;
+	@Column()
+	note: string
 
-    @Index()
-    @ManyToOne(type => Order, order => order.modifications, { onDelete: 'CASCADE' })
-    order: Order;
+	@Index()
+	@ManyToOne(type => Order, order => order.modifications, { onDelete: 'CASCADE' })
+	order: Order
 
-    @OneToMany(type => OrderModificationLine, line => line.modification)
-    lines: OrderModificationLine[];
+	@OneToMany(type => OrderModificationLine, line => line.modification)
+	lines: OrderModificationLine[]
 
-    @OneToMany(type => Surcharge, surcharge => surcharge.orderModification)
-    surcharges: Surcharge[];
+	@OneToMany(type => Surcharge, surcharge => surcharge.orderModification)
+	surcharges: Surcharge[]
 
-    @Money()
-    priceChange: number;
+	@Money()
+	priceChange: number
 
-    @OneToOne(type => Payment)
-    @JoinColumn()
-    payment?: Payment;
+	@OneToOne(type => Payment)
+	@JoinColumn()
+	payment?: Payment
 
-    @OneToOne(type => Refund)
-    @JoinColumn()
-    refund?: Refund;
+	@OneToOne(type => Refund)
+	@JoinColumn()
+	refund?: Refund
 
-    @Column('simple-json', { nullable: true }) shippingAddressChange: OrderAddress;
+	@Column('simple-json', { nullable: true }) shippingAddressChange: OrderAddress
 
-    @Column('simple-json', { nullable: true }) billingAddressChange: OrderAddress;
+	@Column('simple-json', { nullable: true }) billingAddressChange: OrderAddress
 
-    @Calculated()
-    get isSettled(): boolean {
-        if (this.priceChange === 0) {
-            return true;
-        }
-        return !!this.payment || !!this.refund;
-    }
+	@Calculated()
+	get isSettled(): boolean {
+		if (this.priceChange === 0) {
+			return true
+		}
+		return !!this.payment || !!this.refund
+	}
 }

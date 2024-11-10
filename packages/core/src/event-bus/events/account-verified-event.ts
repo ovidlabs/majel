@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
-import { Customer } from '../../entity/customer/customer.entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Customer } from '../../entity/customer/customer.entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -10,8 +10,11 @@ import { VendureEvent } from '../vendure-event';
  * @docsCategory events
  * @docsPage Event Types
  */
-export class AccountVerifiedEvent extends VendureEvent {
-    constructor(public ctx: RequestContext, public customer: Customer) {
-        super();
-    }
+export class AccountVerifiedEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public customer: Customer,
+	) {
+		super()
+	}
 }

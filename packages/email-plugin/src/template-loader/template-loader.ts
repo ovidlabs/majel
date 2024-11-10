@@ -1,6 +1,6 @@
-import { Injector, RequestContext } from '@vendure/core';
+import { Injector, RequestContext } from '@majel/core'
 
-import { LoadTemplateInput, Partial } from '../types';
+import { LoadTemplateInput, Partial } from '../types'
 
 /**
  * @description
@@ -9,7 +9,7 @@ import { LoadTemplateInput, Partial } from '../types';
  *
  * @example
  * ```ts
- * import { EmailPlugin, TemplateLoader } from '\@vendure/email-plugin';
+ * import { EmailPlugin, TemplateLoader } from '\@majel/email-plugin';
  *
  * class MyTemplateLoader implements TemplateLoader {
  *      loadTemplate(injector, ctx, { type, templateName }){
@@ -17,7 +17,7 @@ import { LoadTemplateInput, Partial } from '../types';
  *      }
  * }
  *
- * // In vendure-config.ts:
+ * // In majel-config.ts:
  * ...
  * EmailPlugin.init({
  *     templateLoader: new MyTemplateLoader()
@@ -30,16 +30,16 @@ import { LoadTemplateInput, Partial } from '../types';
  * @docsWeight 0
  */
 export interface TemplateLoader {
-    /**
-     * @description
-     * Load template and return it's content as a string
-     */
-    loadTemplate(injector: Injector, ctx: RequestContext, input: LoadTemplateInput): Promise<string>;
+	/**
+	 * @description
+	 * Load template and return it's content as a string
+	 */
+	loadTemplate(injector: Injector, ctx: RequestContext, input: LoadTemplateInput): Promise<string>
 
-    /**
-     * @description
-     * Load partials and return their contents.
-     * This method is only called during initialization, i.e. during server startup.
-     */
-    loadPartials?(): Promise<Partial[]>;
+	/**
+	 * @description
+	 * Load partials and return their contents.
+	 * This method is only called during initialization, i.e. during server startup.
+	 */
+	loadPartials?(): Promise<Partial[]>
 }

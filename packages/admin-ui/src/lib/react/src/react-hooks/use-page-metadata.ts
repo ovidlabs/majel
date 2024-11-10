@@ -1,7 +1,7 @@
-import { BreadcrumbValue } from '@vendure/admin-ui/core';
-import { useContext } from 'react';
-import { HostedComponentContext } from '../directives/react-component-host.directive';
-import { HostedReactComponentContext, ReactRouteComponentOptions } from '../types';
+import { BreadcrumbValue } from '@majel/admin-ui/core'
+import { useContext } from 'react'
+import { HostedComponentContext } from '../directives/react-component-host.directive'
+import { HostedReactComponentContext, ReactRouteComponentOptions } from '../types'
 
 /**
  * @description
@@ -9,7 +9,7 @@ import { HostedReactComponentContext, ReactRouteComponentOptions } from '../type
  *
  * @example
  * ```ts
- * import { usePageMetadata } from '\@vendure/admin-ui/react';
+ * import { usePageMetadata } from '\@majel/admin-ui/react';
  * import { useEffect } from 'react';
  *
  * export const MyComponent = () => {
@@ -29,18 +29,18 @@ import { HostedReactComponentContext, ReactRouteComponentOptions } from '../type
  * @docsCategory react-hooks
  */
 export function usePageMetadata() {
-    const context = useContext(
-        HostedComponentContext,
-    ) as HostedReactComponentContext<ReactRouteComponentOptions>;
-    const setBreadcrumb = (newValue: BreadcrumbValue) => {
-        context.pageMetadataService?.setBreadcrumbs(newValue);
-    };
-    const setTitle = (newTitle: string) => {
-        context.pageMetadataService?.setTitle(newTitle);
-    };
+	const context = useContext(
+		HostedComponentContext,
+	) as HostedReactComponentContext<ReactRouteComponentOptions>
+	const setBreadcrumb = (newValue: BreadcrumbValue) => {
+		context.pageMetadataService?.setBreadcrumbs(newValue)
+	}
+	const setTitle = (newTitle: string) => {
+		context.pageMetadataService?.setTitle(newTitle)
+	}
 
-    return {
-        setBreadcrumb,
-        setTitle,
-    };
+	return {
+		setBreadcrumb,
+		setTitle,
+	}
 }

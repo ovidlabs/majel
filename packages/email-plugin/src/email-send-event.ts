@@ -1,6 +1,6 @@
-import { RequestContext, VendureEvent } from '@vendure/core';
+import { RequestContext, MajelEvent } from '@majel/core'
 
-import { EmailDetails } from './types';
+import { EmailDetails } from './types'
 
 /**
  * @description
@@ -11,13 +11,13 @@ import { EmailDetails } from './types';
  * @docsCategory core plugins/EmailPlugin
  * @since 2.2.0
  */
-export class EmailSendEvent extends VendureEvent {
-    constructor(
-        public readonly ctx: RequestContext,
-        public readonly details: EmailDetails,
-        public readonly success: boolean,
-        public readonly error?: Error,
-    ) {
-        super();
-    }
+export class EmailSendEvent extends MajelEvent {
+	constructor(
+		public readonly ctx: RequestContext,
+		public readonly details: EmailDetails,
+		public readonly success: boolean,
+		public readonly error?: Error,
+	) {
+		super()
+	}
 }

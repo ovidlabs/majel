@@ -1,18 +1,18 @@
-import { bootstrap, JobQueueService } from '@vendure/core';
+import { bootstrap, JobQueueService } from '@majel/core'
 
-import { devConfig } from './dev-config';
+import { devConfig } from './dev-config'
 
 /**
- * This bootstraps the dev server, used for testing Vendure during development.
+ * This bootstraps the dev server, used for testing Majel during development.
  */
 bootstrap(devConfig)
-    .then(app => {
-        if (process.env.RUN_JOB_QUEUE === '1') {
-            app.get(JobQueueService).start();
-        }
-    })
-    .catch(err => {
-        // eslint-disable-next-line
-        console.log(err);
-        process.exit(1);
-    });
+	.then(app => {
+		if (process.env.RUN_JOB_QUEUE === '1') {
+			app.get(JobQueueService).start()
+		}
+	})
+	.catch(err => {
+		// eslint-disable-next-line
+		console.log(err)
+		process.exit(1)
+	})

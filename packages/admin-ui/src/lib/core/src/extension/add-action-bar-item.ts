@@ -1,6 +1,6 @@
-import { APP_INITIALIZER, Provider } from '@angular/core';
-import { ActionBarItem } from '../providers/nav-builder/nav-builder-types';
-import { NavBuilderService } from '../providers/nav-builder/nav-builder.service';
+import { APP_INITIALIZER, Provider } from '@angular/core'
+import { ActionBarItem } from '../providers/nav-builder/nav-builder-types'
+import { NavBuilderService } from '../providers/nav-builder/nav-builder.service'
 
 /**
  * @description
@@ -21,12 +21,12 @@ import { NavBuilderService } from '../providers/nav-builder/nav-builder.service'
  * @docsCategory action-bar
  */
 export function addActionBarItem(config: ActionBarItem): Provider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (navBuilderService: NavBuilderService) => () => {
-            navBuilderService.addActionBarItem(config);
-        },
-        deps: [NavBuilderService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (navBuilderService: NavBuilderService) => () => {
+			navBuilderService.addActionBarItem(config)
+		},
+		deps: [NavBuilderService],
+	}
 }

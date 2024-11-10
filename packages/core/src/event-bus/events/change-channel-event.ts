@@ -1,9 +1,9 @@
-import { ID, Type } from '@vendure/common/lib/shared-types';
+import { ID, Type } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api';
-import { ChannelAware } from '../../common';
-import { VendureEntity } from '../../entity';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api'
+import { ChannelAware } from '../../common'
+import { MajelEntity } from '../../entity'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -14,14 +14,14 @@ import { VendureEvent } from '../vendure-event';
  * @docsPage Event Types
  * @since 1.4
  */
-export class ChangeChannelEvent<T extends ChannelAware & VendureEntity> extends VendureEvent {
-    constructor(
-        public ctx: RequestContext,
-        public entity: T,
-        public channelIds: ID[],
-        public type: 'assigned' | 'removed',
-        public entityType?: Type<T>,
-    ) {
-        super();
-    }
+export class ChangeChannelEvent<T extends ChannelAware & MajelEntity> extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public entity: T,
+		public channelIds: ID[],
+		public type: 'assigned' | 'removed',
+		public entityType?: Type<T>,
+	) {
+		super()
+	}
 }

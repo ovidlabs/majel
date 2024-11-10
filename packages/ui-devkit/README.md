@@ -1,5 +1,3 @@
-# @vendure/ui-devkit
+# @majel/ui-devkit
 
-This package contains utilities for creating extensions to the Vendure Admin UI.
-
-
+This package contains utilities for creating extensions to the Majel Admin UI.

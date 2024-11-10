@@ -1,20 +1,20 @@
-import { LanguageCode } from '@vendure/common/lib/generated-types';
-import { EntityHydrator, ShippingEligibilityChecker } from '@vendure/core';
+import { LanguageCode } from '@majel/common/lib/generated-types'
+import { EntityHydrator, ShippingEligibilityChecker } from '@majel/core'
 
 export const countryCodeShippingEligibilityChecker = new ShippingEligibilityChecker({
-    code: 'country-code-shipping-eligibility-checker',
-    description: [{ languageCode: LanguageCode.en, value: 'Country Shipping Eligibility Checker' }],
-    args: {
-        countryCode: {
-            type: 'string',
-        },
-    },
-    check: (ctx, order, args) => {
-        return order.shippingAddress?.countryCode === args.countryCode;
-    },
-});
+	code: 'country-code-shipping-eligibility-checker',
+	description: [{ languageCode: LanguageCode.en, value: 'Country Shipping Eligibility Checker' }],
+	args: {
+		countryCode: {
+			type: 'string',
+		},
+	},
+	check: (ctx, order, args) => {
+		return order.shippingAddress?.countryCode === args.countryCode
+	},
+})
 
-let entityHydrator: EntityHydrator;
+let entityHydrator: EntityHydrator
 
 /**
  * @description
@@ -24,17 +24,17 @@ let entityHydrator: EntityHydrator;
  * because the removal had not yet been persisted by the time the `applyPriceAdjustments()`
  * step was run (during which this checker will run).
  *
- * See https://github.com/vendure-ecommerce/vendure/issues/2548
+ * See https://github.com/majel-ecommerce/majel/issues/2548
  */
 export const hydratingShippingEligibilityChecker = new ShippingEligibilityChecker({
-    code: 'hydrating-shipping-eligibility-checker',
-    description: [{ languageCode: LanguageCode.en, value: 'Hydrating Shipping Eligibility Checker' }],
-    args: {},
-    init(injector) {
-        entityHydrator = injector.get(EntityHydrator);
-    },
-    check: async (ctx, order) => {
-        await entityHydrator.hydrate(ctx, order, { relations: ['lines.sellerChannel'] });
-        return true;
-    },
-});
+	code: 'hydrating-shipping-eligibility-checker',
+	description: [{ languageCode: LanguageCode.en, value: 'Hydrating Shipping Eligibility Checker' }],
+	args: {},
+	init(injector) {
+		entityHydrator = injector.get(EntityHydrator)
+	},
+	check: async (ctx, order) => {
+		await entityHydrator.hydrate(ctx, order, { relations: ['lines.sellerChannel'] })
+		return true
+	},
+})

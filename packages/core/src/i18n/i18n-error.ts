@@ -1,10 +1,10 @@
-import { GraphQLError } from 'graphql';
+import { GraphQLError } from 'graphql'
 
-import { LogLevel } from '../config/logger/vendure-logger';
+import { LogLevel } from '../config/logger/majel-logger'
 
 /**
  * @description
- * All errors thrown in the Vendure server must use or extend this error class. This allows the
+ * All errors thrown in the Majel server must use or extend this error class. This allows the
  * error message to be translated before being served to the client.
  *
  * The error messages should be provided in the form of a string key which corresponds to
@@ -16,14 +16,14 @@ import { LogLevel } from '../config/logger/vendure-logger';
  * @docsCategory errors
  */
 export abstract class I18nError extends GraphQLError {
-    protected constructor(
-        public message: string,
-        public variables: { [key: string]: string | number } = {},
-        public code?: string,
-        public logLevel: LogLevel = LogLevel.Warn,
-    ) {
-        super(message, {
-            extensions: { code },
-        });
-    }
+	protected constructor(
+		public message: string,
+		public variables: { [key: string]: string | number } = {},
+		public code?: string,
+		public logLevel: LogLevel = LogLevel.Warn,
+	) {
+		super(message, {
+			extensions: { code },
+		})
+	}
 }

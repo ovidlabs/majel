@@ -1,8 +1,7 @@
 type Zone implements Node {
-    id: ID!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    name: String!
-    members: [Region!]!
+	id: ID!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	name: String!
+	members: [Region!]!
 }
-

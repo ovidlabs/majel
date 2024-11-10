@@ -1,8 +1,8 @@
-import { RequestContext } from '../../api/common/request-context';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
-import { Order } from '../../entity/order/order.entity';
-import { OrderLine } from '../../entity/order-line/order-line.entity';
-import { ShippingLine } from '../../entity/shipping-line/shipping-line.entity';
+import { RequestContext } from '../../api/common/request-context'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
+import { Order } from '../../entity/order/order.entity'
+import { OrderLine } from '../../entity/order-line/order-line.entity'
+import { ShippingLine } from '../../entity/shipping-line/shipping-line.entity'
 /**
  * @description
  * This strategy is used to assign a given {@link ShippingLine} to one or more {@link OrderLine}s of the Order.
@@ -15,7 +15,7 @@ import { ShippingLine } from '../../entity/shipping-line/shipping-line.entity';
  * :::info
  *
  * This is configured via the `shippingOptions.shippingLineAssignmentStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
@@ -29,7 +29,7 @@ import { ShippingLine } from '../../entity/shipping-line/shipping-line.entity';
  *     RequestContext,
  *     ShippingLine,
  *     ShippingLineAssignmentStrategy,
- * } from '\@vendure/core';
+ * } from '\@majel/core';
  *
  * export class DigitalShippingLineAssignmentStrategy implements ShippingLineAssignmentStrategy {
  *     assignShippingLineToOrderLines(
@@ -50,9 +50,9 @@ import { ShippingLine } from '../../entity/shipping-line/shipping-line.entity';
  * @docsCategory shipping
  */
 export interface ShippingLineAssignmentStrategy extends InjectableStrategy {
-    assignShippingLineToOrderLines(
-        ctx: RequestContext,
-        shippingLine: ShippingLine,
-        order: Order,
-    ): OrderLine[] | Promise<OrderLine[]>;
+	assignShippingLineToOrderLines(
+		ctx: RequestContext,
+		shippingLine: ShippingLine,
+		order: Order,
+	): OrderLine[] | Promise<OrderLine[]>
 }

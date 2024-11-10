@@ -1,11 +1,11 @@
-import { CreateZoneInput, UpdateZoneInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreateZoneInput, UpdateZoneInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { Zone } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Zone } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type ZoneInputTypes = CreateZoneInput | UpdateZoneInput | ID;
+type ZoneInputTypes = CreateZoneInput | UpdateZoneInput | ID
 
 /**
  * @description
@@ -15,13 +15,13 @@ type ZoneInputTypes = CreateZoneInput | UpdateZoneInput | ID;
  * @docsCategory events
  * @docsPage Event Types
  */
-export class ZoneEvent extends VendureEntityEvent<Zone, ZoneInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: Zone,
-        type: 'created' | 'updated' | 'deleted',
-        input?: ZoneInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class ZoneEvent extends MajelEntityEvent<Zone, ZoneInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: Zone,
+		type: 'created' | 'updated' | 'deleted',
+		input?: ZoneInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

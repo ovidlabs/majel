@@ -3,8 +3,8 @@
 @include code-editor;
 
 .code-editor {
-    // prettier-ignore
-    ::ng-deep {
+	// prettier-ignore
+	::ng-deep {
        .je-string { color: var(--color-json-editor-string); }
        .je-number { color: var(--color-json-editor-number); }
        .je-boolean { color: var(--color-json-editor-boolean); }

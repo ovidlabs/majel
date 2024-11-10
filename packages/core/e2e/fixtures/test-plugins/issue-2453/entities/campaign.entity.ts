@@ -1,8 +1,8 @@
-import type { ID, LocaleString, Translation } from '@vendure/core';
-import { DeepPartial, Promotion, VendureEntity } from '@vendure/core';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import type { ID, LocaleString, Translation } from '@majel/core'
+import { DeepPartial, Promotion, MajelEntity } from '@majel/core'
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
 
-import { CampaignTranslation } from './campaign-translation.entity';
+import { CampaignTranslation } from './campaign-translation.entity'
 
 /**
  * @description This entity represents a front end campaign
@@ -10,24 +10,24 @@ import { CampaignTranslation } from './campaign-translation.entity';
  * @docsCategory entities
  */
 @Entity('campaign')
-export class Campaign extends VendureEntity {
-    constructor(input?: DeepPartial<Campaign>) {
-        super(input);
-    }
+export class Campaign extends MajelEntity {
+	constructor(input?: DeepPartial<Campaign>) {
+		super(input)
+	}
 
-    @Column({ unique: true })
-    code: string;
+	@Column({ unique: true })
+	code: string
 
-    name: LocaleString;
+	name: LocaleString
 
-    @ManyToOne(() => Promotion, { onDelete: 'SET NULL' })
-    promotion: Promotion | null;
+	@ManyToOne(() => Promotion, { onDelete: 'SET NULL' })
+	promotion: Promotion | null
 
-    @Column('int', { nullable: true })
-    promotionId: ID | null;
+	@Column('int', { nullable: true })
+	promotionId: ID | null
 
-    @OneToMany(() => CampaignTranslation, translation => translation.base, {
-        eager: true,
-    })
-    translations: Array<Translation<Campaign>>;
+	@OneToMany(() => CampaignTranslation, translation => translation.base, {
+		eager: true,
+	})
+	translations: Array<Translation<Campaign>>
 }

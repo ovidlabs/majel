@@ -1,11 +1,11 @@
-import { CreateRoleInput, UpdateRoleInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreateRoleInput, UpdateRoleInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { Role } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api/common/request-context'
+import { Role } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type RoleInputTypes = CreateRoleInput | UpdateRoleInput | ID;
+type RoleInputTypes = CreateRoleInput | UpdateRoleInput | ID
 
 /**
  * @description
@@ -15,13 +15,13 @@ type RoleInputTypes = CreateRoleInput | UpdateRoleInput | ID;
  * @docsPage Event Types
  * @since 1.4
  */
-export class RoleEvent extends VendureEntityEvent<Role, RoleInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: Role,
-        type: 'created' | 'updated' | 'deleted',
-        input?: RoleInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class RoleEvent extends MajelEntityEvent<Role, RoleInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: Role,
+		type: 'created' | 'updated' | 'deleted',
+		input?: RoleInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

@@ -1,8 +1,8 @@
-import { LanguageCode } from '../generated-types';
+import { LanguageCode } from '../generated-types'
 
-export type Translation<T> = T & { languageCode: LanguageCode };
-export type PossiblyTranslatable<T> = { translations?: Array<Translation<T>> | null };
-export type TranslationOf<E> = E extends PossiblyTranslatable<infer U> ? U : undefined;
+export type Translation<T> = T & { languageCode: LanguageCode }
+export type PossiblyTranslatable<T> = { translations?: Array<Translation<T>> | null }
+export type TranslationOf<E> = E extends PossiblyTranslatable<infer U> ? U : undefined
 
 /**
  * @description
@@ -10,8 +10,8 @@ export type TranslationOf<E> = E extends PossiblyTranslatable<infer U> ? U : und
  * one exists.
  */
 export function findTranslation<E extends PossiblyTranslatable<any>>(
-    entity: E | undefined,
-    languageCode: LanguageCode,
+	entity: E | undefined,
+	languageCode: LanguageCode,
 ): TranslationOf<E> | undefined {
-    return (entity?.translations || []).find(t => t.languageCode === languageCode);
+	return (entity?.translations || []).find(t => t.languageCode === languageCode)
 }

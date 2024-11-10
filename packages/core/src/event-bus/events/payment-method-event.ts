@@ -1,11 +1,11 @@
-import { CreatePaymentMethodInput, UpdatePaymentMethodInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreatePaymentMethodInput, UpdatePaymentMethodInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { PaymentMethod } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api/common/request-context'
+import { PaymentMethod } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type PaymentMethodInputTypes = CreatePaymentMethodInput | UpdatePaymentMethodInput | ID;
+type PaymentMethodInputTypes = CreatePaymentMethodInput | UpdatePaymentMethodInput | ID
 
 /**
  * @description
@@ -15,13 +15,13 @@ type PaymentMethodInputTypes = CreatePaymentMethodInput | UpdatePaymentMethodInp
  * @docsCategory events
  * @docsPage Event Types
  */
-export class PaymentMethodEvent extends VendureEntityEvent<PaymentMethod, PaymentMethodInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: PaymentMethod,
-        type: 'created' | 'updated' | 'deleted',
-        input?: PaymentMethodInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class PaymentMethodEvent extends MajelEntityEvent<PaymentMethod, PaymentMethodInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: PaymentMethod,
+		type: 'created' | 'updated' | 'deleted',
+		input?: PaymentMethodInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

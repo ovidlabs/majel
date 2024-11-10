@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react'
 
 /**
  * @description
@@ -6,7 +6,7 @@ import React, { PropsWithChildren } from 'react';
  *
  * @example
  * ```ts
- * import { Card } from '@vendure/admin-ui/react';
+ * import { Card } from '@majel/admin-ui/react';
  *
  * export function MyComponent() {
  *   return (
@@ -20,16 +20,16 @@ import React, { PropsWithChildren } from 'react';
  * @docsCategory react-components
  */
 export function Card(props: PropsWithChildren<{ title?: string; paddingX?: boolean }>) {
-    return (
-        <div className={'vdr-card'}>
-            <div className={`card-container ${props.paddingX !== false ? 'padding-x' : ''}`}>
-                {props.title && (
-                    <div className={'title-row'}>
-                        <div className="title">{props.title}</div>
-                    </div>
-                )}
-                <div className="contents">{props.children}</div>
-            </div>
-        </div>
-    );
+	return (
+		<div className={'vdr-card'}>
+			<div className={`card-container ${props.paddingX !== false ? 'padding-x' : ''}`}>
+				{props.title && (
+					<div className={'title-row'}>
+						<div className="title">{props.title}</div>
+					</div>
+				)}
+				<div className="contents">{props.children}</div>
+			</div>
+		</div>
+	)
 }

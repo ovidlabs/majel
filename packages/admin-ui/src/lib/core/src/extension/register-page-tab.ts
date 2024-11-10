@@ -1,5 +1,5 @@
-import { APP_INITIALIZER, Provider } from '@angular/core';
-import { PageService, PageTabConfig } from '../providers/page/page.service';
+import { APP_INITIALIZER, Provider } from '@angular/core'
+import { PageService, PageTabConfig } from '../providers/page/page.service'
 
 /**
  * @description
@@ -7,7 +7,7 @@ import { PageService, PageTabConfig } from '../providers/page/page.service';
  *
  * @example
  * ```ts title="providers.ts"
- * import { registerPageTab } from '@vendure/admin-ui/core';
+ * import { registerPageTab } from '@majel/admin-ui/core';
  * import { DeletedProductListComponent } from './components/deleted-product-list/deleted-product-list.component';
  *
  * export default [
@@ -22,15 +22,15 @@ import { PageService, PageTabConfig } from '../providers/page/page.service';
  * @docsCategory tabs
  */
 export function registerPageTab(config: PageTabConfig): Provider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (pageService: PageService) => () => {
-            pageService.registerPageTab({
-                ...config,
-                priority: config.priority || 1,
-            });
-        },
-        deps: [PageService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (pageService: PageService) => () => {
+			pageService.registerPageTab({
+				...config,
+				priority: config.priority || 1,
+			})
+		},
+		deps: [PageService],
+	}
 }

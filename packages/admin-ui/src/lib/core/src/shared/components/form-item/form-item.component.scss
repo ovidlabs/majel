@@ -1,16 +1,16 @@
 :host {
-    display: block;
+	display: block;
 }
 
 .form-group {
-    label {
-        font-size: var(--font-size-sm);
-        color: var(--color-weight-800);
-    }
+	label {
+		font-size: var(--font-size-sm);
+		color: var(--color-weight-800);
+	}
 }
 .tooltip-text {
-    font-size: var(--font-size-xs);
-    line-height: var(--font-size-sm);
+	font-size: var(--font-size-xs);
+	line-height: var(--font-size-sm);
 }
 
 //::ng-deep vdr-form-item + vdr-form-item {

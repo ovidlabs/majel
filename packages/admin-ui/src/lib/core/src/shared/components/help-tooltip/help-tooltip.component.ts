@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 
 @Component({
-    selector: 'vdr-help-tooltip',
-    templateUrl: './help-tooltip.component.html',
-    styleUrls: ['./help-tooltip.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-help-tooltip',
+	templateUrl: './help-tooltip.component.html',
+	styleUrls: ['./help-tooltip.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HelpTooltipComponent {
-    @Input() content: string;
-    @Input() position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'right' | 'left';
+	@Input() content: string
+	@Input() position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'right' | 'left'
 }

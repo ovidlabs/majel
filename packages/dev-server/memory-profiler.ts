@@ -10,16 +10,16 @@
  * ```
  */
 export function profileMemory() {
-    let max = 0;
-    setInterval(() => {
-        const rss = process.memoryUsage().rss;
-        if (max < rss) {
-            max = rss;
-            console.log(`Peak: ${inMb(max)}`);
-        }
-    }, 500);
+	let max = 0
+	setInterval(() => {
+		const rss = process.memoryUsage().rss
+		if (max < rss) {
+			max = rss
+			console.log(`Peak: ${inMb(max)}`)
+		}
+	}, 500)
 }
 
 function inMb(bytes: number) {
-    return `${Math.round((bytes / 1024 / 1024) * 100) / 100}MB;`;
+	return `${Math.round((bytes / 1024 / 1024) * 100) / 100}MB;`
 }

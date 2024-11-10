@@ -1,19 +1,19 @@
 import {
-    CreateGroupOptionInput,
-    CreateProductOptionInput,
-    UpdateProductOptionInput,
-} from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+	CreateGroupOptionInput,
+	CreateProductOptionInput,
+	UpdateProductOptionInput,
+} from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { ProductOption, ProductOptionGroup } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api/common/request-context'
+import { ProductOption, ProductOptionGroup } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
 type ProductOptionInputTypes =
-    | CreateGroupOptionInput
-    | CreateProductOptionInput
-    | UpdateProductOptionInput
-    | ID;
+	| CreateGroupOptionInput
+	| CreateProductOptionInput
+	| UpdateProductOptionInput
+	| ID
 
 /**
  * @description
@@ -23,13 +23,13 @@ type ProductOptionInputTypes =
  * @docsPage Event Types
  * @since 1.4
  */
-export class ProductOptionEvent extends VendureEntityEvent<ProductOption, ProductOptionInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: ProductOption,
-        type: 'created' | 'updated' | 'deleted',
-        input?: ProductOptionInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class ProductOptionEvent extends MajelEntityEvent<ProductOption, ProductOptionInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: ProductOption,
+		type: 'created' | 'updated' | 'deleted',
+		input?: ProductOptionInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

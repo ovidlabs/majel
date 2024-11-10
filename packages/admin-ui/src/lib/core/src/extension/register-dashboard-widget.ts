@@ -1,10 +1,10 @@
-import { APP_INITIALIZER, FactoryProvider } from '@angular/core';
+import { APP_INITIALIZER, FactoryProvider } from '@angular/core'
 
 import {
-    DashboardWidgetConfig,
-    WidgetLayoutDefinition,
-} from '../providers/dashboard-widget/dashboard-widget-types';
-import { DashboardWidgetService } from '../providers/dashboard-widget/dashboard-widget.service';
+	DashboardWidgetConfig,
+	WidgetLayoutDefinition,
+} from '../providers/dashboard-widget/dashboard-widget-types'
+import { DashboardWidgetService } from '../providers/dashboard-widget/dashboard-widget.service'
 
 /**
  * @description
@@ -14,14 +14,14 @@ import { DashboardWidgetService } from '../providers/dashboard-widget/dashboard-
  * @docsCategory dashboard-widgets
  */
 export function registerDashboardWidget(id: string, config: DashboardWidgetConfig): FactoryProvider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (dashboardWidgetService: DashboardWidgetService) => () => {
-            dashboardWidgetService.registerWidget(id, config);
-        },
-        deps: [DashboardWidgetService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (dashboardWidgetService: DashboardWidgetService) => () => {
+			dashboardWidgetService.registerWidget(id, config)
+		},
+		deps: [DashboardWidgetService],
+	}
 }
 
 /**
@@ -31,12 +31,12 @@ export function registerDashboardWidget(id: string, config: DashboardWidgetConfi
  * @docsCategory dashboard-widgets
  */
 export function setDashboardWidgetLayout(layoutDef: WidgetLayoutDefinition): FactoryProvider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (dashboardWidgetService: DashboardWidgetService) => () => {
-            dashboardWidgetService.setDefaultLayout(layoutDef);
-        },
-        deps: [DashboardWidgetService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (dashboardWidgetService: DashboardWidgetService) => () => {
+			dashboardWidgetService.setDefaultLayout(layoutDef)
+		},
+		deps: [DashboardWidgetService],
+	}
 }

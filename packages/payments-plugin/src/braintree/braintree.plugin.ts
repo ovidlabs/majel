@@ -1,10 +1,10 @@
-import { LanguageCode, PluginCommonModule, Type, VendurePlugin } from '@vendure/core';
-import { gql } from 'graphql-tag';
+import { LanguageCode, PluginCommonModule, Type, MajelPlugin } from '@majel/core'
+import { gql } from 'graphql-tag'
 
-import { braintreePaymentMethodHandler } from './braintree.handler';
-import { BraintreeResolver } from './braintree.resolver';
-import { BRAINTREE_PLUGIN_OPTIONS } from './constants';
-import { BraintreePluginOptions } from './types';
+import { braintreePaymentMethodHandler } from './braintree.handler'
+import { BraintreeResolver } from './braintree.resolver'
+import { BRAINTREE_PLUGIN_OPTIONS } from './constants'
+import { BraintreePluginOptions } from './types'
 
 /**
  * @description
@@ -15,20 +15,20 @@ import { BraintreePluginOptions } from './types';
  * 1. You will need to create a Braintree sandbox account as outlined in https://developers.braintreepayments.com/start/overview.
  * 2. Then install `braintree` and `@types/braintree` from npm. This plugin was written with `v3.x` of the Braintree lib.
  *     ```shell
- *     yarn add \@vendure/payments-plugin braintree
+ *     yarn add \@majel/payments-plugin braintree
  *     yarn add -D \@types/braintree
  *     ```
  *     or
  *     ```shell
- *     npm install \@vendure/payments-plugin braintree
+ *     npm install \@majel/payments-plugin braintree
  *     npm install -D \@types/braintree
  *     ```
  *
  * ## Setup
  *
- * 1. Add the plugin to your VendureConfig `plugins` array:
+ * 1. Add the plugin to your MajelConfig `plugins` array:
  *     ```ts
- *     import { BraintreePlugin } from '\@vendure/payments-plugin/package/braintree';
+ *     import { BraintreePlugin } from '\@majel/payments-plugin/package/braintree';
  *     import { Environment } from 'braintree';
  *
  *     // ...
@@ -238,42 +238,42 @@ import { BraintreePluginOptions } from './types';
  * @docsCategory core plugins/PaymentsPlugin
  * @docsPage BraintreePlugin
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    providers: [
-        {
-            provide: BRAINTREE_PLUGIN_OPTIONS,
-            useFactory: () => BraintreePlugin.options,
-        },
-    ],
-    configuration: config => {
-        config.paymentOptions.paymentMethodHandlers.push(braintreePaymentMethodHandler);
-        if (BraintreePlugin.options.storeCustomersInBraintree === true) {
-            config.customFields.Customer.push({
-                name: 'braintreeCustomerId',
-                type: 'string',
-                label: [{ languageCode: LanguageCode.en, value: 'Braintree Customer ID' }],
-                nullable: true,
-                public: false,
-                readonly: true,
-            });
-        }
-        return config;
-    },
-    shopApiExtensions: {
-        schema: gql`
-            extend type Query {
-                generateBraintreeClientToken(orderId: ID, includeCustomerId: Boolean): String!
-            }
-        `,
-        resolvers: [BraintreeResolver],
-    },
-    compatibility: '^2.0.0',
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	providers: [
+		{
+			provide: BRAINTREE_PLUGIN_OPTIONS,
+			useFactory: () => BraintreePlugin.options,
+		},
+	],
+	configuration: config => {
+		config.paymentOptions.paymentMethodHandlers.push(braintreePaymentMethodHandler)
+		if (BraintreePlugin.options.storeCustomersInBraintree === true) {
+			config.customFields.Customer.push({
+				name: 'braintreeCustomerId',
+				type: 'string',
+				label: [{ languageCode: LanguageCode.en, value: 'Braintree Customer ID' }],
+				nullable: true,
+				public: false,
+				readonly: true,
+			})
+		}
+		return config
+	},
+	shopApiExtensions: {
+		schema: gql`
+			extend type Query {
+				generateBraintreeClientToken(orderId: ID, includeCustomerId: Boolean): String!
+			}
+		`,
+		resolvers: [BraintreeResolver],
+	},
+	compatibility: '^2.0.0',
 })
 export class BraintreePlugin {
-    static options: BraintreePluginOptions = {};
-    static init(options: BraintreePluginOptions): Type<BraintreePlugin> {
-        this.options = options;
-        return BraintreePlugin;
-    }
+	static options: BraintreePluginOptions = {}
+	static init(options: BraintreePluginOptions): Type<BraintreePlugin> {
+		this.options = options
+		return BraintreePlugin
+	}
 }

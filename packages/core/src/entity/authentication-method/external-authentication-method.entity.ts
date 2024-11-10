@@ -1,11 +1,11 @@
-import { DeepPartial } from '@vendure/common/lib/shared-types';
-import { ChildEntity, Column } from 'typeorm';
+import { DeepPartial } from '@majel/common/lib/shared-types'
+import { ChildEntity, Column } from 'typeorm'
 
-import { AuthenticationMethod } from './authentication-method.entity';
+import { AuthenticationMethod } from './authentication-method.entity'
 
 /**
  * @description
- * This method is used when an external authentication service is used to authenticate Vendure Users.
+ * This method is used when an external authentication service is used to authenticate Majel Users.
  * Examples of external auth include social logins or corporate identity servers.
  *
  * @docsCategory entities
@@ -13,16 +13,16 @@ import { AuthenticationMethod } from './authentication-method.entity';
  */
 @ChildEntity()
 export class ExternalAuthenticationMethod extends AuthenticationMethod {
-    constructor(input: DeepPartial<ExternalAuthenticationMethod>) {
-        super(input);
-    }
+	constructor(input: DeepPartial<ExternalAuthenticationMethod>) {
+		super(input)
+	}
 
-    @Column()
-    strategy: string;
+	@Column()
+	strategy: string
 
-    @Column()
-    externalIdentifier: string;
+	@Column()
+	externalIdentifier: string
 
-    @Column('simple-json')
-    metadata: any;
+	@Column('simple-json')
+	metadata: any
 }

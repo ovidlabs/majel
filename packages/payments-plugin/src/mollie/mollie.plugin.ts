@@ -1,23 +1,23 @@
-import type { ListParameters } from '@mollie/api-client/dist/types/src/binders/methods/parameters';
+import type { ListParameters } from '@mollie/api-client/dist/types/src/binders/methods/parameters'
 import {
-    Injector,
-    Order,
-    PluginCommonModule,
-    RequestContext,
-    RuntimeVendureConfig,
-    VendurePlugin,
-} from '@vendure/core';
+	Injector,
+	Order,
+	PluginCommonModule,
+	RequestContext,
+	RuntimeMajelConfig,
+	MajelPlugin,
+} from '@majel/core'
 
-import { shopApiExtensions, adminApiExtensions } from './api-extensions';
-import { PLUGIN_INIT_OPTIONS } from './constants';
-import { orderCustomFields } from './custom-fields';
-import { MollieCommonResolver } from './mollie.common-resolver';
-import { MollieController } from './mollie.controller';
-import { molliePaymentHandler } from './mollie.handler';
-import { MollieService } from './mollie.service';
-import { MollieShopResolver } from './mollie.shop-resolver';
+import { shopApiExtensions, adminApiExtensions } from './api-extensions'
+import { PLUGIN_INIT_OPTIONS } from './constants'
+import { orderCustomFields } from './custom-fields'
+import { MollieCommonResolver } from './mollie.common-resolver'
+import { MollieController } from './mollie.controller'
+import { molliePaymentHandler } from './mollie.handler'
+import { MollieService } from './mollie.service'
+import { MollieShopResolver } from './mollie.shop-resolver'
 
-export type AdditionalEnabledPaymentMethodsParams = Partial<Omit<ListParameters, 'resource'>>;
+export type AdditionalEnabledPaymentMethodsParams = Partial<Omit<ListParameters, 'resource'>>
 
 /**
  * @description
@@ -27,54 +27,54 @@ export type AdditionalEnabledPaymentMethodsParams = Partial<Omit<ListParameters,
  * @docsPage MolliePlugin
  */
 export interface MolliePluginOptions {
-    /**
-     * @description
-     * The host of your Vendure server, e.g. `'https://my-vendure.io'`.
-     * This is used by Mollie to send webhook events to the Vendure server
-     */
-    vendureHost: string;
+	/**
+	 * @description
+	 * The host of your Majel server, e.g. `'https://my-majel.io'`.
+	 * This is used by Mollie to send webhook events to the Majel server
+	 */
+	majelHost: string
 
-    /**
-     * @description
-     * Provide additional parameters to the Mollie enabled payment methods API call. By default,
-     * the plugin will already pass the `resource` parameter.
-     *
-     * For example, if you want to provide a `locale` and `billingCountry` for the API call, you can do so like this:
-     *
-     * **Note:** The `order` argument is possibly `null`, this could happen when you fetch the available payment methods
-     * before the order is created.
-     *
-     * @example
-     * ```ts
-     * import { VendureConfig } from '\@vendure/core';
-     * import { MolliePlugin, getLocale } from '\@vendure/payments-plugin/package/mollie';
-     *
-     * export const config: VendureConfig = {
-     *   // ...
-     *   plugins: [
-     *     MolliePlugin.init({
-     *       enabledPaymentMethodsParams: (injector, ctx, order) => {
-     *         const locale = order?.billingAddress?.countryCode
-     *             ? getLocale(order.billingAddress.countryCode, ctx.languageCode)
-     *             : undefined;
-     *
-     *         return {
-     *           locale,
-     *           billingCountry: order?.billingAddress?.countryCode,
-     *         },
-     *       }
-     *     }),
-     *   ],
-     * };
-     * ```
-     *
-     * @since 2.2.0
-     */
-    enabledPaymentMethodsParams?: (
-        injector: Injector,
-        ctx: RequestContext,
-        order: Order | null,
-    ) => AdditionalEnabledPaymentMethodsParams | Promise<AdditionalEnabledPaymentMethodsParams>;
+	/**
+	 * @description
+	 * Provide additional parameters to the Mollie enabled payment methods API call. By default,
+	 * the plugin will already pass the `resource` parameter.
+	 *
+	 * For example, if you want to provide a `locale` and `billingCountry` for the API call, you can do so like this:
+	 *
+	 * **Note:** The `order` argument is possibly `null`, this could happen when you fetch the available payment methods
+	 * before the order is created.
+	 *
+	 * @example
+	 * ```ts
+	 * import { MajelConfig } from '\@majel/core';
+	 * import { MolliePlugin, getLocale } from '\@majel/payments-plugin/package/mollie';
+	 *
+	 * export const config: MajelConfig = {
+	 *   // ...
+	 *   plugins: [
+	 *     MolliePlugin.init({
+	 *       enabledPaymentMethodsParams: (injector, ctx, order) => {
+	 *         const locale = order?.billingAddress?.countryCode
+	 *             ? getLocale(order.billingAddress.countryCode, ctx.languageCode)
+	 *             : undefined;
+	 *
+	 *         return {
+	 *           locale,
+	 *           billingCountry: order?.billingAddress?.countryCode,
+	 *         },
+	 *       }
+	 *     }),
+	 *   ],
+	 * };
+	 * ```
+	 *
+	 * @since 2.2.0
+	 */
+	enabledPaymentMethodsParams?: (
+		injector: Injector,
+		ctx: RequestContext,
+		order: Order | null,
+	) => AdditionalEnabledPaymentMethodsParams | Promise<AdditionalEnabledPaymentMethodsParams>
 }
 
 /**
@@ -87,22 +87,22 @@ export interface MolliePluginOptions {
  * 1. You will need to create a Mollie account and get your apiKey in the dashboard.
  * 2. Install the Payments plugin and the Mollie client:
  *
- *     `yarn add \@vendure/payments-plugin \@mollie/api-client`
+ *     `yarn add \@majel/payments-plugin \@mollie/api-client`
  *
  *     or
  *
- *     `npm install \@vendure/payments-plugin \@mollie/api-client`
+ *     `npm install \@majel/payments-plugin \@mollie/api-client`
  *
  * ## Setup
  *
- * 1. Add the plugin to your VendureConfig `plugins` array:
+ * 1. Add the plugin to your MajelConfig `plugins` array:
  *     ```ts
- *     import { MolliePlugin } from '\@vendure/payments-plugin/package/mollie';
+ *     import { MolliePlugin } from '\@majel/payments-plugin/package/mollie';
  *
  *     // ...
  *
  *     plugins: [
- *       MolliePlugin.init({ vendureHost: 'https://yourhost.io/' }),
+ *       MolliePlugin.init({ majelHost: 'https://yourhost.io/' }),
  *     ]
  *     ```
  * 2. Run a database migration to add the `mollieOrderId` custom field to the order entity.
@@ -189,35 +189,35 @@ export interface MolliePluginOptions {
  * @docsPage MolliePlugin
  * @docsWeight 0
  */
-@VendurePlugin({
-    imports: [PluginCommonModule],
-    controllers: [MollieController],
-    providers: [MollieService, { provide: PLUGIN_INIT_OPTIONS, useFactory: () => MolliePlugin.options }],
-    configuration: (config: RuntimeVendureConfig) => {
-        config.paymentOptions.paymentMethodHandlers.push(molliePaymentHandler);
-        config.customFields.Order.push(...orderCustomFields);
-        return config;
-    },
-    shopApiExtensions: {
-        schema: shopApiExtensions,
-        resolvers: [MollieCommonResolver, MollieShopResolver],
-    },
-    adminApiExtensions: {
-        schema: adminApiExtensions,
-        resolvers: [MollieCommonResolver],
-    },
-    compatibility: '^2.2.0',
+@MajelPlugin({
+	imports: [PluginCommonModule],
+	controllers: [MollieController],
+	providers: [MollieService, { provide: PLUGIN_INIT_OPTIONS, useFactory: () => MolliePlugin.options }],
+	configuration: (config: RuntimeMajelConfig) => {
+		config.paymentOptions.paymentMethodHandlers.push(molliePaymentHandler)
+		config.customFields.Order.push(...orderCustomFields)
+		return config
+	},
+	shopApiExtensions: {
+		schema: shopApiExtensions,
+		resolvers: [MollieCommonResolver, MollieShopResolver],
+	},
+	adminApiExtensions: {
+		schema: adminApiExtensions,
+		resolvers: [MollieCommonResolver],
+	},
+	compatibility: '^2.2.0',
 })
 export class MolliePlugin {
-    static options: MolliePluginOptions;
+	static options: MolliePluginOptions
 
-    /**
-     * @description
-     * Initialize the mollie payment plugin
-     * @param vendureHost is needed to pass to mollie for callback
-     */
-    static init(options: MolliePluginOptions): typeof MolliePlugin {
-        this.options = options;
-        return MolliePlugin;
-    }
+	/**
+	 * @description
+	 * Initialize the mollie payment plugin
+	 * @param majelHost is needed to pass to mollie for callback
+	 */
+	static init(options: MolliePluginOptions): typeof MolliePlugin {
+		this.options = options
+		return MolliePlugin
+	}
 }

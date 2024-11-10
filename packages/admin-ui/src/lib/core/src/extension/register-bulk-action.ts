@@ -1,7 +1,7 @@
-import { APP_INITIALIZER, FactoryProvider } from '@angular/core';
+import { APP_INITIALIZER, FactoryProvider } from '@angular/core'
 
-import { BulkActionRegistryService } from '../providers/bulk-action-registry/bulk-action-registry.service';
-import { BulkAction } from '../providers/bulk-action-registry/bulk-action-types';
+import { BulkActionRegistryService } from '../providers/bulk-action-registry/bulk-action-registry.service'
+import { BulkAction } from '../providers/bulk-action-registry/bulk-action-types'
 
 /**
  * @description
@@ -17,7 +17,7 @@ import { BulkAction } from '../providers/bulk-action-registry/bulk-action-types'
  *
  * @example
  * ```ts title="providers.ts"
- * import { ModalService, registerBulkAction, SharedModule } from '\@vendure/admin-ui/core';
+ * import { ModalService, registerBulkAction, SharedModule } from '\@majel/admin-ui/core';
  * import { ProductDataTranslationService } from './product-data-translation.service';
  *
  * export default [
@@ -50,12 +50,12 @@ import { BulkAction } from '../providers/bulk-action-registry/bulk-action-types'
  * @docsCategory bulk-actions
  */
 export function registerBulkAction(bulkAction: BulkAction): FactoryProvider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (registry: BulkActionRegistryService) => () => {
-            registry.registerBulkAction(bulkAction);
-        },
-        deps: [BulkActionRegistryService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (registry: BulkActionRegistryService) => () => {
+			registry.registerBulkAction(bulkAction)
+		},
+		deps: [BulkActionRegistryService],
+	}
 }

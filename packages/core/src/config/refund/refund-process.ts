@@ -1,15 +1,15 @@
 import {
-    OnTransitionEndFn,
-    OnTransitionErrorFn,
-    OnTransitionStartFn,
-    Transitions,
-} from '../../common/finite-state-machine/types';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
+	OnTransitionEndFn,
+	OnTransitionErrorFn,
+	OnTransitionStartFn,
+	Transitions,
+} from '../../common/finite-state-machine/types'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
 import {
-    CustomRefundStates,
-    RefundState,
-    RefundTransitionData,
-} from '../../service/helpers/refund-state-machine/refund-state';
+	CustomRefundStates,
+	RefundState,
+	RefundTransitionData,
+} from '../../service/helpers/refund-state-machine/refund-state'
 
 /**
  * @description
@@ -23,10 +23,10 @@ import {
  * @docsCategory payment
  */
 export interface RefundProcess<State extends keyof CustomRefundStates | string> extends InjectableStrategy {
-    transitions?: Transitions<State, State | RefundState> & Partial<Transitions<RefundState | State>>;
-    onTransitionStart?: OnTransitionStartFn<State | RefundState, RefundTransitionData>;
-    onTransitionEnd?: OnTransitionEndFn<State | RefundState, RefundTransitionData>;
-    onTransitionError?: OnTransitionErrorFn<State | RefundState>;
+	transitions?: Transitions<State, State | RefundState> & Partial<Transitions<RefundState | State>>
+	onTransitionStart?: OnTransitionStartFn<State | RefundState, RefundTransitionData>
+	onTransitionEnd?: OnTransitionEndFn<State | RefundState, RefundTransitionData>
+	onTransitionError?: OnTransitionErrorFn<State | RefundState>
 }
 
 /**
@@ -38,4 +38,4 @@ export interface RefundProcess<State extends keyof CustomRefundStates | string> 
  * @deprecated Use RefundProcess
  */
 export interface CustomRefundProcess<State extends keyof CustomRefundStates | string>
-    extends RefundProcess<State> {}
+	extends RefundProcess<State> {}

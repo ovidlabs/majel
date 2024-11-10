@@ -1,31 +1,31 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { DataService, Dialog, GetCustomerGroupsQuery, ItemOf } from '@vendure/admin-ui/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { DataService, Dialog, GetCustomerGroupsQuery, ItemOf } from '@majel/admin-ui/core'
+import { Observable } from 'rxjs'
 
 @Component({
-    selector: 'vdr-select-customer-group-dialog',
-    templateUrl: './select-customer-group-dialog.component.html',
-    styleUrls: ['./select-customer-group-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'vdr-select-customer-group-dialog',
+	templateUrl: './select-customer-group-dialog.component.html',
+	styleUrls: ['./select-customer-group-dialog.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectCustomerGroupDialogComponent implements Dialog<string[]>, OnInit {
-    resolveWith: (result?: string[]) => void;
-    groups$: Observable<Array<ItemOf<GetCustomerGroupsQuery, 'customerGroups'>>>;
-    selectedGroupIds: string[] = [];
+	resolveWith: (result?: string[]) => void
+	groups$: Observable<Array<ItemOf<GetCustomerGroupsQuery, 'customerGroups'>>>
+	selectedGroupIds: string[] = []
 
-    constructor(private dataService: DataService) {}
+	constructor(private dataService: DataService) {}
 
-    ngOnInit() {
-        this.groups$ = this.dataService.customer
-            .getCustomerGroupList()
-            .mapStream(res => res.customerGroups.items);
-    }
+	ngOnInit() {
+		this.groups$ = this.dataService.customer
+			.getCustomerGroupList()
+			.mapStream(res => res.customerGroups.items)
+	}
 
-    cancel() {
-        this.resolveWith();
-    }
+	cancel() {
+		this.resolveWith()
+	}
 
-    add() {
-        this.resolveWith(this.selectedGroupIds);
-    }
+	add() {
+		this.resolveWith(this.selectedGroupIds)
+	}
 }

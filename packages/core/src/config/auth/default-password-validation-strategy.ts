@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
+import { RequestContext } from '../../api/common/request-context'
 
-import { PasswordValidationStrategy } from './password-validation-strategy';
+import { PasswordValidationStrategy } from './password-validation-strategy'
 
 /**
  * @description
@@ -16,20 +16,20 @@ import { PasswordValidationStrategy } from './password-validation-strategy';
  * @since 1.5.0
  */
 export class DefaultPasswordValidationStrategy implements PasswordValidationStrategy {
-    constructor(private options: { minLength?: number; regexp?: RegExp }) {}
+	constructor(private options: { minLength?: number; regexp?: RegExp }) {}
 
-    validate(ctx: RequestContext, password: string): boolean | string {
-        const { minLength, regexp } = this.options;
-        if (minLength != null) {
-            if (password.length < minLength) {
-                return false;
-            }
-        }
-        if (regexp != null) {
-            if (!regexp.test(password)) {
-                return false;
-            }
-        }
-        return true;
-    }
+	validate(ctx: RequestContext, password: string): boolean | string {
+		const { minLength, regexp } = this.options
+		if (minLength != null) {
+			if (password.length < minLength) {
+				return false
+			}
+		}
+		if (regexp != null) {
+			if (!regexp.test(password)) {
+				return false
+			}
+		}
+		return true
+	}
 }

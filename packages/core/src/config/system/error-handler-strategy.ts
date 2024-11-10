@@ -1,7 +1,7 @@
-import { ArgumentsHost } from '@nestjs/common';
+import { ArgumentsHost } from '@nestjs/common'
 
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
-import { Job } from '../../job-queue/job';
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
+import { Job } from '../../job-queue/job'
 
 /**
  * @description
@@ -12,7 +12,7 @@ import { Job } from '../../job-queue/job';
  * :::info
  *
  * This is configured via the `systemOptions.errorHandlers` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
@@ -20,7 +20,7 @@ import { Job } from '../../job-queue/job';
  * ```ts
  * import { ArgumentsHost, ExecutionContext } from '\@nestjs/common';
  * import { GqlContextType, GqlExecutionContext } from '\@nestjs/graphql';
- * import { ErrorHandlerStrategy, I18nError, Injector, Job, LogLevel } from '\@vendure/core';
+ * import { ErrorHandlerStrategy, I18nError, Injector, Job, LogLevel } from '\@majel/core';
  *
  * import { MonitoringService } from './monitoring.service';
  *
@@ -58,17 +58,17 @@ import { Job } from '../../job-queue/job';
  * @docsCategory Errors
  */
 export interface ErrorHandlerStrategy extends InjectableStrategy {
-    /**
-     * @description
-     * This method will be invoked for any error thrown during the execution of the
-     * server.
-     */
-    handleServerError(exception: Error, context: { host: ArgumentsHost }): void | Promise<void>;
+	/**
+	 * @description
+	 * This method will be invoked for any error thrown during the execution of the
+	 * server.
+	 */
+	handleServerError(exception: Error, context: { host: ArgumentsHost }): void | Promise<void>
 
-    /**
-     * @description
-     * This method will be invoked for any error thrown during the execution of a
-     * job on the worker.
-     */
-    handleWorkerError(exception: Error, context: { job: Job }): void | Promise<void>;
+	/**
+	 * @description
+	 * This method will be invoked for any error thrown during the execution of a
+	 * job on the worker.
+	 */
+	handleWorkerError(exception: Error, context: { job: Job }): void | Promise<void>
 }

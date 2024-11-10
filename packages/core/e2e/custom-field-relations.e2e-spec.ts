@@ -1,170 +1,170 @@
 import {
-    assertFound,
-    Asset,
-    Collection,
-    Country,
-    CustomFields,
-    DefaultLogger,
-    defaultShippingCalculator,
-    defaultShippingEligibilityChecker,
-    Facet,
-    FacetValue,
-    LogLevel,
-    manualFulfillmentHandler,
-    mergeConfig,
-    PluginCommonModule,
-    Product,
-    ProductOption,
-    ProductOptionGroup,
-    ProductVariant,
-    RequestContext,
-    ShippingMethod,
-    TransactionalConnection,
-    VendureEntity,
-    VendurePlugin,
-} from '@vendure/core';
-import { createTestEnvironment } from '@vendure/testing';
-import gql from 'graphql-tag';
-import path from 'path';
-import { Repository } from 'typeorm';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+	assertFound,
+	Asset,
+	Collection,
+	Country,
+	CustomFields,
+	DefaultLogger,
+	defaultShippingCalculator,
+	defaultShippingEligibilityChecker,
+	Facet,
+	FacetValue,
+	LogLevel,
+	manualFulfillmentHandler,
+	mergeConfig,
+	PluginCommonModule,
+	Product,
+	ProductOption,
+	ProductOptionGroup,
+	ProductVariant,
+	RequestContext,
+	ShippingMethod,
+	TransactionalConnection,
+	MajelEntity,
+	MajelPlugin,
+} from '@majel/core'
+import { createTestEnvironment } from '@majel/testing'
+import gql from 'graphql-tag'
+import path from 'path'
+import { Repository } from 'typeorm'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { initialData } from '../../../e2e-common/e2e-initial-data';
-import { testConfig, TEST_SETUP_TIMEOUT_MS } from '../../../e2e-common/test-config';
+import { initialData } from '../../../e2e-common/e2e-initial-data'
+import { testConfig, TEST_SETUP_TIMEOUT_MS } from '../../../e2e-common/test-config'
 
-import { testSuccessfulPaymentMethod } from './fixtures/test-payment-methods';
-import { TestPlugin1636_1664 } from './fixtures/test-plugins/issue-1636-1664/issue-1636-1664-plugin';
-import { PluginIssue2453 } from './fixtures/test-plugins/issue-2453/plugin-issue2453';
-import { TestCustomEntity, WithCustomEntity } from './fixtures/test-plugins/with-custom-entity';
-import { AddItemToOrderMutationVariables } from './graphql/generated-e2e-shop-types';
-import { ADD_ITEM_TO_ORDER } from './graphql/shop-definitions';
-import { sortById } from './utils/test-order-utils';
+import { testSuccessfulPaymentMethod } from './fixtures/test-payment-methods'
+import { TestPlugin1636_1664 } from './fixtures/test-plugins/issue-1636-1664/issue-1636-1664-plugin'
+import { PluginIssue2453 } from './fixtures/test-plugins/issue-2453/plugin-issue2453'
+import { TestCustomEntity, WithCustomEntity } from './fixtures/test-plugins/with-custom-entity'
+import { AddItemToOrderMutationVariables } from './graphql/generated-e2e-shop-types'
+import { ADD_ITEM_TO_ORDER } from './graphql/shop-definitions'
+import { sortById } from './utils/test-order-utils'
 
 const entitiesWithCustomFields: Array<keyof CustomFields> = [
-    'Address',
-    'Administrator',
-    'Asset',
-    'Channel',
-    'Collection',
-    'Customer',
-    'CustomerGroup',
-    'Facet',
-    'FacetValue',
-    'Fulfillment',
-    'GlobalSettings',
-    'Order',
-    'OrderLine',
-    'PaymentMethod',
-    'Product',
-    'ProductOption',
-    'ProductOptionGroup',
-    'ProductVariant',
-    'Promotion',
-    'Region',
-    'Seller',
-    'ShippingMethod',
-    'TaxCategory',
-    'TaxRate',
-    'User',
-    'Zone',
-];
+	'Address',
+	'Administrator',
+	'Asset',
+	'Channel',
+	'Collection',
+	'Customer',
+	'CustomerGroup',
+	'Facet',
+	'FacetValue',
+	'Fulfillment',
+	'GlobalSettings',
+	'Order',
+	'OrderLine',
+	'PaymentMethod',
+	'Product',
+	'ProductOption',
+	'ProductOptionGroup',
+	'ProductVariant',
+	'Promotion',
+	'Region',
+	'Seller',
+	'ShippingMethod',
+	'TaxCategory',
+	'TaxRate',
+	'User',
+	'Zone',
+]
 
-const customFieldConfig: CustomFields = {};
+const customFieldConfig: CustomFields = {}
 for (const entity of entitiesWithCustomFields) {
-    customFieldConfig[entity] = [
-        { name: 'primitive', type: 'string', list: false, defaultValue: 'test' },
-        { name: 'single', type: 'relation', entity: Asset, graphQLType: 'Asset', list: false },
-        { name: 'multi', type: 'relation', entity: Asset, graphQLType: 'Asset', list: true },
-    ];
+	customFieldConfig[entity] = [
+		{ name: 'primitive', type: 'string', list: false, defaultValue: 'test' },
+		{ name: 'single', type: 'relation', entity: Asset, graphQLType: 'Asset', list: false },
+		{ name: 'multi', type: 'relation', entity: Asset, graphQLType: 'Asset', list: true },
+	]
 }
 customFieldConfig.Product?.push(
-    { name: 'cfCollection', type: 'relation', entity: Collection, list: false },
-    { name: 'cfCountry', type: 'relation', entity: Country, list: false },
-    { name: 'cfFacetValue', type: 'relation', entity: FacetValue, list: false },
-    { name: 'cfFacet', type: 'relation', entity: Facet, list: false },
-    { name: 'cfProductOptionGroup', type: 'relation', entity: ProductOptionGroup, list: false },
-    { name: 'cfProductOption', type: 'relation', entity: ProductOption, list: false },
-    { name: 'cfProductVariant', type: 'relation', entity: ProductVariant, list: false },
-    { name: 'cfProduct', type: 'relation', entity: Product, list: false },
-    { name: 'cfShippingMethod', type: 'relation', entity: ShippingMethod, list: false },
-    { name: 'cfInternalAsset', type: 'relation', entity: Asset, list: false, internal: true },
-);
+	{ name: 'cfCollection', type: 'relation', entity: Collection, list: false },
+	{ name: 'cfCountry', type: 'relation', entity: Country, list: false },
+	{ name: 'cfFacetValue', type: 'relation', entity: FacetValue, list: false },
+	{ name: 'cfFacet', type: 'relation', entity: Facet, list: false },
+	{ name: 'cfProductOptionGroup', type: 'relation', entity: ProductOptionGroup, list: false },
+	{ name: 'cfProductOption', type: 'relation', entity: ProductOption, list: false },
+	{ name: 'cfProductVariant', type: 'relation', entity: ProductVariant, list: false },
+	{ name: 'cfProduct', type: 'relation', entity: Product, list: false },
+	{ name: 'cfShippingMethod', type: 'relation', entity: ShippingMethod, list: false },
+	{ name: 'cfInternalAsset', type: 'relation', entity: Asset, list: false, internal: true },
+)
 customFieldConfig.ProductVariant?.push({
-    name: 'cfRelatedProducts',
-    type: 'relation',
-    entity: Product,
-    list: true,
-    internal: false,
-    public: true,
-});
+	name: 'cfRelatedProducts',
+	type: 'relation',
+	entity: Product,
+	list: true,
+	internal: false,
+	public: true,
+})
 
 const customConfig = mergeConfig(testConfig(), {
-    paymentOptions: {
-        paymentMethodHandlers: [testSuccessfulPaymentMethod],
-    },
-    // logger: new DefaultLogger({ level: LogLevel.Debug }),
-    dbConnectionOptions: {
-        timezone: 'Z',
-    },
-    customFields: customFieldConfig,
-    plugins: [TestPlugin1636_1664, WithCustomEntity, PluginIssue2453],
-});
+	paymentOptions: {
+		paymentMethodHandlers: [testSuccessfulPaymentMethod],
+	},
+	// logger: new DefaultLogger({ level: LogLevel.Debug }),
+	dbConnectionOptions: {
+		timezone: 'Z',
+	},
+	customFields: customFieldConfig,
+	plugins: [TestPlugin1636_1664, WithCustomEntity, PluginIssue2453],
+})
 
 describe('Custom field relations', () => {
-    const { server, adminClient, shopClient } = createTestEnvironment(customConfig);
+	const { server, adminClient, shopClient } = createTestEnvironment(customConfig)
 
-    beforeAll(async () => {
-        await server.init({
-            initialData,
-            productsCsvPath: path.join(__dirname, 'fixtures/e2e-products-full.csv'),
-            customerCount: 3,
-        });
-        await adminClient.asSuperAdmin();
-    }, TEST_SETUP_TIMEOUT_MS);
+	beforeAll(async () => {
+		await server.init({
+			initialData,
+			productsCsvPath: path.join(__dirname, 'fixtures/e2e-products-full.csv'),
+			customerCount: 3,
+		})
+		await adminClient.asSuperAdmin()
+	}, TEST_SETUP_TIMEOUT_MS)
 
-    afterAll(async () => {
-        await server.destroy();
-    });
+	afterAll(async () => {
+		await server.destroy()
+	})
 
-    it('customFieldConfig query returns entity and scalar fields', async () => {
-        const { globalSettings } = await adminClient.query(gql`
-            query {
-                globalSettings {
-                    serverConfig {
-                        customFieldConfig {
-                            Customer {
-                                ... on RelationCustomFieldConfig {
-                                    name
-                                    entity
-                                    scalarFields
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `);
+	it('customFieldConfig query returns entity and scalar fields', async () => {
+		const { globalSettings } = await adminClient.query(gql`
+			query {
+				globalSettings {
+					serverConfig {
+						customFieldConfig {
+							Customer {
+								... on RelationCustomFieldConfig {
+									name
+									entity
+									scalarFields
+								}
+							}
+						}
+					}
+				}
+			}
+		`)
 
-        const single = globalSettings.serverConfig.customFieldConfig.Customer[1];
-        expect(single.entity).toBe('Asset');
-        expect(single.scalarFields).toEqual([
-            'id',
-            'createdAt',
-            'updatedAt',
-            'name',
-            'type',
-            'fileSize',
-            'mimeType',
-            'width',
-            'height',
-            'source',
-            'preview',
-        ]);
-    });
+		const single = globalSettings.serverConfig.customFieldConfig.Customer[1]
+		expect(single.entity).toBe('Asset')
+		expect(single.scalarFields).toEqual([
+			'id',
+			'createdAt',
+			'updatedAt',
+			'name',
+			'type',
+			'fileSize',
+			'mimeType',
+			'width',
+			'height',
+			'source',
+			'preview',
+		])
+	})
 
-    describe('special data resolution', () => {
-        let productId: string;
-        const productCustomFieldRelationsSelection = `
+	describe('special data resolution', () => {
+		let productId: string
+		const productCustomFieldRelationsSelection = `
         id
         customFields {
             cfCollection {
@@ -203,40 +203,40 @@ describe('Custom field relations', () => {
                 languageCode
                 name
             }
-        }`;
+        }`
 
-        function assertTranslatableCustomFieldValues(product: { customFields: any }) {
-            expect(product.customFields.cfCollection).toEqual({
-                languageCode: 'en',
-                name: '__root_collection__',
-            });
-            expect(product.customFields.cfCountry).toEqual({ languageCode: 'en', name: 'Australia' });
-            expect(product.customFields.cfFacetValue).toEqual({
-                languageCode: 'en',
-                name: 'electronics',
-            });
-            expect(product.customFields.cfFacet).toEqual({ languageCode: 'en', name: 'category' });
-            expect(product.customFields.cfProductOptionGroup).toEqual({
-                languageCode: 'en',
-                name: 'screen size',
-            });
-            expect(product.customFields.cfProductOption).toEqual({
-                languageCode: 'en',
-                name: '13 inch',
-            });
-            expect(product.customFields.cfProductVariant).toEqual({
-                languageCode: 'en',
-                name: 'Laptop 13 inch 8GB',
-            });
-            expect(product.customFields.cfProduct).toEqual({ languageCode: 'en', name: 'Laptop' });
-            expect(product.customFields.cfShippingMethod).toEqual({
-                languageCode: 'en',
-                name: 'Standard Shipping',
-            });
-        }
+		function assertTranslatableCustomFieldValues(product: { customFields: any }) {
+			expect(product.customFields.cfCollection).toEqual({
+				languageCode: 'en',
+				name: '__root_collection__',
+			})
+			expect(product.customFields.cfCountry).toEqual({ languageCode: 'en', name: 'Australia' })
+			expect(product.customFields.cfFacetValue).toEqual({
+				languageCode: 'en',
+				name: 'electronics',
+			})
+			expect(product.customFields.cfFacet).toEqual({ languageCode: 'en', name: 'category' })
+			expect(product.customFields.cfProductOptionGroup).toEqual({
+				languageCode: 'en',
+				name: 'screen size',
+			})
+			expect(product.customFields.cfProductOption).toEqual({
+				languageCode: 'en',
+				name: '13 inch',
+			})
+			expect(product.customFields.cfProductVariant).toEqual({
+				languageCode: 'en',
+				name: 'Laptop 13 inch 8GB',
+			})
+			expect(product.customFields.cfProduct).toEqual({ languageCode: 'en', name: 'Laptop' })
+			expect(product.customFields.cfShippingMethod).toEqual({
+				languageCode: 'en',
+				name: 'Standard Shipping',
+			})
+		}
 
-        it('translatable entities get translated', async () => {
-            const { createProduct } = await adminClient.query(gql`
+		it('translatable entities get translated', async () => {
+			const { createProduct } = await adminClient.query(gql`
                 mutation {
                     createProduct(
                         input: {
@@ -262,57 +262,57 @@ describe('Custom field relations', () => {
                         }
                     ) { ${productCustomFieldRelationsSelection} }
                 }
-            `);
+            `)
 
-            productId = createProduct.id;
-            assertTranslatableCustomFieldValues(createProduct);
-        });
+			productId = createProduct.id
+			assertTranslatableCustomFieldValues(createProduct)
+		})
 
-        it('translatable entities get translated on findOneInChannel', async () => {
-            const { product } = await adminClient.query(gql`
+		it('translatable entities get translated on findOneInChannel', async () => {
+			const { product } = await adminClient.query(gql`
                 query {
                     product(id: "${productId}") { ${productCustomFieldRelationsSelection} }
                 }
-            `);
+            `)
 
-            assertTranslatableCustomFieldValues(product);
-        });
+			assertTranslatableCustomFieldValues(product)
+		})
 
-        // https://github.com/vendure-ecommerce/vendure/issues/2453
-        it('translatable eager-loaded relation works (issue 2453)', async () => {
-            const { collections } = await adminClient.query(gql`
-                query {
-                    collections(options: { sort: { name: DESC } }) {
-                        totalItems
-                        items {
-                            id
-                            name
-                            customFields {
-                                campaign {
-                                    name
-                                    languageCode
-                                }
-                            }
-                        }
-                    }
-                }
-            `);
+		// https://github.com/majel-ecommerce/majel/issues/2453
+		it('translatable eager-loaded relation works (issue 2453)', async () => {
+			const { collections } = await adminClient.query(gql`
+				query {
+					collections(options: { sort: { name: DESC } }) {
+						totalItems
+						items {
+							id
+							name
+							customFields {
+								campaign {
+									name
+									languageCode
+								}
+							}
+						}
+					}
+				}
+			`)
 
-            expect(collections.totalItems).toBe(3);
-            expect(collections.items.find((c: any) => c.id === 'T_3')).toEqual({
-                customFields: {
-                    campaign: {
-                        languageCode: 'en',
-                        name: 'Clearance Up to 70% Off frames',
-                    },
-                },
-                id: 'T_3',
-                name: 'children collection',
-            });
-        });
+			expect(collections.totalItems).toBe(3)
+			expect(collections.items.find((c: any) => c.id === 'T_3')).toEqual({
+				customFields: {
+					campaign: {
+						languageCode: 'en',
+						name: 'Clearance Up to 70% Off frames',
+					},
+				},
+				id: 'T_3',
+				name: 'children collection',
+			})
+		})
 
-        it('ProductVariant prices get resolved', async () => {
-            const { product } = await adminClient.query(gql`
+		it('ProductVariant prices get resolved', async () => {
+			const { product } = await adminClient.query(gql`
                 query {
                     product(id: "${productId}") {
                         id
@@ -324,37 +324,37 @@ describe('Custom field relations', () => {
                             }
                         }
                     }
-                }`);
+                }`)
 
-            expect(product.customFields.cfProductVariant).toEqual({
-                price: 129900,
-                currencyCode: 'USD',
-                priceWithTax: 155880,
-            });
-        });
-    });
+			expect(product.customFields.cfProductVariant).toEqual({
+				price: 129900,
+				currencyCode: 'USD',
+				priceWithTax: 155880,
+			})
+		})
+	})
 
-    it('ProductVariant without a specified property value returns null', async () => {
-        const { createProduct } = await adminClient.query(gql`
-            mutation {
-                createProduct(
-                    input: {
-                        translations: [
-                            {
-                                languageCode: en
-                                name: "Product with empty custom fields"
-                                description: ""
-                                slug: "product-with-empty-custom-fields"
-                            }
-                        ]
-                    }
-                ) {
-                    id
-                }
-            }
-        `);
+	it('ProductVariant without a specified property value returns null', async () => {
+		const { createProduct } = await adminClient.query(gql`
+			mutation {
+				createProduct(
+					input: {
+						translations: [
+							{
+								languageCode: en
+								name: "Product with empty custom fields"
+								description: ""
+								slug: "product-with-empty-custom-fields"
+							}
+						]
+					}
+				) {
+					id
+				}
+			}
+		`)
 
-        const { product } = await adminClient.query(gql`
+		const { product } = await adminClient.query(gql`
             query {
                 product(id: "${createProduct.id}") {
                     id
@@ -366,18 +366,18 @@ describe('Custom field relations', () => {
                         }
                     }
                 }
-            }`);
+            }`)
 
-        expect(product.customFields.cfProductVariant).toEqual(null);
-    });
+		expect(product.customFields.cfProductVariant).toEqual(null)
+	})
 
-    describe('entity-specific implementation', () => {
-        function assertCustomFieldIds(customFields: any, single: string, multi: string[]) {
-            expect(customFields.single).toEqual({ id: single });
-            expect(customFields.multi.sort(sortById)).toEqual(multi.map(id => ({ id })));
-        }
+	describe('entity-specific implementation', () => {
+		function assertCustomFieldIds(customFields: any, single: string, multi: string[]) {
+			expect(customFields.single).toEqual({ id: single })
+			expect(customFields.multi.sort(sortById)).toEqual(multi.map(id => ({ id })))
+		}
 
-        const customFieldsSelection = `
+		const customFieldsSelection = `
             customFields {
                 primitive
                 single {
@@ -386,11 +386,11 @@ describe('Custom field relations', () => {
                 multi {
                     id
                 }
-            }`;
+            }`
 
-        describe('Address entity', () => {
-            it('admin createCustomerAddress', async () => {
-                const { createCustomerAddress } = await adminClient.query(gql`
+		describe('Address entity', () => {
+			it('admin createCustomerAddress', async () => {
+				const { createCustomerAddress } = await adminClient.query(gql`
                     mutation {
                         createCustomerAddress(
                             customerId: "T_1"
@@ -404,14 +404,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createCustomerAddress.customFields, 'T_1', ['T_1', 'T_2']);
-            });
+				assertCustomFieldIds(createCustomerAddress.customFields, 'T_1', ['T_1', 'T_2'])
+			})
 
-            it('shop createCustomerAddress', async () => {
-                await shopClient.asUserWithCredentials('hayden.zieme12@hotmail.com', 'test');
-                const { createCustomerAddress } = await shopClient.query(gql`
+			it('shop createCustomerAddress', async () => {
+				await shopClient.asUserWithCredentials('hayden.zieme12@hotmail.com', 'test')
+				const { createCustomerAddress } = await shopClient.query(gql`
                     mutation {
                         createCustomerAddress(
                             input: {
@@ -424,13 +424,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createCustomerAddress.customFields, 'T_1', ['T_1', 'T_2']);
-            });
+				assertCustomFieldIds(createCustomerAddress.customFields, 'T_1', ['T_1', 'T_2'])
+			})
 
-            it('admin updateCustomerAddress', async () => {
-                const { updateCustomerAddress } = await adminClient.query(gql`
+			it('admin updateCustomerAddress', async () => {
+				const { updateCustomerAddress } = await adminClient.query(gql`
                     mutation {
                         updateCustomerAddress(
                             input: { id: "T_1", customFields: { singleId: "T_2", multiIds: ["T_3", "T_4"] } }
@@ -439,13 +439,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(updateCustomerAddress.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+				assertCustomFieldIds(updateCustomerAddress.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            it('shop updateCustomerAddress', async () => {
-                const { updateCustomerAddress } = await shopClient.query(gql`
+			it('shop updateCustomerAddress', async () => {
+				const { updateCustomerAddress } = await shopClient.query(gql`
                     mutation {
                         updateCustomerAddress(
                             input: { id: "T_1", customFields: { singleId: "T_3", multiIds: ["T_4", "T_2"] } }
@@ -454,16 +454,16 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(updateCustomerAddress.customFields, 'T_3', ['T_2', 'T_4']);
-            });
-        });
+				assertCustomFieldIds(updateCustomerAddress.customFields, 'T_3', ['T_2', 'T_4'])
+			})
+		})
 
-        describe('Collection entity', () => {
-            let collectionId: string;
-            it('admin createCollection', async () => {
-                const { createCollection } = await adminClient.query(gql`
+		describe('Collection entity', () => {
+			let collectionId: string
+			it('admin createCollection', async () => {
+				const { createCollection } = await adminClient.query(gql`
                     mutation {
                         createCollection(
                             input: {
@@ -478,13 +478,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(createCollection.customFields, 'T_1', ['T_1', 'T_2']);
-                collectionId = createCollection.id;
-            });
+                `)
+				assertCustomFieldIds(createCollection.customFields, 'T_1', ['T_1', 'T_2'])
+				collectionId = createCollection.id
+			})
 
-            it('admin updateCollection', async () => {
-                const { updateCollection } = await adminClient.query(gql`
+			it('admin updateCollection', async () => {
+				const { updateCollection } = await adminClient.query(gql`
                     mutation {
                         updateCollection(
                             input: {
@@ -496,14 +496,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(updateCollection.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+				assertCustomFieldIds(updateCollection.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on Collection does not delete primitive values', async () => {
-                const { updateCollection } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on Collection does not delete primitive values', async () => {
+				const { updateCollection } = await adminClient.query(gql`
                     mutation {
                         updateCollection(
                             input: {
@@ -515,16 +515,16 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateCollection.customFields.single).toEqual({ id: 'T_3' });
-                expect(updateCollection.customFields.primitive).toBe('test');
-            });
-        });
+                `)
+				expect(updateCollection.customFields.single).toEqual({ id: 'T_3' })
+				expect(updateCollection.customFields.primitive).toBe('test')
+			})
+		})
 
-        describe('Customer entity', () => {
-            let customerId: string;
-            it('admin createCustomer', async () => {
-                const { createCustomer } = await adminClient.query(gql`
+		describe('Customer entity', () => {
+			let customerId: string
+			it('admin createCustomer', async () => {
+				const { createCustomer } = await adminClient.query(gql`
                     mutation {
                         createCustomer(
                             input: {
@@ -540,14 +540,14 @@ describe('Custom field relations', () => {
                             }
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createCustomer.customFields, 'T_1', ['T_1', 'T_2']);
-                customerId = createCustomer.id;
-            });
+				assertCustomFieldIds(createCustomer.customFields, 'T_1', ['T_1', 'T_2'])
+				customerId = createCustomer.id
+			})
 
-            it('admin updateCustomer', async () => {
-                const { updateCustomer } = await adminClient.query(gql`
+			it('admin updateCustomer', async () => {
+				const { updateCustomer } = await adminClient.query(gql`
                     mutation {
                         updateCustomer(
                             input: {
@@ -561,27 +561,27 @@ describe('Custom field relations', () => {
                             }
                         }
                     }
-                `);
-                assertCustomFieldIds(updateCustomer.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateCustomer.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            it('shop updateCustomer', async () => {
-                const { updateCustomer } = await shopClient.query(gql`
+			it('shop updateCustomer', async () => {
+				const { updateCustomer } = await shopClient.query(gql`
                     mutation {
                         updateCustomer(input: { customFields: { singleId: "T_4", multiIds: ["T_2", "T_4"] } }) {
                             id
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateCustomer.customFields, 'T_4', ['T_2', 'T_4']);
-            });
-        });
+                `)
+				assertCustomFieldIds(updateCustomer.customFields, 'T_4', ['T_2', 'T_4'])
+			})
+		})
 
-        describe('Facet entity', () => {
-            let facetId: string;
-            it('admin createFacet', async () => {
-                const { createFacet } = await adminClient.query(gql`
+		describe('Facet entity', () => {
+			let facetId: string
+			it('admin createFacet', async () => {
+				const { createFacet } = await adminClient.query(gql`
                     mutation {
                         createFacet(
                             input: {
@@ -595,14 +595,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createFacet.customFields, 'T_1', ['T_1', 'T_2']);
-                facetId = createFacet.id;
-            });
+				assertCustomFieldIds(createFacet.customFields, 'T_1', ['T_1', 'T_2'])
+				facetId = createFacet.id
+			})
 
-            it('admin updateFacet', async () => {
-                const { updateFacet } = await adminClient.query(gql`
+			it('admin updateFacet', async () => {
+				const { updateFacet } = await adminClient.query(gql`
                     mutation {
                         updateFacet(
                             input: {
@@ -614,13 +614,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateFacet.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateFacet.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on Facet does not delete primitive values', async () => {
-                const { updateFacet } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on Facet does not delete primitive values', async () => {
+				const { updateFacet } = await adminClient.query(gql`
                     mutation {
                         updateFacet(
                             input: {
@@ -632,16 +632,16 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateFacet.customFields.single).toEqual({ id: 'T_3' });
-                expect(updateFacet.customFields.primitive).toBe('test');
-            });
-        });
+                `)
+				expect(updateFacet.customFields.single).toEqual({ id: 'T_3' })
+				expect(updateFacet.customFields.primitive).toBe('test')
+			})
+		})
 
-        describe('FacetValue entity', () => {
-            let facetValueId: string;
-            it('admin createFacetValues', async () => {
-                const { createFacetValues } = await adminClient.query(gql`
+		describe('FacetValue entity', () => {
+			let facetValueId: string
+			it('admin createFacetValues', async () => {
+				const { createFacetValues } = await adminClient.query(gql`
                     mutation {
                         createFacetValues(
                             input: {
@@ -655,14 +655,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createFacetValues[0].customFields, 'T_1', ['T_1', 'T_2']);
-                facetValueId = createFacetValues[0].id;
-            });
+				assertCustomFieldIds(createFacetValues[0].customFields, 'T_1', ['T_1', 'T_2'])
+				facetValueId = createFacetValues[0].id
+			})
 
-            it('admin updateFacetValues', async () => {
-                const { updateFacetValues } = await adminClient.query(gql`
+			it('admin updateFacetValues', async () => {
+				const { updateFacetValues } = await adminClient.query(gql`
                     mutation {
                         updateFacetValues(
                             input: {
@@ -674,13 +674,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateFacetValues[0].customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateFacetValues[0].customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on FacetValue does not delete primitive values', async () => {
-                const { updateFacetValues } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on FacetValue does not delete primitive values', async () => {
+				const { updateFacetValues } = await adminClient.query(gql`
                     mutation {
                         updateFacetValues(
                             input: {
@@ -692,15 +692,15 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateFacetValues[0].customFields.single).toEqual({ id: 'T_3' });
-                expect(updateFacetValues[0].customFields.primitive).toBe('test');
-            });
-        });
+                `)
+				expect(updateFacetValues[0].customFields.single).toEqual({ id: 'T_3' })
+				expect(updateFacetValues[0].customFields.primitive).toBe('test')
+			})
+		})
 
-        describe('GlobalSettings entity', () => {
-            it('admin updateGlobalSettings', async () => {
-                const { updateGlobalSettings } = await adminClient.query(gql`
+		describe('GlobalSettings entity', () => {
+			it('admin updateGlobalSettings', async () => {
+				const { updateGlobalSettings } = await adminClient.query(gql`
                     mutation {
                         updateGlobalSettings(
                             input: {
@@ -713,28 +713,28 @@ describe('Custom field relations', () => {
                             }
                         }
                     }
-                `);
-                assertCustomFieldIds(updateGlobalSettings.customFields, 'T_2', ['T_3', 'T_4']);
-            });
-        });
+                `)
+				assertCustomFieldIds(updateGlobalSettings.customFields, 'T_2', ['T_3', 'T_4'])
+			})
+		})
 
-        describe('Order entity', () => {
-            let orderId: string;
+		describe('Order entity', () => {
+			let orderId: string
 
-            beforeAll(async () => {
-                const { addItemToOrder } = await shopClient.query<any, AddItemToOrderMutationVariables>(
-                    ADD_ITEM_TO_ORDER,
-                    {
-                        productVariantId: 'T_1',
-                        quantity: 1,
-                    },
-                );
+			beforeAll(async () => {
+				const { addItemToOrder } = await shopClient.query<any, AddItemToOrderMutationVariables>(
+					ADD_ITEM_TO_ORDER,
+					{
+						productVariantId: 'T_1',
+						quantity: 1,
+					},
+				)
 
-                orderId = addItemToOrder.id;
-            });
+				orderId = addItemToOrder.id
+			})
 
-            it('shop setOrderCustomFields', async () => {
-                const { setOrderCustomFields } = await shopClient.query(gql`
+			it('shop setOrderCustomFields', async () => {
+				const { setOrderCustomFields } = await shopClient.query(gql`
                     mutation {
                         setOrderCustomFields(
                             input: {
@@ -747,13 +747,13 @@ describe('Custom field relations', () => {
                             }
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(setOrderCustomFields.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+				assertCustomFieldIds(setOrderCustomFields.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            it('admin setOrderCustomFields', async () => {
-                const { setOrderCustomFields } = await adminClient.query(gql`
+			it('admin setOrderCustomFields', async () => {
+				const { setOrderCustomFields } = await adminClient.query(gql`
                     mutation {
                         setOrderCustomFields(
                             input: {
@@ -767,40 +767,40 @@ describe('Custom field relations', () => {
                             }
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(setOrderCustomFields.customFields, 'T_1', ['T_1', 'T_2']);
-            });
+				assertCustomFieldIds(setOrderCustomFields.customFields, 'T_1', ['T_1', 'T_2'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/1664#issuecomment-1320872627
-            it('admin order query with eager-loaded custom field relation', async () => {
-                const { order } = await adminClient.query(gql`
-                    query {
-                        order(id: 1) {
-                            id
-                            customFields {
-                                productOwner {
-                                    id
-                                }
-                            }
-                        }
-                    }
-                `);
+			// https://github.com/majel-ecommerce/majel/issues/1664#issuecomment-1320872627
+			it('admin order query with eager-loaded custom field relation', async () => {
+				const { order } = await adminClient.query(gql`
+					query {
+						order(id: 1) {
+							id
+							customFields {
+								productOwner {
+									id
+								}
+							}
+						}
+					}
+				`)
 
-                // we're just making sure it does not throw here.
-                expect(order).toEqual({
-                    customFields: {
-                        productOwner: null,
-                    },
-                    id: 'T_1',
-                });
-            });
-        });
+				// we're just making sure it does not throw here.
+				expect(order).toEqual({
+					customFields: {
+						productOwner: null,
+					},
+					id: 'T_1',
+				})
+			})
+		})
 
-        describe('OrderLine entity', () => {
-            it('shop addItemToOrder', async () => {
-                const { addItemToOrder } = await shopClient.query(
-                    gql`mutation {
+		describe('OrderLine entity', () => {
+			it('shop addItemToOrder', async () => {
+				const { addItemToOrder } = await shopClient.query(
+					gql`mutation {
                         addItemToOrder(productVariantId: "T_1", quantity: 1, customFields: { singleId: "T_1", multiIds: ["T_1", "T_2"] }) {
                             ... on Order {
                                 id
@@ -808,16 +808,16 @@ describe('Custom field relations', () => {
                             }
                         }
                     }`,
-                );
+				)
 
-                assertCustomFieldIds(addItemToOrder.customFields, 'T_1', ['T_1', 'T_2']);
-            });
-        });
+				assertCustomFieldIds(addItemToOrder.customFields, 'T_1', ['T_1', 'T_2'])
+			})
+		})
 
-        describe('Product, ProductVariant entity', () => {
-            let productId: string;
-            it('admin createProduct', async () => {
-                const { createProduct } = await adminClient.query(gql`
+		describe('Product, ProductVariant entity', () => {
+			let productId: string
+			it('admin createProduct', async () => {
+				const { createProduct } = await adminClient.query(gql`
                     mutation {
                         createProduct(
                             input: {
@@ -829,14 +829,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createProduct.customFields, 'T_1', ['T_1', 'T_2']);
-                productId = createProduct.id;
-            });
+				assertCustomFieldIds(createProduct.customFields, 'T_1', ['T_1', 'T_2'])
+				productId = createProduct.id
+			})
 
-            it('admin updateProduct', async () => {
-                const { updateProduct } = await adminClient.query(gql`
+			it('admin updateProduct', async () => {
+				const { updateProduct } = await adminClient.query(gql`
                     mutation {
                         updateProduct(
                             input: {
@@ -848,13 +848,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateProduct.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateProduct.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on Product does not delete primitive values', async () => {
-                const { updateProduct } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on Product does not delete primitive values', async () => {
+				const { updateProduct } = await adminClient.query(gql`
                     mutation {
                         updateProduct(
                             input: {
@@ -866,14 +866,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateProduct.customFields.single).toEqual({ id: 'T_3' });
-                expect(updateProduct.customFields.primitive).toBe('test');
-            });
+                `)
+				expect(updateProduct.customFields.single).toEqual({ id: 'T_3' })
+				expect(updateProduct.customFields.primitive).toBe('test')
+			})
 
-            let productVariantId: string;
-            it('admin createProductVariant', async () => {
-                const { createProductVariants } = await adminClient.query(gql`
+			let productVariantId: string
+			it('admin createProductVariant', async () => {
+				const { createProductVariants } = await adminClient.query(gql`
                     mutation {
                         createProductVariants(
                             input: [{
@@ -887,14 +887,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createProductVariants[0].customFields, 'T_1', ['T_1', 'T_2']);
-                productVariantId = createProductVariants[0].id;
-            });
+				assertCustomFieldIds(createProductVariants[0].customFields, 'T_1', ['T_1', 'T_2'])
+				productVariantId = createProductVariants[0].id
+			})
 
-            it('admin updateProductVariant', async () => {
-                const { updateProductVariants } = await adminClient.query(gql`
+			it('admin updateProductVariant', async () => {
+				const { updateProductVariants } = await adminClient.query(gql`
                     mutation {
                         updateProductVariants(
                             input: [{
@@ -906,13 +906,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateProductVariants[0].customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateProductVariants[0].customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on ProductVariant does not delete primitive values', async () => {
-                const { updateProductVariants } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on ProductVariant does not delete primitive values', async () => {
+				const { updateProductVariants } = await adminClient.query(gql`
                     mutation {
                         updateProductVariants(
                             input: [{
@@ -924,142 +924,142 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateProductVariants[0].customFields.single).toEqual({ id: 'T_3' });
-                expect(updateProductVariants[0].customFields.primitive).toBe('test');
-            });
+                `)
+				expect(updateProductVariants[0].customFields.single).toEqual({ id: 'T_3' })
+				expect(updateProductVariants[0].customFields.primitive).toBe('test')
+			})
 
-            describe('issue 1664', () => {
-                // https://github.com/vendure-ecommerce/vendure/issues/1664
-                it('successfully gets product by id with eager-loading custom field relation', async () => {
-                    const { product } = await shopClient.query(gql`
-                        query {
-                            product(id: "T_1") {
-                                id
-                                customFields {
-                                    cfVendor {
-                                        featuredProduct {
-                                            id
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    `);
+			describe('issue 1664', () => {
+				// https://github.com/majel-ecommerce/majel/issues/1664
+				it('successfully gets product by id with eager-loading custom field relation', async () => {
+					const { product } = await shopClient.query(gql`
+						query {
+							product(id: "T_1") {
+								id
+								customFields {
+									cfVendor {
+										featuredProduct {
+											id
+										}
+									}
+								}
+							}
+						}
+					`)
 
-                    expect(product).toBeDefined();
-                });
+					expect(product).toBeDefined()
+				})
 
-                // https://github.com/vendure-ecommerce/vendure/issues/1664
-                it('successfully gets product by id with nested eager-loading custom field relation', async () => {
-                    const { customer } = await adminClient.query(gql`
-                        query {
-                            customer(id: "T_1") {
-                                id
-                                firstName
-                                lastName
-                                emailAddress
-                                phoneNumber
-                                user {
-                                    customFields {
-                                        cfVendor {
-                                            id
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    `);
+				// https://github.com/majel-ecommerce/majel/issues/1664
+				it('successfully gets product by id with nested eager-loading custom field relation', async () => {
+					const { customer } = await adminClient.query(gql`
+						query {
+							customer(id: "T_1") {
+								id
+								firstName
+								lastName
+								emailAddress
+								phoneNumber
+								user {
+									customFields {
+										cfVendor {
+											id
+										}
+									}
+								}
+							}
+						}
+					`)
 
-                    expect(customer).toBeDefined();
-                });
+					expect(customer).toBeDefined()
+				})
 
-                // https://github.com/vendure-ecommerce/vendure/issues/1664
-                it('successfully gets product.variants with nested custom field relation', async () => {
-                    await adminClient.query(gql`
-                        mutation {
-                            updateProductVariants(
-                                input: [{ id: "T_1", customFields: { cfRelatedProductsIds: ["T_2"] } }]
-                            ) {
-                                id
-                            }
-                        }
-                    `);
+				// https://github.com/majel-ecommerce/majel/issues/1664
+				it('successfully gets product.variants with nested custom field relation', async () => {
+					await adminClient.query(gql`
+						mutation {
+							updateProductVariants(
+								input: [{ id: "T_1", customFields: { cfRelatedProductsIds: ["T_2"] } }]
+							) {
+								id
+							}
+						}
+					`)
 
-                    const { product } = await adminClient.query(gql`
-                        query {
-                            product(id: "T_1") {
-                                variants {
-                                    id
-                                    customFields {
-                                        cfRelatedProducts {
-                                            featuredAsset {
-                                                id
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    `);
+					const { product } = await adminClient.query(gql`
+						query {
+							product(id: "T_1") {
+								variants {
+									id
+									customFields {
+										cfRelatedProducts {
+											featuredAsset {
+												id
+											}
+										}
+									}
+								}
+							}
+						}
+					`)
 
-                    expect(product).toBeDefined();
-                    expect(product.variants[0].customFields.cfRelatedProducts).toEqual([
-                        {
-                            featuredAsset: { id: 'T_2' },
-                        },
-                    ]);
-                });
+					expect(product).toBeDefined()
+					expect(product.variants[0].customFields.cfRelatedProducts).toEqual([
+						{
+							featuredAsset: { id: 'T_2' },
+						},
+					])
+				})
 
-                it('successfully gets product by slug with eager-loading custom field relation', async () => {
-                    const { product } = await shopClient.query(gql`
-                        query {
-                            product(slug: "laptop") {
-                                id
-                                customFields {
-                                    cfVendor {
-                                        featuredProduct {
-                                            id
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    `);
+				it('successfully gets product by slug with eager-loading custom field relation', async () => {
+					const { product } = await shopClient.query(gql`
+						query {
+							product(slug: "laptop") {
+								id
+								customFields {
+									cfVendor {
+										featuredProduct {
+											id
+										}
+									}
+								}
+							}
+						}
+					`)
 
-                    expect(product).toBeDefined();
-                });
+					expect(product).toBeDefined()
+				})
 
-                it('does not error on custom field relation with eager custom field relation', async () => {
-                    const { product } = await adminClient.query(gql`
-                        query {
-                            product(slug: "laptop") {
-                                name
-                                customFields {
-                                    owner {
-                                        id
-                                        code
-                                        customFields {
-                                            profile {
-                                                id
-                                                name
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    `);
+				it('does not error on custom field relation with eager custom field relation', async () => {
+					const { product } = await adminClient.query(gql`
+						query {
+							product(slug: "laptop") {
+								name
+								customFields {
+									owner {
+										id
+										code
+										customFields {
+											profile {
+												id
+												name
+											}
+										}
+									}
+								}
+							}
+						}
+					`)
 
-                    expect(product).toBeDefined();
-                });
-            });
-        });
+					expect(product).toBeDefined()
+				})
+			})
+		})
 
-        describe('ProductOptionGroup, ProductOption entity', () => {
-            let productOptionGroupId: string;
-            it('admin createProductOptionGroup', async () => {
-                const { createProductOptionGroup } = await adminClient.query(gql`
+		describe('ProductOptionGroup, ProductOption entity', () => {
+			let productOptionGroupId: string
+			it('admin createProductOptionGroup', async () => {
+				const { createProductOptionGroup } = await adminClient.query(gql`
                     mutation {
                         createProductOptionGroup(
                             input: {
@@ -1073,14 +1073,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createProductOptionGroup.customFields, 'T_1', ['T_1', 'T_2']);
-                productOptionGroupId = createProductOptionGroup.id;
-            });
+				assertCustomFieldIds(createProductOptionGroup.customFields, 'T_1', ['T_1', 'T_2'])
+				productOptionGroupId = createProductOptionGroup.id
+			})
 
-            it('admin updateProductOptionGroup', async () => {
-                const { updateProductOptionGroup } = await adminClient.query(gql`
+			it('admin updateProductOptionGroup', async () => {
+				const { updateProductOptionGroup } = await adminClient.query(gql`
                     mutation {
                         updateProductOptionGroup(
                             input: {
@@ -1092,13 +1092,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateProductOptionGroup.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateProductOptionGroup.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on ProductOptionGroup does not delete primitive values', async () => {
-                const { updateProductOptionGroup } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on ProductOptionGroup does not delete primitive values', async () => {
+				const { updateProductOptionGroup } = await adminClient.query(gql`
                     mutation {
                         updateProductOptionGroup(
                             input: {
@@ -1110,14 +1110,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateProductOptionGroup.customFields.single).toEqual({ id: 'T_3' });
-                expect(updateProductOptionGroup.customFields.primitive).toBe('test');
-            });
+                `)
+				expect(updateProductOptionGroup.customFields.single).toEqual({ id: 'T_3' })
+				expect(updateProductOptionGroup.customFields.primitive).toBe('test')
+			})
 
-            let productOptionId: string;
-            it('admin createProductOption', async () => {
-                const { createProductOption } = await adminClient.query(gql`
+			let productOptionId: string
+			it('admin createProductOption', async () => {
+				const { createProductOption } = await adminClient.query(gql`
                     mutation {
                         createProductOption(
                             input: {
@@ -1131,14 +1131,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createProductOption.customFields, 'T_1', ['T_1', 'T_2']);
-                productOptionId = createProductOption.id;
-            });
+				assertCustomFieldIds(createProductOption.customFields, 'T_1', ['T_1', 'T_2'])
+				productOptionId = createProductOption.id
+			})
 
-            it('admin updateProductOption', async () => {
-                const { updateProductOption } = await adminClient.query(gql`
+			it('admin updateProductOption', async () => {
+				const { updateProductOption } = await adminClient.query(gql`
                     mutation {
                         updateProductOption(
                             input: {
@@ -1150,13 +1150,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateProductOption.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateProductOption.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on ProductOption does not delete primitive values', async () => {
-                const { updateProductOption } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on ProductOption does not delete primitive values', async () => {
+				const { updateProductOption } = await adminClient.query(gql`
                     mutation {
                         updateProductOption(
                             input: {
@@ -1168,16 +1168,16 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateProductOption.customFields.single).toEqual({ id: 'T_3' });
-                expect(updateProductOption.customFields.primitive).toBe('test');
-            });
-        });
+                `)
+				expect(updateProductOption.customFields.single).toEqual({ id: 'T_3' })
+				expect(updateProductOption.customFields.primitive).toBe('test')
+			})
+		})
 
-        describe('ShippingMethod entity', () => {
-            let shippingMethodId: string;
-            it('admin createShippingMethod', async () => {
-                const { createShippingMethod } = await adminClient.query(gql`
+		describe('ShippingMethod entity', () => {
+			let shippingMethodId: string
+			it('admin createShippingMethod', async () => {
+				const { createShippingMethod } = await adminClient.query(gql`
                     mutation {
                         createShippingMethod(
                             input: {
@@ -1205,14 +1205,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createShippingMethod.customFields, 'T_1', ['T_1', 'T_2']);
-                shippingMethodId = createShippingMethod.id;
-            });
+				assertCustomFieldIds(createShippingMethod.customFields, 'T_1', ['T_1', 'T_2'])
+				shippingMethodId = createShippingMethod.id
+			})
 
-            it('admin updateShippingMethod', async () => {
-                const { updateShippingMethod } = await adminClient.query(gql`
+			it('admin updateShippingMethod', async () => {
+				const { updateShippingMethod } = await adminClient.query(gql`
                     mutation {
                         updateShippingMethod(
                             input: {
@@ -1225,13 +1225,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updateShippingMethod.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updateShippingMethod.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on ShippingMethod does not delete primitive values', async () => {
-                const { updateShippingMethod } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on ShippingMethod does not delete primitive values', async () => {
+				const { updateShippingMethod } = await adminClient.query(gql`
                     mutation {
                         updateShippingMethod(
                             input: {
@@ -1244,13 +1244,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updateShippingMethod.customFields.single).toEqual({ id: 'T_3' });
-                expect(updateShippingMethod.customFields.primitive).toBe('test');
-            });
+                `)
+				expect(updateShippingMethod.customFields.single).toEqual({ id: 'T_3' })
+				expect(updateShippingMethod.customFields.primitive).toBe('test')
+			})
 
-            it('shop eligibleShippingMethods (ShippingMethodQuote)', async () => {
-                const { eligibleShippingMethods } = await shopClient.query(gql`
+			it('shop eligibleShippingMethods (ShippingMethodQuote)', async () => {
+				const { eligibleShippingMethods } = await shopClient.query(gql`
                     query {
                         eligibleShippingMethods {
                             id
@@ -1260,18 +1260,18 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                const testShippingMethodQuote = eligibleShippingMethods.find(
-                    (quote: any) => quote.code === 'test',
-                );
-                assertCustomFieldIds(testShippingMethodQuote.customFields, 'T_3', ['T_3', 'T_4']);
-            });
-        });
+                `)
+				const testShippingMethodQuote = eligibleShippingMethods.find(
+					(quote: any) => quote.code === 'test',
+				)
+				assertCustomFieldIds(testShippingMethodQuote.customFields, 'T_3', ['T_3', 'T_4'])
+			})
+		})
 
-        describe('PaymentMethod entity', () => {
-            let paymentMethodId: string;
-            it('admin createShippingMethod', async () => {
-                const { createPaymentMethod } = await adminClient.query(gql`
+		describe('PaymentMethod entity', () => {
+			let paymentMethodId: string
+			it('admin createShippingMethod', async () => {
+				const { createPaymentMethod } = await adminClient.query(gql`
                     mutation {
                         createPaymentMethod(
                             input: {
@@ -1289,14 +1289,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(createPaymentMethod.customFields, 'T_1', ['T_1', 'T_2']);
-                paymentMethodId = createPaymentMethod.id;
-            });
+				assertCustomFieldIds(createPaymentMethod.customFields, 'T_1', ['T_1', 'T_2'])
+				paymentMethodId = createPaymentMethod.id
+			})
 
-            it('admin updatePaymentMethod', async () => {
-                const { updatePaymentMethod } = await adminClient.query(gql`
+			it('admin updatePaymentMethod', async () => {
+				const { updatePaymentMethod } = await adminClient.query(gql`
                     mutation {
                         updatePaymentMethod(
                             input: {
@@ -1308,13 +1308,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(updatePaymentMethod.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+                `)
+				assertCustomFieldIds(updatePaymentMethod.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/2840
-            it('updating custom field relation on PaymentMethod does not delete primitive values', async () => {
-                const { updatePaymentMethod } = await adminClient.query(gql`
+			// https://github.com/majel-ecommerce/majel/issues/2840
+			it('updating custom field relation on PaymentMethod does not delete primitive values', async () => {
+				const { updatePaymentMethod } = await adminClient.query(gql`
                     mutation {
                         updatePaymentMethod(
                             input: {
@@ -1326,13 +1326,13 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(updatePaymentMethod.customFields.single).toEqual({ id: 'T_3' });
-                expect(updatePaymentMethod.customFields.primitive).toBe('test');
-            });
+                `)
+				expect(updatePaymentMethod.customFields.single).toEqual({ id: 'T_3' })
+				expect(updatePaymentMethod.customFields.primitive).toBe('test')
+			})
 
-            it('shop eligiblePaymentMethods (PaymentMethodQuote)', async () => {
-                const { eligiblePaymentMethods } = await shopClient.query(gql`
+			it('shop eligiblePaymentMethods (PaymentMethodQuote)', async () => {
+				const { eligiblePaymentMethods } = await shopClient.query(gql`
                     query {
                         eligiblePaymentMethods {
                             id
@@ -1341,14 +1341,14 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                assertCustomFieldIds(eligiblePaymentMethods[0].customFields, 'T_3', ['T_3', 'T_4']);
-            });
-        });
+                `)
+				assertCustomFieldIds(eligiblePaymentMethods[0].customFields, 'T_3', ['T_3', 'T_4'])
+			})
+		})
 
-        describe('Asset entity', () => {
-            it('set custom field relations on Asset', async () => {
-                const { updateAsset } = await adminClient.query(gql`
+		describe('Asset entity', () => {
+			it('set custom field relations on Asset', async () => {
+				const { updateAsset } = await adminClient.query(gql`
                     mutation {
                         updateAsset(
                             input: {
@@ -1360,75 +1360,75 @@ describe('Custom field relations', () => {
                             ${customFieldsSelection}
                         }
                     }
-                `);
+                `)
 
-                assertCustomFieldIds(updateAsset.customFields, 'T_2', ['T_3', 'T_4']);
-            });
+				assertCustomFieldIds(updateAsset.customFields, 'T_2', ['T_3', 'T_4'])
+			})
 
-            it('findOne on Asset', async () => {
-                const { asset } = await adminClient.query(gql`
+			it('findOne on Asset', async () => {
+				const { asset } = await adminClient.query(gql`
                     query {
                         asset(id: "T_1") {
                             id
                             ${customFieldsSelection}
                         }
                     }
-                `);
-                expect(asset.customFields.single.id).toBe('T_2');
-                expect(asset.customFields.multi.length).toEqual(2);
-            });
+                `)
+				expect(asset.customFields.single.id).toBe('T_2')
+				expect(asset.customFields.multi.length).toEqual(2)
+			})
 
-            // https://github.com/vendure-ecommerce/vendure/issues/1636
-            it('calling TransactionalConnection.findOneInChannel() returns custom field relations', async () => {
-                TestPlugin1636_1664.testResolverSpy.mockReset();
-                await shopClient.query(gql`
-                    query {
-                        getAssetTest(id: "T_1")
-                    }
-                `);
-                const args = TestPlugin1636_1664.testResolverSpy.mock.calls[0];
-                expect(args[0].customFields.single.id).toEqual(2);
-                expect(args[0].customFields.multi.length).toEqual(2);
-            });
-        });
-    });
+			// https://github.com/majel-ecommerce/majel/issues/1636
+			it('calling TransactionalConnection.findOneInChannel() returns custom field relations', async () => {
+				TestPlugin1636_1664.testResolverSpy.mockReset()
+				await shopClient.query(gql`
+					query {
+						getAssetTest(id: "T_1")
+					}
+				`)
+				const args = TestPlugin1636_1664.testResolverSpy.mock.calls[0]
+				expect(args[0].customFields.single.id).toEqual(2)
+				expect(args[0].customFields.multi.length).toEqual(2)
+			})
+		})
+	})
 
-    it('null values', async () => {
-        const { updateCustomerAddress } = await adminClient.query(gql`
-            mutation {
-                updateCustomerAddress(
-                    input: { id: "T_1", customFields: { singleId: null, multiIds: ["T_1", "null"] } }
-                ) {
-                    id
-                    customFields {
-                        single {
-                            id
-                        }
-                        multi {
-                            id
-                        }
-                    }
-                }
-            }
-        `);
+	it('null values', async () => {
+		const { updateCustomerAddress } = await adminClient.query(gql`
+			mutation {
+				updateCustomerAddress(
+					input: { id: "T_1", customFields: { singleId: null, multiIds: ["T_1", "null"] } }
+				) {
+					id
+					customFields {
+						single {
+							id
+						}
+						multi {
+							id
+						}
+					}
+				}
+			}
+		`)
 
-        expect(updateCustomerAddress.customFields.single).toEqual(null);
-        expect(updateCustomerAddress.customFields.multi).toEqual([{ id: 'T_1' }]);
-    });
+		expect(updateCustomerAddress.customFields.single).toEqual(null)
+		expect(updateCustomerAddress.customFields.multi).toEqual([{ id: 'T_1' }])
+	})
 
-    describe('bi-direction relations', () => {
-        let customEntityRepository: Repository<TestCustomEntity>;
-        let customEntity: TestCustomEntity;
-        let collectionIdInternal: number;
+	describe('bi-direction relations', () => {
+		let customEntityRepository: Repository<TestCustomEntity>
+		let customEntity: TestCustomEntity
+		let collectionIdInternal: number
 
-        beforeAll(async () => {
-            customEntityRepository = server.app
-                .get(TransactionalConnection)
-                .getRepository(RequestContext.empty(), TestCustomEntity);
+		beforeAll(async () => {
+			customEntityRepository = server.app
+				.get(TransactionalConnection)
+				.getRepository(RequestContext.empty(), TestCustomEntity)
 
-            const customEntityId = (await customEntityRepository.save({})).id;
+			const customEntityId = (await customEntityRepository.save({})).id
 
-            const { createCollection } = await adminClient.query(gql`
+			const { createCollection } = await adminClient.query(gql`
                     mutation {
                         createCollection(
                             input: {
@@ -1442,30 +1442,30 @@ describe('Custom field relations', () => {
                             id
                         }
                     }
-                `);
-            collectionIdInternal = parseInt(createCollection.id.replace('T_', ''), 10);
+                `)
+			collectionIdInternal = parseInt(createCollection.id.replace('T_', ''), 10)
 
-            customEntity = await assertFound(
-                customEntityRepository.findOne({
-                    where: { id: customEntityId },
-                    relations: {
-                        customEntityInverse: true,
-                        customEntityListInverse: true,
-                    },
-                }),
-            );
-        });
+			customEntity = await assertFound(
+				customEntityRepository.findOne({
+					where: { id: customEntityId },
+					relations: {
+						customEntityInverse: true,
+						customEntityListInverse: true,
+					},
+				}),
+			)
+		})
 
-        it('can create inverse relation for list=false', () => {
-            expect(customEntity.customEntityInverse).toEqual([
-                expect.objectContaining({ id: collectionIdInternal }),
-            ]);
-        });
+		it('can create inverse relation for list=false', () => {
+			expect(customEntity.customEntityInverse).toEqual([
+				expect.objectContaining({ id: collectionIdInternal }),
+			])
+		})
 
-        it('can create inverse relation for list=true', () => {
-            expect(customEntity.customEntityListInverse).toEqual([
-                expect.objectContaining({ id: collectionIdInternal }),
-            ]);
-        });
-    });
-});
+		it('can create inverse relation for list=true', () => {
+			expect(customEntity.customEntityListInverse).toEqual([
+				expect.objectContaining({ id: collectionIdInternal }),
+			])
+		})
+	})
+})

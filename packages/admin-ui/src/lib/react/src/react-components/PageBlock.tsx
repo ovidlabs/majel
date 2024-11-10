@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react'
 
 /**
  * @description
@@ -6,7 +6,7 @@ import React, { PropsWithChildren } from 'react';
  *
  * @example
  * ```ts
- * import { PageBlock } from '@vendure/admin-ui/react';
+ * import { PageBlock } from '@majel/admin-ui/react';
  *
  * export function MyComponent() {
  *   return (
@@ -20,5 +20,5 @@ import React, { PropsWithChildren } from 'react';
  * @docsCategory react-components
  */
 export function PageBlock(props: PropsWithChildren) {
-    return <div className="page-block">{props.children}</div>;
+	return <div className="page-block">{props.children}</div>
 }

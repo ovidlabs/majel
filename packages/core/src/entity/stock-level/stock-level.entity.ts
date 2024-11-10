@@ -1,10 +1,10 @@
-import { DeepPartial, ID } from '@vendure/common/lib/shared-types';
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { DeepPartial, ID } from '@majel/common/lib/shared-types'
+import { Column, Entity, Index, ManyToOne } from 'typeorm'
 
-import { VendureEntity } from '../base/base.entity';
-import { EntityId } from '../entity-id.decorator';
-import { ProductVariant } from '../product-variant/product-variant.entity';
-import { StockLocation } from '../stock-location/stock-location.entity';
+import { MajelEntity } from '../base/base.entity'
+import { EntityId } from '../entity-id.decorator'
+import { ProductVariant } from '../product-variant/product-variant.entity'
+import { StockLocation } from '../stock-location/stock-location.entity'
 
 /**
  * @description
@@ -15,28 +15,28 @@ import { StockLocation } from '../stock-location/stock-location.entity';
  */
 @Entity()
 @Index(['productVariantId', 'stockLocationId'], { unique: true })
-export class StockLevel extends VendureEntity {
-    constructor(input: DeepPartial<StockLevel>) {
-        super(input);
-    }
+export class StockLevel extends MajelEntity {
+	constructor(input: DeepPartial<StockLevel>) {
+		super(input)
+	}
 
-    @Index()
-    @ManyToOne(type => ProductVariant, productVariant => productVariant.stockLevels, { onDelete: 'CASCADE' })
-    productVariant: ProductVariant;
+	@Index()
+	@ManyToOne(type => ProductVariant, productVariant => productVariant.stockLevels, { onDelete: 'CASCADE' })
+	productVariant: ProductVariant
 
-    @EntityId()
-    productVariantId: ID;
+	@EntityId()
+	productVariantId: ID
 
-    @Index()
-    @ManyToOne(type => StockLocation, { onDelete: 'CASCADE' })
-    stockLocation: StockLocation;
+	@Index()
+	@ManyToOne(type => StockLocation, { onDelete: 'CASCADE' })
+	stockLocation: StockLocation
 
-    @EntityId()
-    stockLocationId: ID;
+	@EntityId()
+	stockLocationId: ID
 
-    @Column()
-    stockOnHand: number;
+	@Column()
+	stockOnHand: number
 
-    @Column()
-    stockAllocated: number;
+	@Column()
+	stockAllocated: number
 }

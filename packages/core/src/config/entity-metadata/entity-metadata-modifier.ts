@@ -1,4 +1,4 @@
-import { MetadataArgsStorage } from 'typeorm/metadata-args/MetadataArgsStorage';
+import { MetadataArgsStorage } from 'typeorm/metadata-args/MetadataArgsStorage'
 
 /**
  * @description
@@ -14,7 +14,7 @@ import { MetadataArgsStorage } from 'typeorm/metadata-args/MetadataArgsStorage';
  * @example
  * ```ts
  * import { Index } from 'typeorm';
- * import { EntityMetadataModifier, ProductVariant } from '\@vendure/core';
+ * import { EntityMetadataModifier, ProductVariant } from '\@majel/core';
  *
  * // Adds a unique index to the ProductVariant.sku column
  * export const addSkuUniqueIndex: EntityMetadataModifier = metadata => {
@@ -26,7 +26,7 @@ import { MetadataArgsStorage } from 'typeorm/metadata-args/MetadataArgsStorage';
  * @example
  * ```ts
  * import { Column } from 'typeorm';
- * import { EntityMetadataModifier, ProductTranslation } from '\@vendure/core';
+ * import { EntityMetadataModifier, ProductTranslation } from '\@majel/core';
  *
  * // Use the "mediumtext" datatype for the Product's description rather than
  * // the default "text" type.
@@ -53,4 +53,4 @@ import { MetadataArgsStorage } from 'typeorm/metadata-args/MetadataArgsStorage';
  * @docsPage EntityOptions
  * @since 1.6.0
  */
-export type EntityMetadataModifier = (metadata: MetadataArgsStorage) => void | Promise<void>;
+export type EntityMetadataModifier = (metadata: MetadataArgsStorage) => void | Promise<void>

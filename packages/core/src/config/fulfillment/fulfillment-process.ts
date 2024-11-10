@@ -1,15 +1,15 @@
 import {
-    OnTransitionEndFn,
-    OnTransitionErrorFn,
-    OnTransitionStartFn,
-    Transitions,
-} from '../../common/finite-state-machine/types';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
+	OnTransitionEndFn,
+	OnTransitionErrorFn,
+	OnTransitionStartFn,
+	Transitions,
+} from '../../common/finite-state-machine/types'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
 import {
-    CustomFulfillmentStates,
-    FulfillmentState,
-    FulfillmentTransitionData,
-} from '../../service/helpers/fulfillment-state-machine/fulfillment-state';
+	CustomFulfillmentStates,
+	FulfillmentState,
+	FulfillmentTransitionData,
+} from '../../service/helpers/fulfillment-state-machine/fulfillment-state'
 
 /**
  * @description
@@ -24,12 +24,11 @@ import {
  * @since 2.0.0
  */
 export interface FulfillmentProcess<State extends keyof CustomFulfillmentStates | string>
-    extends InjectableStrategy {
-    transitions?: Transitions<State, State | FulfillmentState> &
-        Partial<Transitions<FulfillmentState | State>>;
-    onTransitionStart?: OnTransitionStartFn<State | FulfillmentState, FulfillmentTransitionData>;
-    onTransitionEnd?: OnTransitionEndFn<State | FulfillmentState, FulfillmentTransitionData>;
-    onTransitionError?: OnTransitionErrorFn<State | FulfillmentState>;
+	extends InjectableStrategy {
+	transitions?: Transitions<State, State | FulfillmentState> & Partial<Transitions<FulfillmentState | State>>
+	onTransitionStart?: OnTransitionStartFn<State | FulfillmentState, FulfillmentTransitionData>
+	onTransitionEnd?: OnTransitionEndFn<State | FulfillmentState, FulfillmentTransitionData>
+	onTransitionError?: OnTransitionErrorFn<State | FulfillmentState>
 }
 
 /**
@@ -41,4 +40,4 @@ export interface FulfillmentProcess<State extends keyof CustomFulfillmentStates 
  * @deprecated Use FulfillmentProcess
  */
 export interface CustomFulfillmentProcess<State extends keyof CustomFulfillmentStates | string>
-    extends FulfillmentProcess<State> {}
+	extends FulfillmentProcess<State> {}

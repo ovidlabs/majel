@@ -1,15 +1,15 @@
 import {
-    Component,
-    ComponentRef,
-    EventEmitter,
-    inject,
-    Input,
-    OnInit,
-    Output,
-    ViewContainerRef,
-} from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
-import { ROUTE_COMPONENT_OPTIONS, RouteComponent } from './route.component';
+	Component,
+	ComponentRef,
+	EventEmitter,
+	inject,
+	Input,
+	OnInit,
+	Output,
+	ViewContainerRef,
+} from '@angular/core'
+import { SharedModule } from '../../shared/shared.module'
+import { ROUTE_COMPONENT_OPTIONS, RouteComponent } from './route.component'
 
 /**
  * @description
@@ -19,41 +19,41 @@ import { ROUTE_COMPONENT_OPTIONS, RouteComponent } from './route.component';
  * `canDeactivate` to the loaded component.
  */
 @Component({
-    selector: 'vdr-dynamic-component-loader',
-    template: ``,
-    standalone: true,
-    imports: [SharedModule],
+	selector: 'vdr-dynamic-component-loader',
+	template: ``,
+	standalone: true,
+	imports: [SharedModule],
 })
 export class DynamicComponentLoaderComponent implements OnInit {
-    @Input() componentType: any;
-    @Output() loaded = new EventEmitter<ComponentRef<any>>();
-    constructor(private viewContainer: ViewContainerRef) {}
+	@Input() componentType: any
+	@Output() loaded = new EventEmitter<ComponentRef<any>>()
+	constructor(private viewContainer: ViewContainerRef) {}
 
-    ngOnInit() {
-        const componentRef = this.viewContainer.createComponent(this.componentType);
-        this.loaded.emit(componentRef);
-    }
+	ngOnInit() {
+		const componentRef = this.viewContainer.createComponent(this.componentType)
+		this.loaded.emit(componentRef)
+	}
 }
 
 @Component({
-    selector: 'vdr-angular-route-component',
-    template: `
-        <vdr-route-component>
-            <vdr-dynamic-component-loader [componentType]="component" (loaded)="componentLoaded($event)" />
-        </vdr-route-component>
-    `,
-    standalone: true,
-    imports: [SharedModule, RouteComponent, DynamicComponentLoaderComponent],
+	selector: 'vdr-angular-route-component',
+	template: `
+		<vdr-route-component>
+			<vdr-dynamic-component-loader [componentType]="component" (loaded)="componentLoaded($event)" />
+		</vdr-route-component>
+	`,
+	standalone: true,
+	imports: [SharedModule, RouteComponent, DynamicComponentLoaderComponent],
 })
 export class AngularRouteComponent {
-    protected component = inject(ROUTE_COMPONENT_OPTIONS).component;
-    protected componentRef: ComponentRef<any>;
+	protected component = inject(ROUTE_COMPONENT_OPTIONS).component
+	protected componentRef: ComponentRef<any>
 
-    componentLoaded(componentRef: ComponentRef<any>) {
-        this.componentRef = componentRef;
-    }
+	componentLoaded(componentRef: ComponentRef<any>) {
+		this.componentRef = componentRef
+	}
 
-    canDeactivate() {
-        return this.componentRef?.instance?.canDeactivate?.();
-    }
+	canDeactivate() {
+		return this.componentRef?.instance?.canDeactivate?.()
+	}
 }

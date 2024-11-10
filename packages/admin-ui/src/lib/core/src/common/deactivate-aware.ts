@@ -4,5 +4,5 @@
  * would be lost.
  */
 export interface DeactivateAware {
-    canDeactivate(): boolean;
+	canDeactivate(): boolean
 }

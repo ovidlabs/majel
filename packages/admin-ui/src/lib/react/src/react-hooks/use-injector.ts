@@ -1,6 +1,6 @@
-import { ProviderToken } from '@angular/core';
-import { useContext } from 'react';
-import { HostedComponentContext } from '../directives/react-component-host.directive';
+import { ProviderToken } from '@angular/core'
+import { useContext } from 'react'
+import { HostedComponentContext } from '../directives/react-component-host.directive'
 
 /**
  * @description
@@ -8,8 +8,8 @@ import { HostedComponentContext } from '../directives/react-component-host.direc
  *
  * @example
  * ```ts
- * import { useInjector } from '\@vendure/admin-ui/react';
- * import { NotificationService } from '\@vendure/admin-ui/core';
+ * import { useInjector } from '\@majel/admin-ui/react';
+ * import { NotificationService } from '\@majel/admin-ui/core';
  *
  * export const MyComponent = () => {
  *     const notificationService = useInjector(NotificationService);
@@ -25,10 +25,10 @@ import { HostedComponentContext } from '../directives/react-component-host.direc
  * @docsCategory react-hooks
  */
 export function useInjector<T = any>(token: ProviderToken<T>): T {
-    const context = useContext(HostedComponentContext);
-    const instance = context?.injector.get(token);
-    if (!instance) {
-        throw new Error(`Could not inject ${(token as any).name ?? token.toString()}`);
-    }
-    return instance;
+	const context = useContext(HostedComponentContext)
+	const instance = context?.injector.get(token)
+	if (!instance) {
+		throw new Error(`Could not inject ${(token as any).name ?? token.toString()}`)
+	}
+	return instance
 }

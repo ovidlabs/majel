@@ -1,4 +1,4 @@
-import { VendureLogger } from '@vendure/core';
+import { MajelLogger } from '@majel/core'
 
 /**
  * @description
@@ -12,7 +12,7 @@ import { VendureLogger } from '@vendure/core';
  * @example
  * ```ts
  * // e2e test example
- * import { createTestEnvironment, TestingLogger } from '\@vendure/testing';
+ * import { createTestEnvironment, TestingLogger } from '\@majel/testing';
  *
  * const testingLogger = new TestingLogger(() => jest.fn());
  *
@@ -37,8 +37,8 @@ import { VendureLogger } from '@vendure/core';
  * ```ts
  * // unit test example
  * import { Test } from '\@nestjs/testing';
- * import { Logger } from '\@vendure/core';
- * import { TestingLogger } from '\@vendure/testing';
+ * import { Logger } from '\@majel/core';
+ * import { TestingLogger } from '\@majel/testing';
  *
  * beforeEach(async () => {
  *   const moduleRef = await Test.createTestingModule({
@@ -52,38 +52,38 @@ import { VendureLogger } from '@vendure/core';
  *
  * @docsCategory testing
  */
-export class TestingLogger<Spy extends (...args: any[]) => any> implements VendureLogger {
-    constructor(private createSpyFn: () => Spy) {
-        this.debugSpy = createSpyFn();
-        this.errorSpy = createSpyFn();
-        this.infoSpy = createSpyFn();
-        this.verboseSpy = createSpyFn();
-        this.warnSpy = createSpyFn();
-    }
+export class TestingLogger<Spy extends (...args: any[]) => any> implements MajelLogger {
+	constructor(private createSpyFn: () => Spy) {
+		this.debugSpy = createSpyFn()
+		this.errorSpy = createSpyFn()
+		this.infoSpy = createSpyFn()
+		this.verboseSpy = createSpyFn()
+		this.warnSpy = createSpyFn()
+	}
 
-    debugSpy: Spy;
-    errorSpy: Spy;
-    infoSpy: Spy;
-    verboseSpy: Spy;
-    warnSpy: Spy;
+	debugSpy: Spy
+	errorSpy: Spy
+	infoSpy: Spy
+	verboseSpy: Spy
+	warnSpy: Spy
 
-    debug(message: string, context?: string): void {
-        this.debugSpy(message, context);
-    }
+	debug(message: string, context?: string): void {
+		this.debugSpy(message, context)
+	}
 
-    error(message: string, context?: string, trace?: string): void {
-        this.errorSpy(message, context, trace);
-    }
+	error(message: string, context?: string, trace?: string): void {
+		this.errorSpy(message, context, trace)
+	}
 
-    info(message: string, context?: string): void {
-        this.infoSpy(message, context);
-    }
+	info(message: string, context?: string): void {
+		this.infoSpy(message, context)
+	}
 
-    verbose(message: string, context?: string): void {
-        this.verboseSpy(message, context);
-    }
+	verbose(message: string, context?: string): void {
+		this.verboseSpy(message, context)
+	}
 
-    warn(message: string, context?: string): void {
-        this.warnSpy(message, context);
-    }
+	warn(message: string, context?: string): void {
+		this.warnSpy(message, context)
+	}
 }

@@ -1,6 +1,6 @@
-import { RequestContext } from '../../api/common/request-context';
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
-import { ProductVariant } from '../../entity/product-variant/product-variant.entity';
+import { RequestContext } from '../../api/common/request-context'
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
+import { ProductVariant } from '../../entity/product-variant/product-variant.entity'
 
 /**
  * @description
@@ -12,21 +12,21 @@ import { ProductVariant } from '../../entity/product-variant/product-variant.ent
  * :::info
  *
  * This is configured via the `catalogOptions.stockDisplayStrategy` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
  * @docsCategory products & stock
  */
 export interface StockDisplayStrategy extends InjectableStrategy {
-    /**
-     * @description
-     * Returns a string representing the stock level, which will be used directly
-     * in the GraphQL `ProductVariant.stockLevel` field.
-     */
-    getStockLevel(
-        ctx: RequestContext,
-        productVariant: ProductVariant,
-        saleableStockLevel: number,
-    ): string | Promise<string>;
+	/**
+	 * @description
+	 * Returns a string representing the stock level, which will be used directly
+	 * in the GraphQL `ProductVariant.stockLevel` field.
+	 */
+	getStockLevel(
+		ctx: RequestContext,
+		productVariant: ProductVariant,
+		saleableStockLevel: number,
+	): string | Promise<string>
 }

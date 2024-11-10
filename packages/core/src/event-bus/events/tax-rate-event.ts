@@ -1,11 +1,11 @@
-import { CreateTaxRateInput, UpdateTaxRateInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreateTaxRateInput, UpdateTaxRateInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { TaxRate } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api/common/request-context'
+import { TaxRate } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type TaxRateInputTypes = CreateTaxRateInput | UpdateTaxRateInput | ID;
+type TaxRateInputTypes = CreateTaxRateInput | UpdateTaxRateInput | ID
 
 /**
  * @description
@@ -15,13 +15,13 @@ type TaxRateInputTypes = CreateTaxRateInput | UpdateTaxRateInput | ID;
  * @docsCategory events
  * @docsPage Event Types
  */
-export class TaxRateEvent extends VendureEntityEvent<TaxRate, TaxRateInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: TaxRate,
-        type: 'created' | 'updated' | 'deleted',
-        input?: TaxRateInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class TaxRateEvent extends MajelEntityEvent<TaxRate, TaxRateInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: TaxRate,
+		type: 'created' | 'updated' | 'deleted',
+		input?: TaxRateInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

@@ -1,8 +1,8 @@
-import { UpdateGlobalSettingsInput } from '@vendure/common/lib/generated-types';
+import { UpdateGlobalSettingsInput } from '@majel/common/lib/generated-types'
 
-import { RequestContext } from '../../api';
-import { GlobalSettings } from '../../entity/global-settings/global-settings.entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api'
+import { GlobalSettings } from '../../entity/global-settings/global-settings.entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
 /**
  * @description
@@ -13,8 +13,8 @@ import { VendureEntityEvent } from '../vendure-entity-event';
  * @docsPage Event Types
  * @since 1.4
  */
-export class GlobalSettingsEvent extends VendureEntityEvent<GlobalSettings, UpdateGlobalSettingsInput> {
-    constructor(ctx: RequestContext, entity: GlobalSettings, input?: UpdateGlobalSettingsInput) {
-        super(entity, 'updated', ctx, input);
-    }
+export class GlobalSettingsEvent extends MajelEntityEvent<GlobalSettings, UpdateGlobalSettingsInput> {
+	constructor(ctx: RequestContext, entity: GlobalSettings, input?: UpdateGlobalSettingsInput) {
+		super(entity, 'updated', ctx, input)
+	}
 }

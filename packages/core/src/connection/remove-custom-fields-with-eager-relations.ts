@@ -1,9 +1,9 @@
-import { SelectQueryBuilder } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm'
 
-import { Logger } from '../config/logger/vendure-logger';
+import { Logger } from '../config/logger/majel-logger'
 
 /**
- * This is a work-around for this issue: https://github.com/vendure-ecommerce/vendure/issues/1664
+ * This is a work-around for this issue: https://github.com/majel-ecommerce/majel/issues/1664
  *
  * Explanation:
  * When calling `FindOptionsUtils.joinEagerRelations()`, there appears to be a bug in TypeORM whereby
@@ -36,35 +36,35 @@ import { Logger } from '../config/logger/vendure-logger';
  */
 
 export function removeCustomFieldsWithEagerRelations<T extends string>(
-    qb: SelectQueryBuilder<any>,
-    relations: T[] = [],
+	qb: SelectQueryBuilder<any>,
+	relations: T[] = [],
 ): T[] {
-    let resultingRelations = relations;
-    const mainAlias = qb.expressionMap.mainAlias;
-    const customFieldsMetadata = mainAlias?.metadata.embeddeds.find(
-        metadata => metadata.propertyName === 'customFields',
-    );
-    if (customFieldsMetadata) {
-        const customFieldRelationsWithEagerRelations = customFieldsMetadata.relations.filter(relation => {
-            return (
-                !!relation.inverseEntityMetadata.ownRelations.find(or => or.isEager === true) ||
-                relation.inverseEntityMetadata.embeddeds.find(
-                    em => em.propertyName === 'customFields' && em.relations.find(emr => emr.isEager),
-                )
-            );
-        });
-        for (const relation of customFieldRelationsWithEagerRelations) {
-            const propertyName = relation.propertyName;
-            const relationsToRemove = relations.filter(r => r.startsWith(`customFields.${propertyName}`));
-            if (relationsToRemove.length) {
-                Logger.debug(
-                    `TransactionalConnection.findOneInChannel cannot automatically join relation [${
-                        mainAlias?.metadata.name ?? '(unknown)'
-                    }.customFields.${propertyName}]`,
-                );
-                resultingRelations = relations.filter(r => !r.startsWith(`customFields.${propertyName}`));
-            }
-        }
-    }
-    return resultingRelations;
+	let resultingRelations = relations
+	const mainAlias = qb.expressionMap.mainAlias
+	const customFieldsMetadata = mainAlias?.metadata.embeddeds.find(
+		metadata => metadata.propertyName === 'customFields',
+	)
+	if (customFieldsMetadata) {
+		const customFieldRelationsWithEagerRelations = customFieldsMetadata.relations.filter(relation => {
+			return (
+				!!relation.inverseEntityMetadata.ownRelations.find(or => or.isEager === true) ||
+				relation.inverseEntityMetadata.embeddeds.find(
+					em => em.propertyName === 'customFields' && em.relations.find(emr => emr.isEager),
+				)
+			)
+		})
+		for (const relation of customFieldRelationsWithEagerRelations) {
+			const propertyName = relation.propertyName
+			const relationsToRemove = relations.filter(r => r.startsWith(`customFields.${propertyName}`))
+			if (relationsToRemove.length) {
+				Logger.debug(
+					`TransactionalConnection.findOneInChannel cannot automatically join relation [${
+						mainAlias?.metadata.name ?? '(unknown)'
+					}.customFields.${propertyName}]`,
+				)
+				resultingRelations = relations.filter(r => !r.startsWith(`customFields.${propertyName}`))
+			}
+		}
+	}
+	return resultingRelations
 }

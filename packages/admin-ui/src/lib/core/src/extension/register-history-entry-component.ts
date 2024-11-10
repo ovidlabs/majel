@@ -1,6 +1,6 @@
-import { APP_INITIALIZER, Provider } from '@angular/core';
-import { HistoryEntryConfig } from '../providers/custom-history-entry-component/history-entry-component-types';
-import { HistoryEntryComponentService } from '../providers/custom-history-entry-component/history-entry-component.service';
+import { APP_INITIALIZER, Provider } from '@angular/core'
+import { HistoryEntryConfig } from '../providers/custom-history-entry-component/history-entry-component-types'
+import { HistoryEntryComponentService } from '../providers/custom-history-entry-component/history-entry-component.service'
 
 /**
  * @description
@@ -17,7 +17,7 @@ import { HistoryEntryComponentService } from '../providers/custom-history-entry-
  *     SharedModule,
  *     TimelineDisplayType,
  *     TimelineHistoryEntry,
- * } from '\@vendure/admin-ui/core';
+ * } from '\@majel/admin-ui/core';
  *
  * \@Component({
  *     selector: 'tax-id-verification-component',
@@ -66,12 +66,12 @@ import { HistoryEntryComponentService } from '../providers/custom-history-entry-
  * @docsCategory custom-history-entry-components
  */
 export function registerHistoryEntryComponent(config: HistoryEntryConfig): Provider {
-    return {
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: (customHistoryEntryComponentService: HistoryEntryComponentService) => () => {
-            customHistoryEntryComponentService.registerComponent(config);
-        },
-        deps: [HistoryEntryComponentService],
-    };
+	return {
+		provide: APP_INITIALIZER,
+		multi: true,
+		useFactory: (customHistoryEntryComponentService: HistoryEntryComponentService) => () => {
+			customHistoryEntryComponentService.registerComponent(config)
+		},
+		deps: [HistoryEntryComponentService],
+	}
 }

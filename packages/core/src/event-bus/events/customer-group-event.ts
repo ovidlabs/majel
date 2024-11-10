@@ -1,11 +1,11 @@
-import { CreateCustomerGroupInput, UpdateCustomerGroupInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreateCustomerGroupInput, UpdateCustomerGroupInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api';
-import { CustomerGroup } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api'
+import { CustomerGroup } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type CustomerGroupInputTypes = CreateCustomerGroupInput | UpdateCustomerGroupInput | ID;
+type CustomerGroupInputTypes = CreateCustomerGroupInput | UpdateCustomerGroupInput | ID
 
 /**
  * @description
@@ -15,13 +15,13 @@ type CustomerGroupInputTypes = CreateCustomerGroupInput | UpdateCustomerGroupInp
  * @docsPage Event Types
  * @since 1.4
  */
-export class CustomerGroupEvent extends VendureEntityEvent<CustomerGroup, CustomerGroupInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: CustomerGroup,
-        type: 'created' | 'updated' | 'deleted',
-        input?: CustomerGroupInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class CustomerGroupEvent extends MajelEntityEvent<CustomerGroup, CustomerGroupInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: CustomerGroup,
+		type: 'created' | 'updated' | 'deleted',
+		input?: CustomerGroupInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

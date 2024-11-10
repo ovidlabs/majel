@@ -1,1 +1,1 @@
-# Vendure Paypal integration
+# Majel Paypal integration

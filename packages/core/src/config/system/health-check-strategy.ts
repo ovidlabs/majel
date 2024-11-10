@@ -1,34 +1,34 @@
-import { HealthIndicatorFunction } from '@nestjs/terminus';
+import { HealthIndicatorFunction } from '@nestjs/terminus'
 
-import { InjectableStrategy } from '../../common/types/injectable-strategy';
+import { InjectableStrategy } from '../../common/types/injectable-strategy'
 
 /**
  * @description
  * This strategy defines health checks which are included as part of the
  * `/health` endpoint. They should only be used to monitor _critical_ systems
- * on which proper functioning of the Vendure server depends.
+ * on which proper functioning of the Majel server depends.
  *
  * For more information on the underlying mechanism, see the
  * [NestJS Terminus module docs](https://docs.nestjs.com/recipes/terminus).
  *
  * Custom strategies should be added to the `systemOptions.healthChecks` array.
- * By default, Vendure includes the `TypeORMHealthCheckStrategy`, so if you set the value of the `healthChecks`
+ * By default, Majel includes the `TypeORMHealthCheckStrategy`, so if you set the value of the `healthChecks`
  * array, be sure to include it manually.
  *
- * Vendure also ships with the {@link HttpHealthCheckStrategy}, which is convenient
+ * Majel also ships with the {@link HttpHealthCheckStrategy}, which is convenient
  * for adding a health check dependent on an HTTP ping.
  *
  * :::info
  *
  * This is configured via the `systemOptions.healthChecks` property of
- * your VendureConfig.
+ * your MajelConfig.
  *
  * :::
  *
  *
  * @example
  * ```ts
- * import { HttpHealthCheckStrategy, TypeORMHealthCheckStrategy } from '\@vendure/core';
+ * import { HttpHealthCheckStrategy, TypeORMHealthCheckStrategy } from '\@majel/core';
  * import { MyCustomHealthCheckStrategy } from './config/custom-health-check-strategy';
  *
  * export const config = {
@@ -46,10 +46,10 @@ import { InjectableStrategy } from '../../common/types/injectable-strategy';
  * @docsCategory health-check
  */
 export interface HealthCheckStrategy extends InjectableStrategy {
-    /**
-     * @description
-     * Should return a `HealthIndicatorFunction`, as defined by the
-     * [NestJS Terminus module](https://docs.nestjs.com/recipes/terminus).
-     */
-    getHealthIndicator(): HealthIndicatorFunction;
+	/**
+	 * @description
+	 * Should return a `HealthIndicatorFunction`, as defined by the
+	 * [NestJS Terminus module](https://docs.nestjs.com/recipes/terminus).
+	 */
+	getHealthIndicator(): HealthIndicatorFunction
 }

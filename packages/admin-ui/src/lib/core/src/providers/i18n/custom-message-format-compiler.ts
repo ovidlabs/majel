@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 import {
-    TranslateMessageFormatCompiler,
-    TranslateMessageFormatDebugCompiler,
-} from 'ngx-translate-messageformat-compiler';
+	TranslateMessageFormatCompiler,
+	TranslateMessageFormatDebugCompiler,
+} from 'ngx-translate-messageformat-compiler'
 
 /**
  * Work-around for Angular 9 compat.
@@ -15,15 +15,13 @@ import {
  */
 @Injectable({ providedIn: 'root' })
 export class InjectableTranslateMessageFormatCompiler extends TranslateMessageFormatCompiler {
-    compileTranslations(value: any, lang: string): any {
-        try {
-            return super.compileTranslations(value, lang);
-        } catch (e: any) {
-            console.error(`There was an error with the ${lang} translations:`);
-            console.log(e);
-            console.log(
-                `Check the messageformat docs: https://messageformat.github.io/messageformat/page-guide`,
-            );
-        }
-    }
+	compileTranslations(value: any, lang: string): any {
+		try {
+			return super.compileTranslations(value, lang)
+		} catch (e: any) {
+			console.error(`There was an error with the ${lang} translations:`)
+			console.log(e)
+			console.log(`Check the messageformat docs: https://messageformat.github.io/messageformat/page-guide`)
+		}
+	}
 }

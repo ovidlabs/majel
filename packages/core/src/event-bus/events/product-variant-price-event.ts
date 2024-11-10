@@ -1,10 +1,10 @@
-import { CreateProductVariantInput, UpdateProductVariantInput } from '@vendure/common/lib/generated-types';
+import { CreateProductVariantInput, UpdateProductVariantInput } from '@majel/common/lib/generated-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { ProductVariantPrice } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api/common/request-context'
+import { ProductVariantPrice } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type ProductVariantInputTypes = undefined;
+type ProductVariantInputTypes = undefined
 
 /**
  * @description
@@ -14,16 +14,16 @@ type ProductVariantInputTypes = undefined;
  * @docsPage Event Types
  * @since 2.2.0
  */
-export class ProductVariantPriceEvent extends VendureEntityEvent<
-    ProductVariantPrice[],
-    ProductVariantInputTypes
+export class ProductVariantPriceEvent extends MajelEntityEvent<
+	ProductVariantPrice[],
+	ProductVariantInputTypes
 > {
-    constructor(
-        ctx: RequestContext,
-        entity: ProductVariantPrice[],
-        type: 'created' | 'updated' | 'deleted',
-        input?: ProductVariantInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+	constructor(
+		ctx: RequestContext,
+		entity: ProductVariantPrice[],
+		type: 'created' | 'updated' | 'deleted',
+		input?: ProductVariantInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 }

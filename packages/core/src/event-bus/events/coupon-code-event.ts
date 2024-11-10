@@ -1,7 +1,7 @@
-import { ID } from '@vendure/common/lib/shared-types';
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { MajelEvent } from '../majel-event'
 
 /**
  * @description
@@ -12,13 +12,13 @@ import { VendureEvent } from '../vendure-event';
  * @docsPage Event Types
  * @since 1.4
  */
-export class CouponCodeEvent extends VendureEvent {
-    constructor(
-        public ctx: RequestContext,
-        public couponCode: string,
-        public orderId: ID,
-        public type: 'assigned' | 'removed',
-    ) {
-        super();
-    }
+export class CouponCodeEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public couponCode: string,
+		public orderId: ID,
+		public type: 'assigned' | 'removed',
+	) {
+		super()
+	}
 }

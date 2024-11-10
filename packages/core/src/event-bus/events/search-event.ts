@@ -1,11 +1,11 @@
-import { SearchInput } from '@vendure/common/lib/generated-types';
+import { SearchInput } from '@majel/common/lib/generated-types'
 
-import { RequestContext } from '../../api/common/request-context';
-import { VendureEvent } from '../vendure-event';
+import { RequestContext } from '../../api/common/request-context'
+import { MajelEvent } from '../majel-event'
 
 type ExtendedSearchInput = SearchInput & {
-    [extendedInputField: string]: any;
-};
+	[extendedInputField: string]: any
+}
 
 /**
  * @description
@@ -15,8 +15,11 @@ type ExtendedSearchInput = SearchInput & {
  * @docsPage Event Types
  * @since 1.6.0
  */
-export class SearchEvent extends VendureEvent {
-    constructor(public ctx: RequestContext, public input: ExtendedSearchInput) {
-        super();
-    }
+export class SearchEvent extends MajelEvent {
+	constructor(
+		public ctx: RequestContext,
+		public input: ExtendedSearchInput,
+	) {
+		super()
+	}
 }

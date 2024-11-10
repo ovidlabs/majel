@@ -1,4 +1,4 @@
 export type StateNode = {
-    name: string;
-    to: StateNode[];
-};
+	name: string
+	to: StateNode[]
+}

@@ -1,9 +1,9 @@
-import { PluginCommonModule, Type, VendurePlugin, Product } from '@vendure/core';
+import { PluginCommonModule, Type, MajelPlugin, Product } from '@majel/core';
 import { ScaffoldEntity } from './entity';
 
 type PluginInitOptions = any;
 
-@VendurePlugin({
+@MajelPlugin({
     imports: [PluginCommonModule],
     entities: [Product, ScaffoldEntity],
     compatibility: '^2.0.0',

@@ -1,11 +1,11 @@
-import { CreateAssetInput, DeleteAssetInput, UpdateAssetInput } from '@vendure/common/lib/generated-types';
-import { ID } from '@vendure/common/lib/shared-types';
+import { CreateAssetInput, DeleteAssetInput, UpdateAssetInput } from '@majel/common/lib/generated-types'
+import { ID } from '@majel/common/lib/shared-types'
 
-import { RequestContext } from '../../api';
-import { Asset } from '../../entity';
-import { VendureEntityEvent } from '../vendure-entity-event';
+import { RequestContext } from '../../api'
+import { Asset } from '../../entity'
+import { MajelEntityEvent } from '../majel-entity-event'
 
-type AssetInputTypes = CreateAssetInput | UpdateAssetInput | DeleteAssetInput | ID;
+type AssetInputTypes = CreateAssetInput | UpdateAssetInput | DeleteAssetInput | ID
 
 /**
  * @description
@@ -15,23 +15,23 @@ type AssetInputTypes = CreateAssetInput | UpdateAssetInput | DeleteAssetInput | 
  * @docsPage Event Types
  * @since 1.4
  */
-export class AssetEvent extends VendureEntityEvent<Asset, AssetInputTypes> {
-    constructor(
-        ctx: RequestContext,
-        entity: Asset,
-        type: 'created' | 'updated' | 'deleted',
-        input?: AssetInputTypes,
-    ) {
-        super(entity, type, ctx, input);
-    }
+export class AssetEvent extends MajelEntityEvent<Asset, AssetInputTypes> {
+	constructor(
+		ctx: RequestContext,
+		entity: Asset,
+		type: 'created' | 'updated' | 'deleted',
+		input?: AssetInputTypes,
+	) {
+		super(entity, type, ctx, input)
+	}
 
-    /**
-     * Return an asset field to become compatible with the
-     * deprecated old version of AssetEvent
-     * @deprecated Use `entity` instead
-     * @since 1.4
-     */
-    get asset(): Asset {
-        return this.entity;
-    }
+	/**
+	 * Return an asset field to become compatible with the
+	 * deprecated old version of AssetEvent
+	 * @deprecated Use `entity` instead
+	 * @since 1.4
+	 */
+	get asset(): Asset {
+		return this.entity
+	}
 }

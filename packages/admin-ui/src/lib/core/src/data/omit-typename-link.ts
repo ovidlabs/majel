@@ -1,5 +1,5 @@
-import { ApolloLink } from '@apollo/client/core';
-import { omit } from '@vendure/common/lib/omit';
+import { ApolloLink } from '@apollo/client/core'
+import { omit } from '@majel/common/lib/omit'
 
 /**
  * The "__typename" property added by Apollo Client causes errors when posting the entity
@@ -9,13 +9,13 @@ import { omit } from '@vendure/common/lib/omit';
  * See: https://github.com/apollographql/apollo-client/issues/1913#issuecomment-393721604
  */
 export class OmitTypenameLink extends ApolloLink {
-    constructor() {
-        super((operation, forward) => {
-            if (operation.variables) {
-                operation.variables = omit(operation.variables, ['__typename'], true);
-            }
+	constructor() {
+		super((operation, forward) => {
+			if (operation.variables) {
+				operation.variables = omit(operation.variables, ['__typename'], true)
+			}
 
-            return forward ? forward(operation) : null;
-        });
-    }
+			return forward ? forward(operation) : null
+		})
+	}
 }
