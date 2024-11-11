@@ -73,4 +73,3 @@ The results of the test are saved to the [`./load-testing/results`](./load-testi
 -  `load-test-<date>-<product-count>.json` Contains a summary of all load tests run
 -  `load-test-<date>-<product-count>-<script-name>.csv` Contains time-series data which can be used to create charts
 
-Historical benchmark results with charts can be found in [this Google Sheet](https://docs.google.com/spreadsheets/d/1UaNhmokbNmKDehrnh4m9XO6-DJte-AI-l_Lnji47Qn8/edit?usp=sharing)

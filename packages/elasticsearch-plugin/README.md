@@ -6,4 +6,3 @@ The `ElasticsearchPlugin` uses Elasticsearch to power the Majel product search.
 
 `npm install @majel/elasticsearch-plugin`
 
-For documentation, see [docs.majel.io/reference/core-plugins/elasticsearch-plugin/](https://docs.majel.io/reference/core-plugins/elasticsearch-plugin/)

@@ -5,7 +5,3 @@ A headless [GraphQL](https://graphql.org/) ecommerce framework built on [Node.js
 ```bash
 $ npm install @majel/core
 ```
-
-### [www.majel.io](https://www.majel.io/)
-
-See the [Getting Started](https://www.majel.io/docs/getting-started/) guide for instructions on use.

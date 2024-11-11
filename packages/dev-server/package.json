@@ -1,8 +1,8 @@
 {
 	"name": "dev-server",
 	"version": "2.3.3",
+	"license": "GPL-3.0-or-later",
 	"main": "index.js",
-	"license": "MIT",
 	"private": true,
 	"scripts": {
 		"populate": "node -r ts-node/register -r dotenv/config populate-dev-server.ts",
@@ -14,22 +14,24 @@
 		"load-test:100k": "node -r ts-node/register load-testing/run-load-test.ts 100000"
 	},
 	"dependencies": {
+		"@majel/admin-ui-plugin": "2.3.3",
+		"@majel/asset-server-plugin": "2.3.3",
+		"@majel/common": "2.3.3",
+		"@majel/core": "2.3.3",
+		"@majel/elasticsearch-plugin": "2.3.3",
+		"@majel/email-plugin": "2.3.3",
+		"@majel/job-queue-plugin": "2.3.3",
 		"@nestjs/axios": "^3.0.2",
-		"@majel/admin-ui-plugin": "^2.3.3",
-		"@majel/asset-server-plugin": "^2.3.3",
-		"@majel/common": "^2.3.3",
-		"@majel/core": "^2.3.3",
-		"@majel/elasticsearch-plugin": "^2.3.3",
-		"@majel/email-plugin": "^2.3.3",
 		"typescript": "5.3.3"
 	},
 	"devDependencies": {
-		"@majel/testing": "^2.3.3",
-		"@majel/ui-devkit": "^2.3.3",
+		"@majel/testing": "2.3.3",
+		"@majel/ui-devkit": "2.3.3",
 		"commander": "^12.0.0",
 		"concurrently": "^8.2.2",
 		"csv-stringify": "^6.4.6",
 		"dayjs": "^1.11.10",
-		"progress": "^2.0.3"
+		"progress": "^2.0.3",
+		"typeorm": "0.3.20"
 	}
 }

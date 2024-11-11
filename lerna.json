@@ -1,9 +1,8 @@
 {
-	"packages": [
-		"packages/*"
-	],
+	"packages": ["packages/*"],
+	"pnpm-workspace-yaml": "pnpm-workspace.yaml",
 	"version": "2.3.3",
-	"npmClient": "npm",
+	"npmClient": "pnpm",
 	"command": {
 		"version": {
 			"push": false

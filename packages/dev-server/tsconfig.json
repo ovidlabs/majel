@@ -1,12 +1,39 @@
 {
-	"extends": "../../tsconfig",
 	"compilerOptions": {
 		"module": "commonjs",
-		"sourceMap": true,
-		"jsx": "react",
-		"paths": {
-			"@majel/admin-ui/*": ["../admin-ui/package/*"]
-		}
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"strictPropertyInitialization": false,
+		"target": "es2019",
+		"strict": true,
+		"sourceMap": false,
+		"skipLibCheck": true,
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"rootDir": "src",
 	},
-	"exclude": ["node_modules"]
+	"exclude": [
+		"node_modules", 
+		"codegen.ts",
+		"migration.ts", 
+		"populate.ts",
+		"src/migrations/*.ts",
+		"**/*.spec.ts",
+		"src/compile-admin-ui.ts",
+		"src/plugins/**/ui/*", 
+		"src/ui-extensions/*",
+		"admin-ui"
+	],
+	"ts-node": {
+		"files": true
+	},
+  "angularCompilerOptions": {
+		"enableI18nLegacyMessageIdFormat": false,
+		"strictInjectionParameters": true,
+		"strictTemplates": true,
+		"preserveWhitespaces": true,
+		"disableTypeScriptVersionCheck": true
+	}
 }

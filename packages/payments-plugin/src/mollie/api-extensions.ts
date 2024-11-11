@@ -1,3 +1,4 @@
+import { DocumentNode } from 'graphql'
 import { gql } from 'graphql-tag'
 
 const commonSchemaExtensions = gql`
@@ -41,7 +42,7 @@ const commonSchemaExtensions = gql`
 	}
 `
 
-export const shopApiExtensions = gql`
+export const shopApiExtensions: DocumentNode = gql`
 	${commonSchemaExtensions}
 
 	type MollieAmount {

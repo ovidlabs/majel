@@ -5,7 +5,7 @@ import {
 	MessageResponse,
 	NotificationMessage,
 	WatchQueryFetchPolicy,
-} from '@majel/common/lib/extension-host-types'
+} from '../../../common/lib/extension-host-types'
 import { Observable } from 'rxjs'
 import { take } from 'rxjs/operators'
 

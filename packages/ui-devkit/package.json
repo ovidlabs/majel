@@ -1,30 +1,23 @@
 {
 	"name": "@majel/ui-devkit",
 	"version": "2.3.3",
+	"license": "GPL-3.0-or-later",
 	"description": "A library for authoring Majel Admin UI extensions",
 	"keywords": [
 		"majel",
 		"javascript",
 		"extensions"
 	],
-	"author": "Michael Bromley <michael@michaelbromley.co.uk>",
-	"homepage": "https://www.majel.io/",
-	"license": "MIT",
 	"files": [
 		"client",
 		"compiler",
 		"scaffold"
 	],
-	"funding": "https://github.com/sponsors/michaelbromley",
 	"publishConfig": {
 		"access": "public"
 	},
 	"main": "client/index.js",
 	"types": "client/index.d.ts",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/majel-ecommerce/majel.git"
-	},
 	"scripts": {
 		"build:client": "rimraf ./client && rollup -c rollup.config.mjs --configProduction",
 		"build:compiler": "rimraf ./compiler && tsc -p tsconfig.compiler.json",
@@ -32,16 +25,13 @@
 		"watch": "rimraf ./lib && rollup -c rollup.config.mjs -w",
 		"lint": "eslint --fix ."
 	},
-	"bugs": {
-		"url": "https://github.com/majel-ecommerce/majel/issues"
-	},
 	"dependencies": {
+		"@majel/admin-ui": "2.3.3",
+		"@majel/common": "2.3.3",
 		"@angular-devkit/build-angular": "^17.2.3",
 		"@angular/cli": "^17.2.3",
 		"@angular/compiler": "^17.2.4",
 		"@angular/compiler-cli": "^17.2.4",
-		"@majel/admin-ui": "^2.3.3",
-		"@majel/common": "^2.3.3",
 		"chalk": "^4.1.0",
 		"chokidar": "^3.6.0",
 		"fs-extra": "^11.2.0",
@@ -49,7 +39,7 @@
 		"rxjs": "^7.8.1"
 	},
 	"devDependencies": {
-		"@majel/core": "^2.3.3",
+		"@majel/core": "2.3.3",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-terser": "^0.4.4",
 		"@types/fs-extra": "^11.0.4",

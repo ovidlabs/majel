@@ -1,3 +1,4 @@
+import type { DocumentNode } from 'graphql'
 import gql from 'graphql-tag'
 
 export const adminApiExtensions = gql`

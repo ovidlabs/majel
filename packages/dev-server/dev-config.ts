@@ -11,6 +11,7 @@ import {
 	LanguageCode,
 	LogLevel,
 	MajelConfig,
+	UuidIdStrategy
 } from '@majel/core'
 import { ElasticsearchPlugin } from '@majel/elasticsearch-plugin'
 import { defaultEmailHandlers, EmailPlugin } from '@majel/email-plugin'
@@ -64,10 +65,12 @@ export const devConfig: MajelConfig = {
 		database: process.env.DB_NAME || 'majel',
 		schema: process.env.DB_SCHEMA || 'public',
 	},
+	entityOptions: {
+		entityIdStrategy: new UuidIdStrategy(),
+	},
 	paymentOptions: {
 		paymentMethodHandlers: [dummyPaymentHandler],
 	},
-
 	customFields: {},
 	logger: new DefaultLogger({ level: LogLevel.Verbose }),
 	importExportOptions: {
@@ -106,7 +109,7 @@ export const devConfig: MajelConfig = {
 		}),
 		AdminUiPlugin.init({
 			route: 'admin',
-			port: 5001,
+			port: 3002,
 			// Un-comment to compile a custom admin ui
 			// app: compileUiExtensions({
 			//     outputPath: path.join(__dirname, './custom-admin-ui'),

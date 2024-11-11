@@ -1,7 +1,7 @@
 {
 	"name": "@majel/job-queue-plugin",
 	"version": "2.3.3",
-	"license": "MIT",
+	"license": "GPL-3.0-or-later",
 	"main": "package/index.js",
 	"types": "package/index.d.ts",
 	"files": [
@@ -16,18 +16,19 @@
 		"e2e-wip": "node e2e/check-connection.js || jest --config ../../e2e-common/jest-config.js --runInBand --package=job-queue-plugin",
 		"ci": "npm run build"
 	},
-	"homepage": "https://www.majel.io/",
-	"funding": "https://github.com/sponsors/michaelbromley",
 	"publishConfig": {
 		"access": "public"
 	},
 	"devDependencies": {
 		"@google-cloud/pubsub": "^2.8.0",
-		"@majel/common": "^2.3.3",
-		"@majel/core": "^2.3.3",
+		"@majel/common": "2.3.3",
+		"@majel/core": "2.3.3",
+		"@nestjs/common": "~10.3.10",
+		"@nestjs/terminus": "~10.2.3",
 		"bullmq": "^5.4.2",
 		"ioredis": "^5.3.2",
 		"rimraf": "^5.0.5",
+		"rxjs": "^7.8.1",
 		"typescript": "5.3.3"
 	}
 }

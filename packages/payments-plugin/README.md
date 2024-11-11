@@ -1,7 +1,5 @@
 # Payments plugin
 
-For documentation, see [docs.majel.io/reference/core-plugins/payments-plugin/](https://docs.majel.io/reference/core-plugins/payments-plugin/)
-
 ## Development
 
 ### Mollie local development
